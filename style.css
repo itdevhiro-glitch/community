@@ -208,18 +208,52 @@ h1, h2, h3 {
     align-items: center;
     text-align: left;
 }
+
+/* [BARU] Wrapper untuk menampung gambar dan efek cahaya */
+.about-image-wrapper {
+    position: relative;
+    border-radius: 11px; /* Dibuat sedikit lebih besar dari gambar */
+    overflow: hidden; /* Penting untuk "memotong" cahaya */
+    padding: 3px; /* Ukuran "border" cahaya. Ubah jika ingin lebih tebal/tipis */
+    z-index: 1;
+}
+
+/* [BARU] Efek cahaya berputar sebagai background wrapper */
+.about-image-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: -1; /* Di belakang gambar */
+    
+    background: conic-gradient(
+        from var(--angle), 
+        rgba(255, 255, 255, 0.1), 
+        rgba(255, 255, 255, 0.8), 
+        rgba(255, 255, 255, 0.1)
+    );
+    
+    --angle: 0deg;
+    animation: rotateBorderWrapper 4s linear infinite;
+}
+
+/* [BARU] Keyframe untuk wrapper */
+@keyframes rotateBorderWrapper {
+    from { --angle: 0deg; }
+    to   { --angle: 360deg; }
+}
+
+/* [DIPERBARUI] CSS Asli untuk gambar, tapi disederhanakan */
 .about-image {
     width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px; /* Sudut tumpul gambar di DALAM wrapper */
     
-    /* [UPGRADE] Hapus tinggi 400px dan biarkan otomatis */
-    height: auto; 
-    
-    /* [UPGRADE] Hentikan pemaksaan 'cover' agar tidak terpotong */
-    object-fit: initial; 
-    
-    border-radius: 8px;
-    border: 1px solid var(--color-border);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    /* Hapus semua properti border, border-image, dan shadow dari sini */
 }
 .about-text .section-title { text-align: left; margin-left: 0; }
 .about-text .section-text { margin: 0 0 30px 0; max-width: 100%; }
@@ -409,7 +443,7 @@ h1, h2, h3 {
     .marquee-section { font-size: 1rem; }
     
     .about-grid { grid-template-columns: 1fr; }
-    .about-image { height: 250px; }
+    /* .about-image { height: 250px; } */ /* Dihapus agar wrapper bekerja */
     .about-text .section-title { text-align: center; }
     .about-text { text-align: center; }
 
@@ -450,4 +484,3 @@ h1, h2, h3 {
         width: 80%;
     }
 }
-
