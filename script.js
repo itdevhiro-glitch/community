@@ -92,19 +92,15 @@ document.addEventListener("DOMContentLoaded", function() {
     let stars = [];
     let shootingStars = [];
     let constellationLines = [];
-    const NUM_STARS = 400; 
-    const MAX_CONSTELLATION_SIZE = 5; 
-    const CONSTELLATION_COUNT = 5; 
+    const NUM_STARS = 400; // Jumlah bintang latar acak
+    const MAX_CONSTELLATION_SIZE = 5; // 1 pusat + 4 bintang
+    const CONSTELLATION_COUNT = 5; // Jumlah cluster rasi bintang
 
     // Ambil warna dari CSS
     const LATTE_FOAM_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--color-latte-foam').trim();
     const MOKKA_ACCENT_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--color-mokka-accent').trim();
     const NIGHT_SKY_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--color-night-sky-dark').trim();
 
-
-    // ---
-    // [PERBAIKAN] Definisi Kelas dipindahkan ke ATAS
-    // ---
     
     // --- Kelas Bintang Statik ---
     class Star {
@@ -175,7 +171,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 
-    // --- Fungsi Inisialisasi dan Animasi (Sekarang aman) ---
+    // --- Fungsi Inisialisasi dan Animasi ---
     
     // Fungsi untuk mengubah ukuran canvas
     function resizeCanvas() {
@@ -184,13 +180,14 @@ document.addEventListener("DOMContentLoaded", function() {
         init(); 
     }
     
-    // Inisialisasi Bintang dan Rasi Bintang
+    // ---
+    // [PERBAIKAN BESAR] Logika Rasi Bintang Aesthetic
+    // ---
     function init() {
         stars = [];
         constellationLines = [];
 
-        // 1. Buat Bintang Statik
-        // SEKARANG AMAN: 'new Star()' dipanggil SETELAH 'class Star' didefinisikan
+        // 1. Buat Bintang Latar Acak
         for (let i = 0; i < NUM_STARS; i++) {
             let x = Math.random() * canvas.width;
             let y = Math.random() * canvas.height;
@@ -198,20 +195,35 @@ document.addEventListener("DOMContentLoaded", function() {
             stars.push(new Star(x, y, radius, LATTE_FOAM_COLOR));
         }
         
-        // 2. Buat Rasi Bintang
-        let constellationPoints = stars.slice(0, CONSTELLATION_COUNT * MAX_CONSTELLATION_SIZE);
+        // 2. Buat Rasi Bintang (Logika Cluster yang Aesthetic)
         for (let i = 0; i < CONSTELLATION_COUNT; i++) {
-            let constellationGroup = [];
-            for (let j = 0; j < MAX_CONSTELLATION_SIZE; j++) {
-                const star = constellationPoints[i * MAX_CONSTELLATION_SIZE + j];
-                if(star) constellationGroup.push(star);
-            }
-            
-            const centerStar = constellationGroup[0];
-            if (!centerStar) continue; 
+            let clusterStars = [];
+            // Tentukan titik pusat acak untuk cluster
+            let clusterCenterX = Math.random() * canvas.width;
+            let clusterCenterY = Math.random() * canvas.height;
+            // Tentukan radius cluster (seberapa rapat)
+            let clusterRadius = 50 + Math.random() * 50; // 50px - 100px
 
-            for (let k = 1; k < constellationGroup.length; k++) {
-                const otherStar = constellationGroup[k];
+            // Buat 5 bintang di dalam cluster ini
+            for (let j = 0; j < MAX_CONSTELLATION_SIZE; j++) {
+                // Buat bintang di posisi acak DI DALAM radius cluster
+                let angle = Math.random() * 2 * Math.PI;
+                let radius = Math.random() * clusterRadius;
+                let x = clusterCenterX + Math.cos(angle) * radius;
+                let y = clusterCenterY + Math.sin(angle) * radius;
+                
+                // Buat bintang baru dan tambahkan ke array
+                let star = new Star(x, y, 1 + Math.random(), LATTE_FOAM_COLOR); // Sedikit lebih besar
+                stars.push(star);
+                clusterStars.push(star);
+            }
+
+            // Ambil bintang pertama sebagai pusat cluster
+            const centerStar = clusterStars[0];
+            
+            // Hubungkan bintang pusat ke 4 bintang lainnya di cluster
+            for (let k = 1; k < clusterStars.length; k++) {
+                const otherStar = clusterStars[k];
                 constellationLines.push({
                     x1: centerStar.x, y1: centerStar.y,
                     x2: otherStar.x, y2: otherStar.y
@@ -260,7 +272,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // --- Interaktivitas (Klik untuk Bintang Jatuh) ---
     canvas.addEventListener('click', function(event) {
-        // SEKARANG AMAN: 'new ShootingStar()' dipanggil SETELAH 'class ShootingStar' didefinisikan
         for(let i=0; i < 3; i++) {
             shootingStars.push(new ShootingStar(event.clientX, event.clientY));
         }
