@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     // --- 
-    // [LOGIKA CANVAS FINAL]
+    // [LOGIKA CANVAS "LENGKAP" DENGAN SEMUA BENTUK SENI]
     // ---
     const canvas = document.getElementById('starrySkyCanvas');
     const ctx = canvas.getContext('2d');
@@ -93,8 +93,10 @@ document.addEventListener("DOMContentLoaded", function() {
     let shootingStars = [];
     let constellationLines = [];
     const NUM_STARS = 400; // Jumlah bintang latar acak
-    const MAX_CONSTELLATION_SIZE = 5; // 1 pusat + 4 bintang
-    const CONSTELLATION_COUNT = 5; // Jumlah cluster rasi bintang
+    
+    // [PERUBAHAN] Tentukan *semua* bentuk yang kita inginkan
+    const SHAPE_TYPES = ['MUSIC_NOTE', 'FIVE_POINT_STAR', 'MICROPHONE'];
+    const CONSTELLATION_COUNT = 7; // Total 7 rasi bintang (acak dari 3 tipe)
 
     // Ambil warna dari CSS
     const LATTE_FOAM_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--color-latte-foam').trim();
@@ -181,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     // ---
-    // [PERBAIKAN BESAR] Logika Rasi Bintang Aesthetic
+    // [LOGIKA RASI BINTANG "LENGKAP"]
     // ---
     function init() {
         stars = [];
@@ -195,40 +197,75 @@ document.addEventListener("DOMContentLoaded", function() {
             stars.push(new Star(x, y, radius, LATTE_FOAM_COLOR));
         }
         
-        // 2. Buat Rasi Bintang (Logika Cluster yang Aesthetic)
+        // 2. Buat Rasi Bintang Berbentuk Khusus (Total 7, tipe acak)
         for (let i = 0; i < CONSTELLATION_COUNT; i++) {
-            let clusterStars = [];
-            // Tentukan titik pusat acak untuk cluster
-            let clusterCenterX = Math.random() * canvas.width;
-            let clusterCenterY = Math.random() * canvas.height;
-            // Tentukan radius cluster (seberapa rapat)
-            let clusterRadius = 50 + Math.random() * 50; // 50px - 100px
-
-            // Buat 5 bintang di dalam cluster ini
-            for (let j = 0; j < MAX_CONSTELLATION_SIZE; j++) {
-                // Buat bintang di posisi acak DI DALAM radius cluster
-                let angle = Math.random() * 2 * Math.PI;
-                let radius = Math.random() * clusterRadius;
-                let x = clusterCenterX + Math.cos(angle) * radius;
-                let y = clusterCenterY + Math.sin(angle) * radius;
-                
-                // Buat bintang baru dan tambahkan ke array
-                let star = new Star(x, y, 1 + Math.random(), LATTE_FOAM_COLOR); // Sedikit lebih besar
-                stars.push(star);
-                clusterStars.push(star);
-            }
-
-            // Ambil bintang pertama sebagai pusat cluster
-            const centerStar = clusterStars[0];
+            let shapeStars = [];
+            let shapeLines = [];
             
-            // Hubungkan bintang pusat ke 4 bintang lainnya di cluster
-            for (let k = 1; k < clusterStars.length; k++) {
-                const otherStar = clusterStars[k];
-                constellationLines.push({
-                    x1: centerStar.x, y1: centerStar.y,
-                    x2: otherStar.x, y2: otherStar.y
-                });
+            // [PERUBAHAN] Pilih bentuk acak dari array
+            let randomShapeType = SHAPE_TYPES[Math.floor(Math.random() * SHAPE_TYPES.length)];
+
+            let startX = 100 + Math.random() * (canvas.width - 200);
+            let startY = 100 + Math.random() * (canvas.height - 200);
+            let size = 50 + Math.random() * 60; // Ukuran sedikit lebih kecil agar pas
+
+            if (randomShapeType === "MUSIC_NOTE") {
+                // Bentuk Not Musik
+                shapeStars.push(new Star(startX, startY, 1.5, LATTE_FOAM_COLOR)); // Batang atas
+                shapeStars.push(new Star(startX, startY + size * 0.6, 1.5, LATTE_FOAM_COLOR)); // Batang bawah
+                shapeStars.push(new Star(startX + size * 0.2, startY + size * 0.6, 2, LATTE_FOAM_COLOR)); // Kepala not
+                shapeStars.push(new Star(startX + size * 0.2, startY + size * 0.3, 1.5, LATTE_FOAM_COLOR)); // Ekor
+                
+                shapeLines.push({x1: shapeStars[0].x, y1: shapeStars[0].y, x2: shapeStars[1].x, y2: shapeStars[1].y}); // Batang
+                shapeLines.push({x1: shapeStars[1].x, y1: shapeStars[1].y, x2: shapeStars[2].x, y2: shapeStars[2].y}); // ke kepala
+                shapeLines.push({x1: shapeStars[2].x, y1: shapeStars[2].y, x2: shapeStars[3].x, y2: shapeStars[3].y}); // ke ekor
+
+            } else if (randomShapeType === "FIVE_POINT_STAR") {
+                // Bentuk Bintang Berujung Lima
+                let numPoints = 5;
+                let outerRadius = size * 0.6;
+                let innerRadius = size * 0.25;
+                let angleOffset = -Math.PI / 2; 
+
+                for (let k = 0; k < numPoints * 2; k++) {
+                    let radius = (k % 2 == 0) ? outerRadius : innerRadius;
+                    let angle = angleOffset + k * Math.PI / numPoints;
+                    let x = startX + Math.cos(angle) * radius;
+                    let y = startY + Math.sin(angle) * radius;
+                    shapeStars.push(new Star(x, y, 1.5, LATTE_FOAM_COLOR));
+                }
+                
+                // Hubungkan titik untuk Bintang 5 sudut
+                for(let k = 0; k < shapeStars.length; k++) {
+                    let nextIndex = (k + 4) % shapeStars.length; // Lompat 4 titik (untuk bintang 5 sudut)
+                    if (k % 2 == 0) { // Hanya gambar garis dari titik luar
+                         shapeLines.push({
+                            x1: shapeStars[k].x, y1: shapeStars[k].y,
+                            x2: shapeStars[nextIndex].x, y2: shapeStars[nextIndex].y
+                         });
+                    }
+                }
+
+            } else if (randomShapeType === "MICROPHONE") {
+                // [BARU] Bentuk Mikrofon Retro
+                shapeStars.push(new Star(startX + size * 0.2, startY, 1.5, LATTE_FOAM_COLOR)); // Atas
+                shapeStars.push(new Star(startX, startY + size * 0.2, 1.5, LATTE_FOAM_COLOR)); // Kiri
+                shapeStars.push(new Star(startX + size * 0.4, startY + size * 0.2, 1.5, LATTE_FOAM_COLOR)); // Kanan
+                shapeStars.push(new Star(startX + size * 0.2, startY + size * 0.4, 2, LATTE_FOAM_COLOR)); // Bawah/Leher (besar)
+                shapeStars.push(new Star(startX + size * 0.2, startY + size * 0.8, 1.5, LATTE_FOAM_COLOR)); // Batang bawah
+                
+                // Garis kepala mic
+                shapeLines.push({x1: shapeStars[0].x, y1: shapeStars[0].y, x2: shapeStars[1].x, y2: shapeStars[1].y});
+                shapeLines.push({x1: shapeStars[1].x, y1: shapeStars[1].y, x2: shapeStars[3].x, y2: shapeStars[3].y});
+                shapeLines.push({x1: shapeStars[3].x, y1: shapeStars[3].y, x2: shapeStars[2].x, y2: shapeStars[2].y});
+                shapeLines.push({x1: shapeStars[2].x, y1: shapeStars[2].y, x2: shapeStars[0].x, y2: shapeStars[0].y});
+                // Garis batang mic
+                shapeLines.push({x1: shapeStars[3].x, y1: shapeStars[3].y, x2: shapeStars[4].x, y2: shapeStars[4].y});
             }
+            
+            // Tambahkan bintang dan garis baru ke daftar global
+            stars.push(...shapeStars);
+            constellationLines.push(...shapeLines);
         }
     }
 
@@ -241,8 +278,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Gambar Rasi Bintang (dengan 'glow')
         ctx.strokeStyle = `rgba(160, 124, 91, 0.7)`; 
-        ctx.lineWidth = 1; 
-        ctx.shadowBlur = 4; 
+        ctx.lineWidth = 1.5; 
+        ctx.shadowBlur = 5; 
         ctx.shadowColor = MOKKA_ACCENT_COLOR; 
 
         constellationLines.forEach(line => {
@@ -252,7 +289,7 @@ document.addEventListener("DOMContentLoaded", function() {
             ctx.stroke();
         });
 
-        ctx.shadowBlur = 0; 
+        ctx.shadowBlur = 0; // Matikan glow untuk elemen lain
         
         // Update Bintang Statik
         stars.forEach(star => {
