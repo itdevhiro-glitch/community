@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const animatedElements = document.querySelectorAll(".scroll-fade");
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            // [FIX] 'isIntersecting' sudah benar
             if (entry.isIntersecting) {
                 entry.target.classList.add("is-visible");
                 observer.unobserve(entry.target); 
@@ -94,23 +93,19 @@ document.addEventListener("DOMContentLoaded", function() {
     let shootingStars = [];
     let constellationLines = [];
     const NUM_STARS = 400; 
-    const MAX_CONSTELLATION_SIZE = 5; // 1 pusat + 4 bintang
-    const CONSTELLATION_COUNT = 5; // Jumlah cluster rasi bintang
+    const MAX_CONSTELLATION_SIZE = 5; 
+    const CONSTELLATION_COUNT = 5; 
 
     // Ambil warna dari CSS
     const LATTE_FOAM_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--color-latte-foam').trim();
     const MOKKA_ACCENT_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--color-mokka-accent').trim();
     const NIGHT_SKY_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--color-night-sky-dark').trim();
 
-    // Fungsi untuk mengubah ukuran canvas
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        init(); 
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas(); // Panggil saat inisialisasi
 
+    // ---
+    // [PERBAIKAN] Definisi Kelas dipindahkan ke ATAS
+    // ---
+    
     // --- Kelas Bintang Statik ---
     class Star {
         constructor(x, y, radius, color) {
@@ -179,12 +174,23 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // --- Inisialisasi Bintang dan Rasi Bintang ---
+
+    // --- Fungsi Inisialisasi dan Animasi (Sekarang aman) ---
+    
+    // Fungsi untuk mengubah ukuran canvas
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        init(); 
+    }
+    
+    // Inisialisasi Bintang dan Rasi Bintang
     function init() {
         stars = [];
         constellationLines = [];
 
         // 1. Buat Bintang Statik
+        // SEKARANG AMAN: 'new Star()' dipanggil SETELAH 'class Star' didefinisikan
         for (let i = 0; i < NUM_STARS; i++) {
             let x = Math.random() * canvas.width;
             let y = Math.random() * canvas.height;
@@ -192,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function() {
             stars.push(new Star(x, y, radius, LATTE_FOAM_COLOR));
         }
         
-        // 2. Buat Rasi Bintang (Logika Baru: Cluster)
+        // 2. Buat Rasi Bintang
         let constellationPoints = stars.slice(0, CONSTELLATION_COUNT * MAX_CONSTELLATION_SIZE);
         for (let i = 0; i < CONSTELLATION_COUNT; i++) {
             let constellationGroup = [];
@@ -214,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // --- Fungsi Animasi Utama (Loop) ---
+    // Fungsi Animasi Utama (Loop)
     function animate() {
         requestAnimationFrame(animate);
         
@@ -222,10 +228,10 @@ document.addEventListener("DOMContentLoaded", function() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Gambar Rasi Bintang (dengan 'glow')
-        ctx.strokeStyle = `rgba(160, 124, 91, 0.7)`; // Mokka (opacity 70%)
-        ctx.lineWidth = 1; // 1 pixel
-        ctx.shadowBlur = 4; // Efek 'glow'
-        ctx.shadowColor = MOKKA_ACCENT_COLOR; // Warna glow
+        ctx.strokeStyle = `rgba(160, 124, 91, 0.7)`; 
+        ctx.lineWidth = 1; 
+        ctx.shadowBlur = 4; 
+        ctx.shadowColor = MOKKA_ACCENT_COLOR; 
 
         constellationLines.forEach(line => {
             ctx.beginPath();
@@ -234,9 +240,9 @@ document.addEventListener("DOMContentLoaded", function() {
             ctx.stroke();
         });
 
-        ctx.shadowBlur = 0; // Matikan glow untuk elemen lain
+        ctx.shadowBlur = 0; 
         
-        // Update Bintang Statik (kerlap-kerlip)
+        // Update Bintang Statik
         stars.forEach(star => {
             star.update();
         });
@@ -254,12 +260,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // --- Interaktivitas (Klik untuk Bintang Jatuh) ---
     canvas.addEventListener('click', function(event) {
+        // SEKARANG AMAN: 'new ShootingStar()' dipanggil SETELAH 'class ShootingStar' didefinisikan
         for(let i=0; i < 3; i++) {
             shootingStars.push(new ShootingStar(event.clientX, event.clientY));
         }
     });
 
-    // Panggil fungsi animasi (init() tidak perlu dipanggil di sini, sudah dipanggil oleh resizeCanvas)
-    animate();
+    // --- Mulai Semuanya ---
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas(); // Panggil saat inisialisasi
+    animate(); // Mulai loop animasi
     
 });
