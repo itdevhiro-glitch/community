@@ -49,18 +49,15 @@ body::before {
     animation: animatedGradient 20s ease infinite;
     filter: blur(150px); 
     opacity: 0.3; 
-    
-    /* [DIPERBARUI] Transisi untuk efek hover tim */
     transition: background-position 0.8s ease;
 }
 
-/* [BARU] Efek hover tim pada background */
 body.bg-shift-primary::before {
-    background-position: 0% 50%; /* Paksa ke sisi Ungu */
-    animation: none; /* Hentikan animasi default */
+    background-position: 0% 50%; 
+    animation: none; 
 }
 body.bg-shift-secondary::before {
-    background-position: 100% 50%; /* Paksa ke sisi Cyan */
+    background-position: 100% 50%; 
     animation: none;
 }
 
@@ -155,7 +152,7 @@ body.bg-shift-secondary::before {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    position: relative; /* [BARU] Dibutuhkan untuk scroll indicator */
+    position: relative; 
 }
 
 .hero h1 {
@@ -199,7 +196,6 @@ body.bg-shift-secondary::before {
     animation: none; 
 }
 
-/* [BARU] Style untuk Scroll Indicator */
 .scroll-indicator {
     position: absolute;
     bottom: 30px;
@@ -230,7 +226,6 @@ body.bg-shift-secondary::before {
 
 .activities-grid {
     display: grid;
-    /* [DIPERBARUI] Dibuat 3 kolom di desktop */
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
 }
@@ -246,9 +241,8 @@ body.bg-shift-secondary::before {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Efek Glow (Mouse-tracking) dari JS */
 .activity-card::before,
-.profile-card::before { /* [DIPERBARUI] Terapkan juga di profile card */
+.profile-card::before { 
     content: '';
     position: absolute;
     top: var(--mouse-y, 50%);
@@ -264,14 +258,14 @@ body.bg-shift-secondary::before {
 }
 
 .activity-card:hover,
-.profile-card:hover { /* [DIPERBARUI] Terapkan juga di profile card */
+.profile-card:hover { 
     transform: translateY(-10px);
     border-color: var(--color-primary);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .activity-card:hover::before,
-.profile-card:hover::before { /* [DIPERBARUI] Terapkan juga di profile card */
+.profile-card:hover::before { 
     opacity: 0.3;
 }
 
@@ -282,7 +276,7 @@ body.bg-shift-secondary::before {
 }
 .activity-card:nth-child(1) .icon { color: var(--color-primary); }
 .activity-card:nth-child(2) .icon { color: var(--color-secondary); }
-.activity-card:nth-child(3) .icon { color: var(--color-tertiary); } /* [BARU] Warna Ikon ke-3 */
+.activity-card:nth-child(3) .icon { color: var(--color-tertiary); } 
 
 .activity-card h3 {
     font-size: 1.5rem;
@@ -322,8 +316,8 @@ body.bg-shift-secondary::before {
     text-decoration: none; 
     color: var(--text-light); 
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative; /* [BARU] Untuk glow effect */
-    overflow: hidden; /* [BARU] Untuk glow effect */
+    position: relative; 
+    overflow: hidden; 
 }
 
 .profile-card img {
@@ -351,12 +345,10 @@ body.bg-shift-secondary::before {
     opacity: 0.8;
 }
 
-/* [DIPERBARUI] Hover effect dipindah ke atas (digabung) */
 #co-founder-card[href="#"] {
     cursor: default; 
 }
 
-/* [BARU] Efek glow berbeda untuk co-founder */
 .profile-card:nth-child(2):hover {
     border-color: var(--color-secondary);
 }
@@ -519,7 +511,7 @@ body.bg-shift-secondary::before {
 }
 
 .activity-card.fade-in:nth-child(2) { transition-delay: 0.2s; }
-.activity-card.fade-in:nth-child(3) { transition-delay: 0.4s; } /* [BARU] Delay kartu ke-3 */
+.activity-card.fade-in:nth-child(3) { transition-delay: 0.4s; }
 .profile-card.fade-in:nth-child(2) { transition-delay: 0.2s; }
 
 
@@ -537,8 +529,6 @@ body.bg-shift-secondary::before {
     .section-title, .cta-box h2 {
         font-size: 2rem;
     }
-
-    /* [DIPERBARUI] Grid aktivitas stack di mobile */
     .activities-grid {
         grid-template-columns: 1fr; 
     }
@@ -557,4 +547,51 @@ body.bg-shift-secondary::before {
         grid-template-columns: 1fr; 
         gap: 30px;
     }
+
+    /* === [ 10. OPTIMASI MOBILE BARU ] === */
+
+    /* 1. Matikan Aurora (terlalu berat) */
+    body::before {
+        display: none; 
+    }
+
+    /* 2. Matikan Efek Kaca (terlalu berat) */
+    .navbar.scrolled,
+    .activity-card,
+    .profile-card {
+        backdrop-filter: none; /* <-- Ini kuncinya */
+        /* background-color: var(--glass-bg) akan tetap ada, jadi solid */
+    }
+
+    /* 3. Matikan Indikator Scroll (opsional, tapi hemat) */
+    .scroll-indicator {
+        display: none;
+    }
+}
+
+
+/* === [ 10. EFEK POKEMON MELAYANG ] === */
+.floating-pokemon {
+    position: fixed;
+    pointer-events: none; 
+    opacity: 0; 
+    z-index: 999; 
+    animation:
+        fadeInOut forwards,
+        floatMovement 10s ease-in-out infinite alternate;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(0) scale(0.8); }
+    10% { opacity: 0.7; transform: translateY(-10px) scale(1); }
+    80% { opacity: 0.7; transform: translateY(10px) scale(1); }
+    100% { opacity: 0; transform: translateY(-20px) scale(0.8); }
+}
+
+@keyframes floatMovement {
+    0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+    25% { transform: translateY(-10px) translateX(5px) rotate(2deg); }
+    50% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+    75% { transform: translateY(10px) translateX(-5px) rotate(-2deg); }
+    100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
 }
