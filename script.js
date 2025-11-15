@@ -52,7 +52,9 @@ if (window.innerWidth > 768) {
     // --- [ TUGAS 4: EFEK BACKGROUND SHIFT SAAT HOVER TEAM ] ---
     const teamCards = document.querySelectorAll('.profile-card[data-bg-color]');
     teamCards.forEach(card => {
+        // Ini adalah baris yang diperbaiki (tidak ada tanda kutip ekstra)
         const colorClass = 'bg-shift-' + card.dataset.bgColor; 
+        
         card.addEventListener('mouseenter', () => {
             document.body.classList.add(colorClass);
         });
