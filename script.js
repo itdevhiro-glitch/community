@@ -1,3 +1,37 @@
+// --- [ TUGAS 3: ANIMASI ON-SCROLL (DIPINDAHKAN KE ATAS) ] ---
+// INI ADALAH SCRIPT PALING PENTING UNTUK MEMUNCULKAN KONTEN
+const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1 
+};
+function observerCallback(entries, observer) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+        }
+    });
+}
+const observer = new IntersectionObserver(observerCallback, observerOptions);
+const elementsToFadeIn = document.querySelectorAll('.fade-in');
+elementsToFadeIn.forEach(element => {
+    observer.observe(element);
+});
+
+
+// --- [ TUGAS 2: STATE NAVBAR SAAT SCROLL (TETAP JALAN DI SEMUA) ] ---
+const navbar = document.querySelector('.navbar');
+function handleScroll() {
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+}
+window.addEventListener('scroll', handleScroll);
+
+
 // --- [ TUGAS 1, 4, 5 HANYA UNTUK DESKTOP (OPTIMASI) ] ---
 // Cek jika ini bukan mobile (lebar layar lebih dari 768px)
 if (window.innerWidth > 768) {
@@ -18,10 +52,7 @@ if (window.innerWidth > 768) {
     // --- [ TUGAS 4: EFEK BACKGROUND SHIFT SAAT HOVER TEAM ] ---
     const teamCards = document.querySelectorAll('.profile-card[data-bg-color]');
     teamCards.forEach(card => {
-        
-        // [PERBAIKAN] Kesalahan ketik tanda kutip ekstra telah dihapus di baris ini
         const colorClass = 'bg-shift-' + card.dataset.bgColor; 
-        
         card.addEventListener('mouseenter', () => {
             document.body.classList.add(colorClass);
         });
@@ -68,38 +99,3 @@ if (window.innerWidth > 768) {
     }, Math.random() * (7000 - 3000) + 3000);
 
 } // --- [ AKHIR DARI BLOK 'HANYA DESKTOP' ] ---
-
-
-// --- [ TUGAS 2 & 3 (TETAP JALAN DI MOBILE) ] ---
-
-// --- [ TUGAS 2: STATE NAVBAR SAAT SCROLL ] ---
-const navbar = document.querySelector('.navbar');
-function handleScroll() {
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
-}
-window.addEventListener('scroll', handleScroll);
-
-
-// --- [ TUGAS 3: ANIMASI ON-SCROLL DENGAN INTERSECTION OBSERVER ] ---
-const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.1 
-};
-function observerCallback(entries, observer) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target);
-        }
-    });
-}
-const observer = new IntersectionObserver(observerCallback, observerOptions);
-const elementsToFadeIn = document.querySelectorAll('.fade-in');
-elementsToFadeIn.forEach(element => {
-    observer.observe(element);
-});
