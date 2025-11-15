@@ -3,186 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tachibana Scan Community - Professional Lounge</title>
-    <meta name="description" content="Bergabunglah dengan Tachibana Scan Community, lounge digital profesional untuk talenta kreatif Indonesia. Kami fokus pada kolaborasi Vokal, Voice Acting, dan Fan Art.">
-    <meta name="keywords" content="Tachibana Scan Community, komunitas kreatif, voice acting, vocal performance, fan art, kolaborasi seni, discord community, komunitas indonesia">
-    <meta name="robots" content="index, follow">
-
-    <meta property="og:title" content="Tachibana Scan Community - Professional Creative Lounge">
-    <meta property="og:description" content="Lounge digital profesional untuk talenta kreatif Indonesia. Fokus pada kolaborasi Vokal, Voice Acting, dan Fan Art.">
-    <meta property="og:type" content="website">
+    <title>Tachibana Scan Community - Digital Lounge</title>
     
-    <meta property="og:url" content="https://your-domain.com/">
-    <meta property="og:image" content="https://your-domain.com/about-us.png"> 
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Tachibana Scan Community - Professional Creative Lounge">
-    <meta name="twitter:description" content="Lounge digital profesional untuk talenta kreatif Indonesia. Fokus pada kolaborasi Vokal, Voice Acting, dan Fan Art.">
-    <meta name="twitter:image" content="https://your-domain.com/about-us.png">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <canvas id="starrySkyCanvas"></canvas>
     
-    <div id="menu-overlay"></div>
+    <div class="page-wrapper">
+        <nav class="navbar container">
+            <a href="#" class="navbar-logo">TACHIBANA SCAN</a>
+            <div class="navbar-links">
+                <a href="#activities">Aktivitas</a>
+                <a href="#team">Team</a>
+                <a href="#join">Gabung</a>
+            </div>
+            <a href="https://discord.gg/Xnngdu3w8G" target="_blank" class="cta-button-nav">
+                <i class="fab fa-discord"></i> Join
+            </a>
+        </nav>
 
-    <nav class="navbar">
-        <div class="container">
-            <a href="#" class="nav-logo">Tachibana Scan Community</a>
+        <header class="hero container fade-in">
+            <h1>WELCOME TO THE LOUNGE</h1>
+            <p>"Wadah Kolaborasi Profesional. Lounge digital bagi para kreator."</p>
             
-            <button id="mobile-menu-toggle" aria-label="Buka menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <a href="https://discord.gg/Xnngdu3w8G" target="_blank" class="hero-discord-btn fade-in">
+                <i class="fab fa-discord"></i> JOIN NOW
+            </a>
+        </header>
+
+        <section id="activities" class="container">
+            <div class="activities-grid">
+                <div class="activity-card fade-in">
+                    <div class="icon"><i class="fas fa-microphone-alt"></i></div>
+                    <h3>Vocal Performance</h3>
+                    <p>Mengasah teknik, harmoni, dan ekspresi vokal melalui cover lagu dan proyek kolaboratif.</p>
+                </div>
+
+                <div class="activity-card fade-in">
+                    <div class="icon"><i class="fas fa-theater-masks"></i></div>
+                    <h3>Voice Acting</h3>
+                    <p>Menghidupkan karakter. Dari dubbing, narasi, hingga drama suara orisinal.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="team" class="container">
+            <h2 class="section-title fade-in">Meet The Team</h2>
             
-            <ul class="nav-menu" id="mobile-menu">
-                <li><a href="#about">Tentang</a></li>
-                <li><a href="#divisions">Divisi</a></li>
-                <li><a href="#join" class="btn btn-nav">Gabung</a></li>
-            </ul>
-        </div>
-    </nav>
+            <div class="team-grid">
+                
+                <a href="https://reality.app/profile/5a761205?adj_t=8ogcewh_z9yhix5" target="_blank" class="profile-card fade-in">
+                    <img src="https://via.placeholder.com/300x300/7F5AF0/FFFFFF?text=Founder" alt="Founder Profile">
+                    <h3>Founder</h3>
+                    <p>Lihat Profil</p>
+                </a>
 
-    <header id="hero">
-        <div class="container">
-            <h1 class="hero-title">Komunitas Talenta Kreatif</h1>
-            <p class="hero-subtitle">
-                Kolaborasi 
-                <span class="icon">🎤</span> Vokal, 
-                <span class="icon">🎧</span> Suara, dan 
-                <span class="icon">🎨</span> Seni 
-                di Tachibana Scan Community.
-            </p>
-        </div>
-    </header>
+                <a href="#" class="profile-card fade-in" id="co-founder-card">
+                    <img src="https://via.placeholder.com/300x300/00E0FF/0A0A18?text=Co-Founder" alt="Co-Founder Profile">
+                    <h3>Co-Founder</h3>
+                    <p>(Segera Hadir)</p>
+                </a>
 
-    <section class="marquee-section">
-        <div class="marquee-track">
-            <span>Discord Community ✦</span>
-            <span>MUSIC 🎤</span>
-            <span>VOICE ACTOR 🎧</span>
-            <span>FAN ART 🎨</span>
-            <span>TACHIBANA SCAN ✧</span>
-            <span>Discord Community ✦</span>
-            <span>MUSIC 🎤</span>
-            <span>VOICE ACTOR 🎧</span>
-            <span>FAN ART 🎨</span>
-            <span>TACHIBANA SCAN ✧</span>
-        </div>
-    </section>
-
-    <main class="content-wrapper">
-
-        <section id="about" class="content-section scroll-fade">
-            <div class="container about-grid">
-                <img src="about-us.png" alt="Kolaborasi Tachibana Scan Community" class="about-image">
-                <div class="about-text">
-                    <span class="section-tagline">Tentang Kami</span>
-                    <h2 class="section-title">Wadah Kolaborasi Profesional</h2>
-                    <p class="section-text">
-                        Tachibana Scan Community adalah lounge digital bagi para kreator.
-                        Kami fokus pada pengembangan bakat di tiga pilar—Vocal Performance,
-                        Voice Acting, dan Fan Art—dengan lingkungan yang suportif dan profesional.
-                    </p>
-                    <a href="#join" class="btn btn-primary">Pelajari Lebih Lanjut</a>
-                </div>
             </div>
         </section>
 
-        <section id="stats" class="content-section scroll-fade">
-            <div class="container stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number stat-counter" data-target="40">0</div>
-                    <div class="stat-label">Talenta Aktif</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number stat-counter" data-target="3">0</div>
-                    <div class="stat-label">Divisi Utama</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number stat-counter" data-target="90">0</div>
-                    <div class="stat-label">Member server</div>
-                </div>
-            </div>
-        </section>
-
-        <section id="divisions" class="content-section scroll-fade">
-            <div class="container">
-                <span class="section-tagline">Divisi Kami</span>
-                <h2 class="section-title">Fokus Kreatif</h2>
-                <div class="division-grid">
-                    <div class="division-card">
-                        <h3><span class="icon">🎤</span> Vocal Performance</h3>
-                        <p>Mengasah teknik, harmoni, dan ekspresi vokal melalui cover lagu dan proyek kolaboratif.</p>
-                    </div>
-                    <div class="division-card">
-                        <h3><span class="icon">🎧</span> Voice Acting</h3>
-                        <p>Menghidupkan karakter. Dari *dubbing*, narasi, hingga drama suara orisinal.</p>
-                    </div>
-                    <div class="division-card">
-                        <h3><span class="icon">🎨</span> Fan Art & Desain</h3>
-                        <p>Galeri untuk para artisan digital, dari ilustrasi karakter hingga desain grafis komunitas.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="join" class="cta-section scroll-fade">
-            <div class="container">
-                <h2>Siap Berkolaborasi?</h2>
-                <p>Lounge kami di Discord selalu terbuka untuk talenta baru.</p>
-                <a href="https://discord.gg/Xnngdu3w8G" class="btn btn-primary" target="_blank">
-                    Masuk ke Discord Lounge
+        <section id="join" class="container">
+            <div class="cta-box fade-in">
+                <h2>Jadilah Bagian dari KreatOR</h2>
+                <p>Terhubung, berkolaborasi, dan kembangkan bakat Anda bersama kami di lounge.</p>
+                <a href="https://discord.gg/Xnngdu3w8G" target="_blank" class="cta-button-main">
+                    Gabung Tachibana Scan Sekarang
                 </a>
             </div>
         </section>
 
-    </main>
+        <footer class="footer">
+            <div class="container footer-grid">
+                
+                <div class="footer-column brand">
+                    <a href="#" class="footer-logo">Tachibana Scan Community</a>
+                    <p>Discord Server Komunitas Indonesia yang aktif dan profesional untuk talenta Vokal, Suara, dan Seni.</p>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Navigasi</h3>
+                    <ul>
+                        <li><a href="#activities">Aktivitas</a></li>
+                        <li><a href="#team">Team</a></li>
+                        <li><a href="#join">Bergabung</a></li>
+                    </ul>
+                </div>
 
-    <footer class="footer">
-        <div class="container footer-grid">
-            <div class="footer-column brand">
-                <a href="#" class="footer-logo">Tachibana Scan Community</a>
-                <p>Discord Server Komunitas Indonesia yang aktif dan profesional untuk talenta Vokal, Suara, dan Seni.</p>
+                <div class="footer-column">
+                    <h3>Sosial Media</h3>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/tachibana_scan_community?igsh=MWthcDdqejFhYmdsYw==" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="disabled-link" title="Twitter / X (Segera Hadir)"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="disabled-link" title="TikTok (Segera Hadir)"><i class="fab fa-tiktok"></i></a>
+                        <a href="#" class="disabled-link" title="YouTube (Segera Hadir)"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
             </div>
-            <div class="footer-column">
-                <h3>Navigasi</h3>
-                <ul>
-                    <li><a href="#about">Tentang Kami</a></li>
-                    <li><a href="#divisions">Divisi</a></li>
-                    <li><a href="#join">Bergabung</a></li>
-                </ul>
+            
+            <div class="footer-copyright">
+                <p>&copy; 2025 Tachibana Scan Community. A Digital Lounge for Creators.</p>
             </div>
-            <div class="footer-column">
-                <h3>Sosial Media</h3>
-                <ul>
-                    <li><a href="https://www.instagram.com/tachibana_scan_community?igsh=MWthcDdqejFhYmdsYw==" target="_blank">Instagram</a></li>
-                    
-                    <li><a href="#" class="disabled-link">Twitter / X (Segera Hadir)</a></li>
-                    <li><a href="#" class="disabled-link">TikTok (Segera Hadir)</a></li>
-                    <li><a href="#" class="disabled-link">YouTube (Segera Hadir)</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Tachibana Scan Community. Diramu dengan inspirasi.</p>
-        </div>
-    </footer>
+        </footer>
 
-    <audio id="music-player" src="Music.mp3" loop></audio>
-    <div id="music-toggle-btn" title="Putar Musik Ambient">
-        <span class="icon-music-on">🎵</span>
-        <span class="icon-music-off">🔇</span>
     </div>
 
     <script src="script.js"></script>
-
 </body>
 </html>
-
-
-
