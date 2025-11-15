@@ -1,12 +1,12 @@
 /* === [ PENGATURAN DASAR & TEMA ] === */
 :root {
-    --bg-dark-space: #0A0A18; /* Latar belakang angkasa */
-    --color-primary: #7F5AF0;   /* Ungu Neon */
-    --color-secondary: #00E0FF; /* Cyan Neon */
-    --color-tertiary: #2CB67D;  /* Hijau */
+    --bg-dark-space: #0A0A18; 
+    --color-primary: #7F5AF0;   
+    --color-secondary: #00E0FF; 
+    --color-tertiary: #2CB67D;  
     --text-light: #E0E0E0;
     --text-headers: #FFFFFF;
-    --glass-bg: rgba(10, 10, 24, 0.5); /* Warna kaca (lebih gelap) */
+    --glass-bg: rgba(10, 10, 24, 0.5); 
     --glass-border: rgba(255, 255, 255, 0.1);
     --discord-blue: #5865F2;
 }
@@ -49,7 +49,21 @@ body::before {
     animation: animatedGradient 20s ease infinite;
     filter: blur(150px); 
     opacity: 0.3; 
+    
+    /* [DIPERBARUI] Transisi untuk efek hover tim */
+    transition: background-position 0.8s ease;
 }
+
+/* [BARU] Efek hover tim pada background */
+body.bg-shift-primary::before {
+    background-position: 0% 50%; /* Paksa ke sisi Ungu */
+    animation: none; /* Hentikan animasi default */
+}
+body.bg-shift-secondary::before {
+    background-position: 100% 50%; /* Paksa ke sisi Cyan */
+    animation: none;
+}
+
 
 @keyframes animatedGradient {
     0% { background-position: 0% 50%; }
@@ -141,6 +155,7 @@ body::before {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: relative; /* [BARU] Dibutuhkan untuk scroll indicator */
 }
 
 .hero h1 {
@@ -159,12 +174,11 @@ body::before {
     margin: 0 auto 40px auto; 
 }
 
-/* Tombol Hero "JOIN NOW" disesuaikan paddingnya */
 .hero-discord-btn {
-    display: inline-block; /* <-- Ini yang membuatnya pas */
+    display: inline-block;
     background-color: var(--discord-blue); 
     color: var(--text-headers);
-    padding: 16px 24px; /* <-- Ini ukurannya */
+    padding: 16px 24px; 
     border-radius: 50px;
     text-decoration: none;
     font-size: 1.1rem; 
@@ -185,6 +199,29 @@ body::before {
     animation: none; 
 }
 
+/* [BARU] Style untuk Scroll Indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--text-light);
+    font-size: 1.5rem;
+    text-decoration: none;
+    opacity: 0.7;
+    animation: pulse-scroll 2s infinite;
+    transition: color 0.3s ease;
+}
+.scroll-indicator:hover {
+    color: var(--color-secondary);
+    opacity: 1;
+}
+@keyframes pulse-scroll {
+    0% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(10px); }
+    100% { transform: translateX(-50%) translateY(0); }
+}
+
 
 /* === [ 4. AKTIVITAS KOMUNITAS (KARTU KACA) ] === */
 #activities {
@@ -193,7 +230,8 @@ body::before {
 
 .activities-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* [DIPERBARUI] Dibuat 3 kolom di desktop */
+    grid-template-columns: repeat(3, 1fr);
     gap: 30px;
 }
 
@@ -208,7 +246,9 @@ body::before {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.activity-card::before {
+/* Efek Glow (Mouse-tracking) dari JS */
+.activity-card::before,
+.profile-card::before { /* [DIPERBARUI] Terapkan juga di profile card */
     content: '';
     position: absolute;
     top: var(--mouse-y, 50%);
@@ -223,13 +263,15 @@ body::before {
     filter: blur(30px);
 }
 
-.activity-card:hover {
+.activity-card:hover,
+.profile-card:hover { /* [DIPERBARUI] Terapkan juga di profile card */
     transform: translateY(-10px);
     border-color: var(--color-primary);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.activity-card:hover::before {
+.activity-card:hover::before,
+.profile-card:hover::before { /* [DIPERBARUI] Terapkan juga di profile card */
     opacity: 0.3;
 }
 
@@ -240,6 +282,7 @@ body::before {
 }
 .activity-card:nth-child(1) .icon { color: var(--color-primary); }
 .activity-card:nth-child(2) .icon { color: var(--color-secondary); }
+.activity-card:nth-child(3) .icon { color: var(--color-tertiary); } /* [BARU] Warna Ikon ke-3 */
 
 .activity-card h3 {
     font-size: 1.5rem;
@@ -279,6 +322,8 @@ body::before {
     text-decoration: none; 
     color: var(--text-light); 
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative; /* [BARU] Untuk glow effect */
+    overflow: hidden; /* [BARU] Untuk glow effect */
 }
 
 .profile-card img {
@@ -306,19 +351,19 @@ body::before {
     opacity: 0.8;
 }
 
-.profile-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    border-color: var(--color-primary);
-}
-
-.profile-card:nth-child(2):hover {
-    border-color: var(--color-secondary);
-}
-
+/* [DIPERBARUI] Hover effect dipindah ke atas (digabung) */
 #co-founder-card[href="#"] {
     cursor: default; 
 }
+
+/* [BARU] Efek glow berbeda untuk co-founder */
+.profile-card:nth-child(2):hover {
+    border-color: var(--color-secondary);
+}
+.profile-card:nth-child(2)::before {
+    background: radial-gradient(circle, var(--color-secondary), transparent 70%);
+}
+
 
 /* === [ 6. BAGIAN AJAKAN BERGABUNG (CTA) ] === */
 #join {
@@ -474,6 +519,7 @@ body::before {
 }
 
 .activity-card.fade-in:nth-child(2) { transition-delay: 0.2s; }
+.activity-card.fade-in:nth-child(3) { transition-delay: 0.4s; } /* [BARU] Delay kartu ke-3 */
 .profile-card.fade-in:nth-child(2) { transition-delay: 0.2s; }
 
 
@@ -491,6 +537,8 @@ body::before {
     .section-title, .cta-box h2 {
         font-size: 2rem;
     }
+
+    /* [DIPERBARUI] Grid aktivitas stack di mobile */
     .activities-grid {
         grid-template-columns: 1fr; 
     }
