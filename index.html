@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <link rel="stylesheet" href="style.css">
@@ -19,7 +19,9 @@
             <a href="#" class="navbar-logo">TACHIBANA SCAN</a>
             <div class="navbar-links">
                 <a href="#activities">Aktivitas</a>
-                <a href="#team">Team</a>
+                <a href="#details">Detail</a>
+                <a href="team.html">Team</a>
+                <a href="#" class="disabled-link" title="News (Segera Hadir)">News</a>
                 <a href="#join">Gabung</a>
             </div>
             <a href="https://discord.gg/Xnngdu3w8G" target="_blank" class="cta-button-nav">
@@ -28,7 +30,9 @@
         </nav>
 
         <header class="hero container fade-in">
-            <h1>WELCOME TO THE LOUNGE</h1>
+            <div class="text-3d-wrapper">
+                <h1 class="text-3d">WELCOME TO THE LOUNGE</h1>
+            </div>
             <p>"Wadah Kolaborasi Profesional. Lounge digital bagi para kreator."</p>
             
             <a href="https://discord.gg/Xnngdu3w8G" target="_blank" class="hero-discord-btn fade-in">
@@ -63,26 +67,66 @@
 
             </div>
         </section>
+        
+        <section id="details" class="container">
+            <h2 class="section-title fade-in">Kegiatan & Proyek</h2>
+            <div class="tab-container fade-in">
+                <div class="tab-header">
+                    <button class="tab-button active" data-tab="music">Musik & Vokal</button>
+                    <button class="tab-button" data-tab="va">Voice Acting</button>
+                    <button class="tab-button" data-tab="art">Visual Art</button>
+                </div>
+                <div class="tab-content-wrapper">
+                    
+                    <div id="music" class="tab-content active-tab">
+                        <div class="content-text">
+                            <h3>Project Cover Lagu</h3>
+                            <p>Kolaborasi vokal & instrumen untuk proyek cover lagu Jepang (J-Pop/Anime). Kesempatan unjuk gigi untuk komposer dan penyanyi.</p>
+                            <ul>
+                                <li>Latihan Vokal Intensif</li>
+                                <li>Workshop Mixing & Mastering</li>
+                                <li>Peluang Rilis di Channel Komunitas</li>
+                            </ul>
+                        </div>
+                        <div class="content-visual">
+                            <i class="fas fa-headphones-alt"></i>
+                        </div>
+                    </div>
 
-        <section id="team" class="container">
-            <h2 class="section-title fade-in">Meet The Team</h2>
-            
-            <div class="team-grid">
-                
-                <a href="https://reality.app/profile/5a761205?adj_t=8ogcewh_z9yhix5" target="_blank" class="profile-card fade-in" data-bg-color="primary">
-                    <img src="founder.png" alt="Founder Profile">
-                    <h3>Founder</h3>
-                    <p>Lihat Profil</p>
-                </a>
+                    <div id="va" class="tab-content">
+                         <div class="content-text">
+                            <h3>Drama Suara Orisinal</h3>
+                            <p>Tim Voice Acting memproduksi konten audio drama dan dubbing dari naskah orisinal. Kembangkan karakter suara Anda secara profesional.</p>
+                            <ul>
+                                <li>Latihan Dialog & Improvisasi</li>
+                                <li>Audisi Rutin untuk Proyek Baru</li>
+                                <li>Materi Eksklusif dari VA Senior</li>
+                            </ul>
+                        </div>
+                        <div class="content-visual">
+                            <i class="fas fa-volume-up"></i>
+                        </div>
+                    </div>
 
-                <a href="#" class="profile-card fade-in" id="co-founder-card" data-bg-color="secondary">
-                    <img src="https://via.placeholder.com/300x300/00E0FF/0A0A18?text=Co-Founder" alt="Co-Founder Profile">
-                    <h3>Co-Founder</h3>
-                    <p>(Segera Hadir)</p>
-                </a>
-
+                    <div id="art" class="tab-content">
+                         <div class="content-text">
+                            <h3>Desain Grafis Komunitas</h3>
+                            <p>Divisi Art bertanggung jawab atas visual branding, ilustrasi, dan aset grafis proyek-proyek komunitas. Waktunya membangun portofolio!</p>
+                            <ul>
+                                <li>Challenge Desain Mingguan</li>
+                                <li>Review Portofolio dari Desainer Ahli</li>
+                                <li>Pembuatan Aset Promosi</li>
+                            </ul>
+                        </div>
+                        <div class="content-visual">
+                            <i class="fas fa-pencil-ruler"></i>
+                        </div>
+                    </div>
+                    
+                </div>
             </div>
         </section>
+
 
         <section id="join" class="container">
             <div class="cta-box fade-in">
@@ -106,7 +150,8 @@
                     <h3>Navigasi</h3>
                     <ul>
                         <li><a href="#activities">Aktivitas</a></li>
-                        <li><a href="#team">Team</a></li>
+                        <li><a href="#details">Detail</a></li>
+                        <li><a href="team.html">Team</a></li>
                         <li><a href="#join">Bergabung</a></li>
                     </ul>
                 </div>
@@ -132,4 +177,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
