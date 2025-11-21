@@ -1,15 +1,13 @@
-/* === [ PENGATURAN DASAR & TEMA ] === */
 :root {
     --bg-dark-space: #0A0A18; 
-    --color-primary: #7F5AF0;   /* Ungu Cemerlang */
-    --color-secondary: #00E0FF; /* Biru Neon */
-    --color-tertiary: #2CB67D;  /* Hijau Mint */
+    --color-primary: #7F5AF0;
+    --color-secondary: #00E0FF;
+    --color-tertiary: #2CB67D;
     --text-light: #E0E0E0;
     --text-headers: #FFFFFF;
     --glass-bg: rgba(10, 10, 24, 0.85);
     --glass-border: rgba(255, 255, 255, 0.15);
     --discord-blue: #5865F2;
-    /* REDUCED SHADOW (Profesional Casual Look) */
     --shadow-deep: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
@@ -32,7 +30,6 @@ body {
     position: relative;
 }
 
-/* === [ 1. LATAR BELAKANG ANIMASI 'AURORA' ] === */
 body::before {
     content: '';
     position: fixed;
@@ -49,7 +46,6 @@ body::before {
     );
     background-size: 300% 300%;
     animation: animatedGradient 20s ease infinite;
-    /* REDUCED BLUR */
     filter: blur(100px); 
     opacity: 0.3; 
     transition: background-position 0.4s ease;
@@ -71,7 +67,6 @@ body.bg-shift-secondary::before {
     100% { background-position: 0% 50%; }
 }
 
-/* === [ KONTAINER & WRAPPER ] === */
 .page-wrapper {
     position: relative;
     z-index: 2;
@@ -83,7 +78,6 @@ body.bg-shift-secondary::before {
     margin: 0 auto;
 }
 
-/* === [ 2. NAVIGASI / HEADER - Neo-Glassmorphism ] === */
 .navbar {
     position: fixed; 
     top: 0;
@@ -101,7 +95,6 @@ body.bg-shift-secondary::before {
 .navbar.scrolled {
     background-color: var(--glass-bg);
     backdrop-filter: blur(20px); 
-    /* SOFTENED BORDER & SHADOW */
     border-bottom: 1px solid rgba(127, 90, 240, 0.2); 
     padding: 15px 5%; 
     box-shadow: 0 3px 15px rgba(0, 0, 0, 0.4); 
@@ -112,7 +105,6 @@ body.bg-shift-secondary::before {
     font-weight: 700;
     color: var(--text-headers);
     text-decoration: none;
-    /* LESS AGGRESSIVE GLOW */
     text-shadow: 0 0 5px var(--color-secondary);
 }
 
@@ -130,7 +122,6 @@ body.bg-shift-secondary::before {
 
 .navbar-links a:hover {
     color: var(--color-secondary);
-    /* LESS AGGRESSIVE GLOW */
     text-shadow: 0 0 5px var(--color-secondary);
 }
 
@@ -146,11 +137,10 @@ body.bg-shift-secondary::before {
 }
 
 .cta-button-nav:hover {
-    transform: scale(1.05); /* Slightly less aggressive scale */
-    box-shadow: 0 0 15px var(--color-primary); /* Slightly less aggressive shadow */
+    transform: scale(1.05);
+    box-shadow: 0 0 15px var(--color-primary);
 }
 
-/* === [ 3. HERO SECTION - Teks 3D dan Latar Partikel ] === */
 .hero {
     text-align: center;
     padding: 200px 0 150px 0; 
@@ -162,7 +152,6 @@ body.bg-shift-secondary::before {
     overflow: hidden;
 }
 
-/* Partikel Latar (Pseudo-element) */
 .hero::before {
     content: '';
     position: absolute;
@@ -185,7 +174,6 @@ body.bg-shift-secondary::before {
 .text-3d-wrapper {
     position: relative;
     z-index: 2; 
-    /* Reduced perspective for subtler 3D */
     perspective: 500px; 
     margin-bottom: 15px;
 }
@@ -195,18 +183,17 @@ body.bg-shift-secondary::before {
     font-weight: 800;
     color: var(--text-headers);
     line-height: 1.2;
-    /* Softened 3D effect */
     text-shadow: 
-        0 0 5px var(--color-primary), /* Reduced glow */
+        0 0 5px var(--color-primary),
         1px 1px 0 var(--color-primary),
-        3px 3px 0 var(--bg-dark-space), /* Smaller offset */
-        5px 5px 0 rgba(0, 0, 0, 0.3); /* Smaller offset and lighter shadow */
-    transform: rotateX(2deg) rotateY(0deg) translateZ(0); /* Less aggressive initial rotation */
+        3px 3px 0 var(--bg-dark-space),
+        5px 5px 0 rgba(0, 0, 0, 0.3);
+    transform: rotateX(2deg) rotateY(0deg) translateZ(0);
     transition: transform 0.5s ease;
 }
 
 .text-3d-wrapper:hover .text-3d {
-    transform: rotateX(0deg) rotateY(3deg) translateZ(5px); /* Less aggressive hover effect */
+    transform: rotateX(0deg) rotateY(3deg) translateZ(5px);
 }
 
 .hero p {
@@ -229,7 +216,6 @@ body.bg-shift-secondary::before {
     font-weight: 700;
     letter-spacing: 1px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    /* Reduced pulse glow for professional casual */
     box-shadow: 0 0 20px rgba(88, 101, 242, 0.4); 
     animation: pulse 2s infinite; 
     z-index: 2;
@@ -240,7 +226,7 @@ body.bg-shift-secondary::before {
 }
 
 .hero-discord-btn:hover {
-    transform: scale(1.05); /* Slightly less aggressive scale */
+    transform: scale(1.05);
     box-shadow: 0 0 30px rgba(88, 101, 242, 0.6);
     animation: none; 
 }
@@ -269,7 +255,6 @@ body.bg-shift-secondary::before {
 }
 
 
-/* === [ 4. AKTIVITAS KOMUNITAS (KARTU KACA) ] === */
 #activities {
     padding: 50px 0;
 }
@@ -291,33 +276,32 @@ body.bg-shift-secondary::before {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Reduced glow effect on hover for performance & style */
 .activity-card::before,
 .profile-card::before { 
     content: '';
     position: absolute;
     top: var(--mouse-y, 50%);
     left: var(--mouse-x, 50%);
-    width: 200px; /* Reduced size */
-    height: 200px; /* Reduced size */
-    background: radial-gradient(circle, var(--color-primary), transparent 80%); /* Tighter gradient */
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--color-primary), transparent 80%);
     transform: translate(-50%, -50%);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: -1;
-    filter: blur(20px); /* Reduced blur */
+    filter: blur(20px);
 }
 
 .activity-card:hover,
 .profile-card:hover { 
-    transform: translateY(-5px); /* Less aggressive lift */
+    transform: translateY(-5px);
     border-color: var(--color-secondary);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); /* Lighter shadow on hover */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
 }
 
 .activity-card:hover::before,
 .profile-card:hover::before { 
-    opacity: 0.2; /* Less visible glow */
+    opacity: 0.2;
 }
 
 .activity-card .icon {
@@ -336,7 +320,6 @@ body.bg-shift-secondary::before {
     margin-bottom: 10px;
 }
 
-/* === [ 5. BAGIAN TEAM / PROFILE CARD ] === */
 #team {
     padding: 50px 0;
 }
@@ -349,18 +332,15 @@ body.bg-shift-secondary::before {
     margin-bottom: 40px;
 }
 
-/* NEW: TEAM GRID STRUCTURES (DESKTOP) */
 .team-grid {
     display: grid;
-    gap: 30px; /* Default gap */
+    gap: 30px;
     margin: 0 auto; 
     max-width: 1000px;
 }
-/* Grid Khusus Top Management (3 Kolom) */
 .top-management-grid {
     grid-template-columns: repeat(3, 1fr); 
 }
-/* Grid Khusus Divisi (5 Kolom) */
 .division-grid {
     grid-template-columns: repeat(5, 1fr); 
     gap: 20px;
@@ -369,21 +349,16 @@ body.bg-shift-secondary::before {
     margin-top: 80px;
 }
 
-/* Staggering Animation (No change, it's efficient) */
-.top-management-grid .profile-card.fade-in:nth-child(1) { transition-delay: 0.0s; }
-.top-management-grid .profile-card.fade-in:nth-child(2) { transition-delay: 0.1s; }
-.top-management-grid .profile-card.fade-in:nth-child(3) { transition-delay: 0.2s; }
-.division-grid .profile-card.fade-in:nth-child(1) { transition-delay: 0.0s; }
-.division-grid .profile-card.fade-in:nth-child(2) { transition-delay: 0.05s; }
-.division-grid .profile-card.fade-in:nth-child(3) { transition-delay: 0.1s; }
-.division-grid .profile-card.fade-in:nth-child(4) { transition-delay: 0.15s; }
-.division-grid .profile-card.fade-in:nth-child(5) { transition-delay: 0.2s; }
-.division-grid .profile-card.fade-in:nth-child(6) { transition-delay: 0.25s; }
-.division-grid .profile-card.fade-in:nth-child(7) { transition-delay: 0.3s; }
-.division-grid .profile-card.fade-in:nth-child(8) { transition-delay: 0.35s; }
-.division-grid .profile-card.fade-in:nth-child(9) { transition-delay: 0.4s; }
-.division-grid .profile-card.fade-in:nth-child(10) { transition-delay: 0.45s; }
-/* End Staggering */
+.profile-card.fade-in:nth-child(1) { transition-delay: 0.0s; }
+.profile-card.fade-in:nth-child(2) { transition-delay: 0.05s; }
+.profile-card.fade-in:nth-child(3) { transition-delay: 0.1s; }
+.profile-card.fade-in:nth-child(4) { transition-delay: 0.15s; }
+.profile-card.fade-in:nth-child(5) { transition-delay: 0.2s; }
+.profile-card.fade-in:nth-child(6) { transition-delay: 0.25s; }
+.profile-card.fade-in:nth-child(7) { transition-delay: 0.3s; }
+.profile-card.fade-in:nth-child(8) { transition-delay: 0.35s; }
+.profile-card.fade-in:nth-child(9) { transition-delay: 0.4s; }
+.profile-card.fade-in:nth-child(10) { transition-delay: 0.45s; }
 
 
 .profile-card {
@@ -391,7 +366,7 @@ body.bg-shift-secondary::before {
     backdrop-filter: blur(15px);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
-    padding: 30px 15px; /* Reduced vertical padding for density */
+    padding: 30px 15px;
     text-align: center;
     text-decoration: none; 
     color: var(--text-light); 
@@ -401,18 +376,15 @@ body.bg-shift-secondary::before {
 }
 
 .profile-card img {
-    /* Reduced image size for density in grid */
     width: 100px;
     height: 100px;
     border-radius: 50%; 
     object-fit: cover;
-    margin-bottom: 10px; /* Reduced margin */
+    margin-bottom: 10px;
     border: 3px solid var(--color-primary); 
-    /* Added subtle box shadow for 'professional' feel */
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); 
 }
 
-/* --- Warna Border, Glow, dan Hover berdasarkan Data Attribute (KONSISTENSI) --- */
 .profile-card[data-bg-color="primary"] img { border-color: var(--color-primary); }
 .profile-card[data-bg-color="secondary"] img { border-color: var(--color-secondary); }
 .profile-card[data-bg-color="tertiary"] img { border-color: var(--color-tertiary); }
@@ -425,16 +397,22 @@ body.bg-shift-secondary::before {
 .profile-card[data-bg-color="secondary"]::before { background: radial-gradient(circle, var(--color-secondary), transparent 80%); }
 .profile-card[data-bg-color="tertiary"]::before { background: radial-gradient(circle, var(--color-tertiary), transparent 80%); }
 .profile-card[data-bg-color="discord"]::before { background: radial-gradient(circle, var(--discord-blue), transparent 80%); }
-/* --------------------------------------------------------------------------------- */
 
 .profile-card h3 {
-    font-size: 1.1rem; /* Smaller heading for density */
+    font-size: 1.1rem;
     color: var(--text-headers);
-    margin-bottom: 0px; /* Reduced margin */
+    margin-bottom: 0px;
 }
 
+.profile-card .member-name {
+    font-size: 1.15rem; /* Ukuran yang disesuaikan */
+    font-weight: 700;
+    color: var(--text-headers);
+    margin-bottom: 5px;
+    display: block;
+}
 .profile-card p {
-    font-size: 0.9rem; /* Smaller paragraph */
+    font-size: 0.9rem;
     color: var(--text-light);
     opacity: 0.8;
 }
@@ -444,7 +422,6 @@ body.bg-shift-secondary::before {
 }
 
 
-/* === [ NEW: 5. DETAIL AKTIVITAS DENGAN TAB ] === */
 #details {
     padding: 80px 0;
     margin-top: 50px;
@@ -488,7 +465,7 @@ body.bg-shift-secondary::before {
 
 .tab-button.active {
     background: var(--color-primary);
-    box-shadow: 0 0 10px rgba(127, 90, 240, 0.5); /* Reduced glow */
+    box-shadow: 0 0 10px rgba(127, 90, 240, 0.5);
     color: var(--text-headers);
 }
 
@@ -553,7 +530,6 @@ body.bg-shift-secondary::before {
 }
 
 
-/* === [ 6. BAGIAN AJAKAN BERGABUNG (CTA) ] === */
 #join {
     padding: 100px 0;
 }
@@ -563,7 +539,6 @@ body.bg-shift-secondary::before {
     padding: 60px 40px;
     border-radius: 16px;
     text-align: center;
-    /* Reduced glow */
     box-shadow: 0 0 30px rgba(127, 90, 240, 0.3);
 }
 
@@ -595,17 +570,16 @@ body.bg-shift-secondary::before {
 
 @keyframes pulse {
     0% { transform: scale(1); }
-    50% { transform: scale(1.03); } /* Reduced pulse effect */
+    50% { transform: scale(1.03); }
     100% { transform: scale(1); }
 }
 
 .cta-button-main:hover {
-    transform: scale(1.05); /* Reduced scale effect */
+    transform: scale(1.05);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     animation: none;
 }
 
-/* === [ 7. FOOTER BARU ] === */
 .footer {
     padding: 60px 0 0 0; 
     border-top: 1px solid var(--glass-border);
@@ -625,7 +599,7 @@ body.bg-shift-secondary::before {
     font-weight: 700;
     color: var(--text-headers);
     text-decoration: none;
-    text-shadow: 0 0 5px var(--color-secondary); /* Reduced glow */
+    text-shadow: 0 0 5px var(--color-secondary);
     margin-bottom: 15px;
     display: inline-block;
 }
@@ -676,7 +650,7 @@ body.bg-shift-secondary::before {
 
 .social-links a:hover {
     color: var(--color-secondary); 
-    transform: scale(1.1); /* Reduced scale */
+    transform: scale(1.1);
 }
 
 .disabled-link {
@@ -695,8 +669,6 @@ body.bg-shift-secondary::before {
 }
 
 
-/* === [ 8. UTILITAS ANIMASI ON-SCROLL ] === */
-/* Tidak perlu diubah, sudah efisien */
 .fade-in {
     opacity: 0;
     transform: translateY(30px);
@@ -708,15 +680,12 @@ body.bg-shift-secondary::before {
     transform: translateY(0);
 }
 
-/* Staggering for Activities */
 .activity-card.fade-in:nth-child(2) { transition-delay: 0.2s; }
 .activity-card.fade-in:nth-child(3) { transition-delay: 0.4s; }
 
 
-/* === [ 9. RESPONSIVE MEDIA QUERIES UNTUK MOBILE (MAX-WIDTH: 768PX) ] === */
 @media (max-width: 768px) {
     
-    /* NAVIGASI - Keren dan Ringkas */
     .navbar {
         justify-content: space-between; 
         padding: 15px 20px;
@@ -734,16 +703,17 @@ body.bg-shift-secondary::before {
     }
 
 
-    /* HERO - Lebih Padat */
     .hero {
         padding: 100px 0 60px 0; 
     }
     .text-3d {
         font-size: 2.5rem; 
-        /* Simplification for mobile performance */
         text-shadow: 
             0 0 3px var(--color-primary),
             1px 1px 0 var(--color-primary); 
+        transform: none;
+    }
+    .text-3d-wrapper:hover .text-3d {
         transform: none;
     }
     .hero p {
@@ -753,14 +723,13 @@ body.bg-shift-secondary::before {
     .hero-discord-btn {
         padding: 12px 24px;
         font-size: 0.9rem;
-        animation: pulse 1.5s infinite; /* Faster pulse for subtle movement */
+        animation: pulse 1.5s infinite;
         box-shadow: 0 0 10px rgba(88, 101, 242, 0.4);
     }
     .scroll-indicator {
         display: none;
     }
     
-    /* PADDING SECTION */
     #activities, #details, #join {
         padding: 40px 0;
     }
@@ -768,7 +737,6 @@ body.bg-shift-secondary::before {
         margin-top: 60px;
     }
 
-    /* AKTIVITAS & JUDUL */
     .section-title, .cta-box h2 {
         font-size: 1.8rem;
     }
@@ -777,29 +745,30 @@ body.bg-shift-secondary::before {
         gap: 20px;
     }
     
-    /* TEAM GRID (UX FIX: 2 kolom untuk kepadatan profesional) */
     .team-grid {
-        /* General team grid (hanya 2 kolom di mobile) */
         grid-template-columns: repeat(2, 1fr) !important; 
         gap: 15px;
         max-width: 100%; 
     }
     .profile-card {
-        padding: 20px 10px; /* Reduced padding */
+        padding: 20px 10px;
     }
     .profile-card img {
-        width: 80px; /* Reduced size */
-        height: 80px; /* Reduced size */
+        width: 80px;
+        height: 80px;
         margin-bottom: 5px;
     }
     .profile-card h3 {
-        font-size: 1rem; /* Adjusted for smaller cards */
+        font-size: 0.9rem;
+    }
+    .profile-card .member-name {
+    font-size: 0.9rem; /* Ukuran yang disesuaikan di mobile */
+    margin-bottom: 0px;
     }
     .profile-card p {
-        font-size: 0.8rem; /* Adjusted for smaller cards */
+        font-size: 0.75rem;
     }
 
-    /* TAB CONTENT (UX Fix: Scrolling tab header) */
     .tab-header {
         justify-content: flex-start;
         overflow-x: scroll; 
@@ -813,29 +782,23 @@ body.bg-shift-secondary::before {
         grid-template-columns: 1fr;
     }
     .content-visual {
-        display: none; /* Hide for cleaner mobile UI */
+        display: none;
     }
     
-    /* FOOTER */
     .footer-grid {
         grid-template-columns: 1fr; 
         gap: 20px;
     }
 
-    /* === [ OPTIMASI EFEK BERAT DI MOBILE ] === */
-    /* DISPLAY: NONE untuk elemen animasi berat */
     body::before { display: none; }
     .hero::before { display: none; }
 
-    /* MENGHILANGKAN BACKDROP-FILTER untuk performa */
     .navbar.scrolled,
     .activity-card,
     .profile-card,
     .tab-container {
         backdrop-filter: none;
-        /* Ganti dengan warna background yang solid tapi sedikit transparan */
         background-color: rgba(10, 10, 24, 0.95); 
-        /* Hapus shadow kartu yang tidak perlu */
         box-shadow: none !important;
     }
 }
