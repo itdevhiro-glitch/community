@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atlantis Event Control - Mocha Dashboard</title>
+    <title>Tachibana Event Control - Mocha Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -32,22 +32,38 @@
     
     <div id="loading-screen" class="fixed inset-0 flex flex-col items-center justify-center bg-mocha-dark z-50 transition-opacity duration-500">
         <i data-lucide="coffee" class="w-12 h-12 animate-spin-slow text-caramel-accent"></i>
-        <p class="mt-4 text-xl font-medium text-text-light">Memuat Sistem Kontrol Atlantis...</p>
+        <p class="mt-4 text-xl font-medium text-text-light">Memuat Sistem Kontrol Tachibana...</p>
     </div>
 
     <div id="auth-page" class="hidden min-h-screen flex items-center justify-center p-4">
         <div class="bg-latte-light p-8 md:p-10 rounded-xl shadow-2xl w-full max-w-md border-t-8 border-caramel-accent transform transition-all duration-300 scale-95 opacity-0" id="login-form-card">
             <div class="text-center mb-6">
                 <i data-lucide="coffee" class="w-8 h-8 text-caramel-accent mx-auto mb-2"></i>
-                <h2 class="text-3xl font-extrabold text-text-dark">Sistem Kontrol Atlantis</h2>
+                <h2 class="text-3xl font-extrabold text-text-dark">Sistem Kontrol Tachibana</h2>
                 <p class="text-sm text-mocha-highlight mt-1">Gunakan akun admin atau otentikasi tim.</p>
             </div>
 
-            <input type="email" id="login-email" placeholder="Email (cth: admin@atlantis.com)" class="p-3 w-full rounded-lg bg-gray-100 text-text-dark mb-4 border border-mocha-highlight focus:border-caramel-accent focus:bg-white transition duration-200">
-            <input type="password" id="login-password" placeholder="Password" class="p-3 w-full rounded-lg bg-gray-100 text-text-dark mb-6 border border-mocha-highlight focus:border-caramel-accent focus:bg-white transition duration-200">
+            <div id="login-form">
+                <input type="email" id="login-email" placeholder="Email (cth: admin@tachibana.com)" class="p-3 w-full rounded-lg bg-gray-100 text-text-dark mb-4 border border-mocha-highlight focus:border-caramel-accent focus:bg-white transition duration-200">
+                <input type="password" id="login-password" placeholder="Password" class="p-3 w-full rounded-lg bg-gray-100 text-text-dark mb-6 border border-mocha-highlight focus:border-caramel-accent focus:bg-white transition duration-200">
+                
+                <button id="login-button" class="caramel-button w-full px-4 py-3 rounded-lg font-bold shadow-md hover:shadow-lg">LOGIN ADMIN/TIM</button>
+            </div>
+
+            <div id="register-form" class="hidden mt-6 pt-6 border-t border-mocha-highlight">
+                <h3 class="text-xl font-bold text-text-dark mb-3 text-center">Registrasi Tim Baru</h3>
+                <input type="email" id="register-email" placeholder="Email untuk Registrasi" class="p-3 w-full rounded-lg bg-gray-100 text-text-dark mb-3 border border-mocha-highlight focus:border-caramel-accent focus:bg-white transition duration-200">
+                <input type="password" id="register-password" placeholder="Password (Min. 6 Karakter)" class="p-3 w-full rounded-lg bg-gray-100 text-text-dark mb-3 border border-mocha-highlight focus:border-caramel-accent focus:bg-white transition duration-200">
+                <select id="register-division" class="p-3 w-full rounded-lg bg-gray-100 text-text-dark mb-4 border border-mocha-highlight focus:border-caramel-accent focus:bg-white transition duration-200">
+                    <option value="music">Divisi Music</option>
+                    <option value="voiceact">Divisi Voice Act</option>
+                    <option value="art">Divisi Art</option>
+                </select>
+                <button id="register-button" class="caramel-button w-full px-4 py-3 rounded-lg font-bold shadow-md hover:shadow-lg">DAFTAR SEBAGAI TIM</button>
+            </div>
             
-            <button id="login-button" class="caramel-button w-full px-4 py-3 rounded-lg font-bold shadow-md hover:shadow-lg">LOGIN ADMIN</button>
-            <button id="anonymous-login-button" class="mt-4 w-full text-center text-sm text-caramel-accent hover:underline">Masuk sebagai Tim Biasa &rarr;</button>
+            <button id="toggle-register-button" class="mt-4 w-full text-center text-sm text-caramel-accent hover:underline">Belum Punya Akun? Daftar Tim &rarr;</button>
+            <button id="anonymous-login-button" class="mt-2 w-full text-center text-sm text-mocha-highlight hover:underline">Masuk sebagai Tamu (Akses Terbatas) &rarr;</button>
 
             <p id="auth-error-message" class="text-red-500 text-sm mt-4 text-center hidden"></p>
         </div>
@@ -59,7 +75,7 @@
         <aside id="sidebar" class="sidebar bg-latte-darker w-16 md:w-64 space-y-6 py-7 px-2 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-300 ease-in-out z-30 shadow-lg">
             <div class="flex items-center justify-center md:justify-start px-4">
                 <i data-lucide="gem" class="w-6 h-6 text-caramel-accent"></i>
-                <h1 class="text-xl font-extrabold ml-3 hidden md:inline text-latte-light">ATLANTIS</h1>
+                <h1 class="text-xl font-extrabold ml-3 hidden md:inline text-latte-light">TACHIBANA</h1>
             </div>
 
             <div class="px-4 hidden md:block border-b border-mocha-highlight pb-4">
