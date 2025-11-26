@@ -2,18 +2,30 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getDatabase, ref, onValue, set, push, update, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-// --- GLOBAL VARIABLES (Provided by Canvas) ---
+// --- GLOBAL VARIABLES ---
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-let firebaseConfig = {};
+
+// --- FIREBASE CONFIGURATION (MENGGUNAKAN KONFIGURASI VALID ANDA) ---
+let firebaseConfig = {
+    apiKey: "AIzaSyDNEanSUXhKhYlw5AMwVZO7djAmMEpS9IA",
+    authDomain: "community-f7d47.firebaseapp.com",
+    databaseURL: "https://community-f7d47-default-rtdb.firebaseio.com",
+    projectId: "community-f7d47",
+    storageBucket: "community-f7d47.firebasestorage.app",
+    messagingSenderId: "959569995284",
+    appId: "1:959569995284:web:ec4150d0d87af1528a6901",
+    measurementId: "G-3K3D2HMQE7"
+};
+
 try {
-    firebaseConfig = JSON.parse(__firebase_config);
+    // Override dengan variabel global jika ada (dari lingkungan Canvas)
+    if (typeof __firebase_config !== 'undefined') {
+        firebaseConfig = JSON.parse(__firebase_config);
+    }
 } catch (e) {
     console.error("Failed to parse firebase config:", e);
-    // Fallback config (if needed)
-    firebaseConfig = {
-        apiKey: "dummy-key", authDomain: "dummy.firebaseapp.com", projectId: "dummy"
-    };
 }
+
 const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
 // --- FIREBASE INITIALIZATION ---
@@ -26,7 +38,7 @@ let currentUserId = null;
 let currentUserRole = null;
 let isAuthReady = false;
 let allUsersData = {}; // Cache for user list
-const ROOT_ADMIN_EMAIL = "admin@tachibana.com"; // Changed from atlantis.com
+const ROOT_ADMIN_EMAIL = "admin@tachibana.com";
 const ROLES = ['root', 'owner', 'co-owner', 'leader-music', 'leader-voiceact', 'leader-art', 'member-music', 'member-voiceact', 'member-art'];
 const DIVISIONS = {
     'music': 'Music',
@@ -42,10 +54,10 @@ const loginFormCard = document.getElementById('login-form-card');
 const authErrorMessage = document.getElementById('auth-error-message');
 const loginButton = document.getElementById('login-button');
 const anonymousLoginButton = document.getElementById('anonymous-login-button');
-const registerButton = document.getElementById('register-button'); // New
-const toggleRegisterButton = document.getElementById('toggle-register-button'); // New
-const loginForm = document.getElementById('login-form'); // New
-const registerForm = document.getElementById('register-form'); // New
+const registerButton = document.getElementById('register-button'); 
+const toggleRegisterButton = document.getElementById('toggle-register-button'); 
+const loginForm = document.getElementById('login-form'); 
+const registerForm = document.getElementById('register-form'); 
 
 // --- INITIAL UI SETUP ---
 const showAuthPage = () => {
