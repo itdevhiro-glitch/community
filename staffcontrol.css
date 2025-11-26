@@ -1,0 +1,102 @@
+/* Custom styles for Mocha Latte theme */
+:root {
+    /* Color Palette */
+    --mocha-dark: #3C2A21;           /* Deep Coffee Background */
+    --latte-light: #F5E8C7;          /* Creamy Card/Container Background */
+    --latte-darker: #4E3C32;         /* Sidebar Background */
+    --caramel-accent: #8D6E63;       /* Primary Accent (Buttons, Highlights) */
+    --text-dark: #3C2A21;            /* Text on Creamy Backgrounds */
+    --text-light: #EFEBE9;           /* Text on Dark Backgrounds */
+    --mocha-highlight: #A1887F;      /* Secondary Highlight */
+
+    /* Global Fonts */
+    font-family: 'Inter', sans-serif;
+}
+
+/* Tailwind Customization based on CSS variables */
+.bg-mocha-dark { background-color: var(--mocha-dark); }
+.bg-latte-light { background-color: var(--latte-light); }
+.bg-latte-darker { background-color: var(--latte-darker); }
+.text-text-dark { color: var(--text-dark); }
+.text-text-light { color: var(--text-light); }
+.text-caramel-accent { color: var(--caramel-accent); }
+.text-mocha-highlight { color: var(--mocha-highlight); }
+
+/* Custom Component Styles */
+.sidebar {
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.4);
+}
+.chat-container, .card {
+    background-color: var(--latte-light);
+    color: var(--text-dark); /* Ensure text is dark on light background */
+}
+.card {
+    border: 1px solid var(--mocha-highlight);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25); /* Stronger shadow */
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-2px);
+}
+
+
+/* Scrollbar (Themed) */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--caramel-accent); /* Use accent color for better contrast */
+    border-radius: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: var(--latte-darker);
+}
+
+/* Accent Button */
+.caramel-button {
+    background-color: var(--caramel-accent);
+    transition: background-color 0.2s, transform 0.1s;
+    color: white;
+    font-weight: 700;
+}
+.caramel-button:hover {
+    background-color: #7A5C50; /* Slightly darker shade of caramel */
+    transform: translateY(-1px);
+}
+
+/* Modal transition */
+.modal {
+    transition: opacity 0.3s ease-in-out;
+}
+.modal-content {
+    transform: translateY(20px);
+    transition: transform 0.3s ease-in-out;
+}
+.modal.open .modal-content {
+    transform: translateY(0);
+}
+
+/* Progress Bar (Themed) */
+.progress-bar-bg {
+    background-color: #D7C3B7; /* Light brown for the track */
+}
+.progress-bar-fill {
+    transition: width 0.5s ease-in-out;
+    background-color: var(--caramel-accent);
+}
+
+/* Input Fields */
+input:focus, select:focus {
+    border-color: var(--caramel-accent) !important;
+    box-shadow: 0 0 0 1px var(--caramel-accent) !important;
+    outline: none;
+}
+
+/* Custom Spin for Loading Icon */
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+    animation: spin-slow 2s linear infinite;
+}
