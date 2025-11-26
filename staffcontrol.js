@@ -26,7 +26,7 @@ let currentUserId = null;
 let currentUserRole = null;
 let isAuthReady = false;
 let allUsersData = {}; // Cache for user list
-const ROOT_ADMIN_EMAIL = "admin@atlantis.com";
+const ROOT_ADMIN_EMAIL = "admin@tachibana.com"; // Changed from atlantis.com
 const ROLES = ['root', 'owner', 'co-owner', 'leader-music', 'leader-voiceact', 'leader-art', 'member-music', 'member-voiceact', 'member-art'];
 const DIVISIONS = {
     'music': 'Music',
@@ -42,6 +42,10 @@ const loginFormCard = document.getElementById('login-form-card');
 const authErrorMessage = document.getElementById('auth-error-message');
 const loginButton = document.getElementById('login-button');
 const anonymousLoginButton = document.getElementById('anonymous-login-button');
+const registerButton = document.getElementById('register-button'); // New
+const toggleRegisterButton = document.getElementById('toggle-register-button'); // New
+const loginForm = document.getElementById('login-form'); // New
+const registerForm = document.getElementById('register-form'); // New
 
 // --- INITIAL UI SETUP ---
 const showAuthPage = () => {
@@ -152,6 +156,78 @@ const handleLogin = async () => {
     }
 };
 
+// New Registration Handler
+const handleRegistration = async () => {
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    const division = document.getElementById('register-division').value;
+    const role = `member-${division}`;
+
+    if (!email || !password) {
+        showModal('Error Pendaftaran', 'Email dan password harus diisi.', () => {}, false);
+        return;
+    }
+
+    if (password.length < 6) {
+        showModal('Error Pendaftaran', 'Password minimal harus 6 karakter.', () => {}, false);
+        return;
+    }
+
+    try {
+        // 1. Create user with Email/Password
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const newUserId = userCredential.user.uid;
+
+        // 2. Set default role in RTDB for new user
+        const userRoleRef = ref(db, `artifacts/${appId}/users/${newUserId}/config/role`);
+        await set(userRoleRef, role);
+
+        // 3. Set profile data in RTDB
+        const userDataRef = ref(db, `artifacts/${appId}/users/${newUserId}/profile`);
+        await set(userDataRef, { email: email, createdAt: serverTimestamp() });
+
+        // Auto-login or show success message
+        showModal('Registrasi Sukses!', `Akun ${email} berhasil didaftarkan sebagai **${role.toUpperCase()}**. Silakan login.`, () => {
+            // Clear registration form and switch to login
+            document.getElementById('register-email').value = '';
+            document.getElementById('register-password').value = '';
+            toggleRegistrationForm();
+        }, false);
+
+    } catch (e) {
+        console.error("Error registering user: ", e);
+        let message = "Gagal mendaftarkan pengguna.";
+        if (e.code === 'auth/email-already-in-use') {
+            message = "Email sudah terdaftar. Silakan login atau gunakan email lain.";
+        } else if (e.code === 'auth/weak-password') {
+             message = "Password terlalu lemah (minimal 6 karakter).";
+        }
+        showModal('Error Pendaftaran', message, () => {}, false);
+    }
+};
+
+// New function to toggle registration form
+const toggleRegistrationForm = () => {
+    if (registerForm.classList.contains('hidden')) {
+        // Show Register
+        loginForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+        toggleRegisterButton.textContent = 'Sudah Punya Akun? Login Tim &rarr;';
+        document.getElementById('login-email').value = '';
+        document.getElementById('login-password').value = '';
+        authErrorMessage.classList.add('hidden');
+    } else {
+        // Show Login
+        registerForm.classList.add('hidden');
+        loginForm.classList.remove('hidden');
+        toggleRegisterButton.textContent = 'Belum Punya Akun? Daftar Tim &rarr;';
+        document.getElementById('register-email').value = '';
+        document.getElementById('register-password').value = '';
+        authErrorMessage.classList.add('hidden');
+    }
+};
+
+
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         currentUserId = user.uid;
@@ -171,7 +247,10 @@ onAuthStateChanged(auth, async (user) => {
             } else if (!user.isAnonymous) {
                 // Default role for new *non-anonymous* users: Member Divisi Music
                 currentUserRole = 'member-music';
-                await set(userRoleRef, currentUserRole);
+                // Only set if this isn't the root admin (which is handled above)
+                if (user.email !== ROOT_ADMIN_EMAIL) {
+                    await set(userRoleRef, currentUserRole);
+                }
             } else {
                 // Default role for anonymous users
                 currentUserRole = 'member-music';
@@ -217,6 +296,12 @@ document.getElementById('login-password').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleLogin();
 });
 anonymousLoginButton.addEventListener('click', handleAnonAuth);
+// New registration listeners
+toggleRegisterButton.addEventListener('click', toggleRegistrationForm);
+registerButton.addEventListener('click', handleRegistration);
+document.getElementById('register-password').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleRegistration();
+});
 
 
 // --- PAGE RENDERING & NAVIGATION ---
@@ -225,7 +310,7 @@ const pageContent = document.getElementById('page-content');
 
 // --- TEMPLATES ---
 const dashboardTemplate = () => `
-    <h2 class="text-3xl font-extrabold mb-8 text-text-light border-b border-caramel-accent pb-2">Dashboard Kontrol Event</h2>
+    <h2 class="text-3xl font-extrabold mb-8 text-text-light border-b border-caramel-accent pb-2">Dashboard Kontrol Event Tachibana</h2>
     
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="card p-6 rounded-xl shadow-lg border-t-4 border-caramel-accent">
@@ -257,7 +342,7 @@ const dashboardTemplate = () => `
 `;
 
 const chatTemplate = () => `
-    <h2 class="text-3xl font-extrabold mb-6 text-text-light border-b border-caramel-accent pb-2">Chat Tim Real-time</h2>
+    <h2 class="text-3xl font-extrabold mb-6 text-text-light border-b border-caramel-accent pb-2">Chat Tim Real-time Tachibana</h2>
     <div class="chat-container h-[75vh] flex flex-col rounded-xl shadow-2xl overflow-hidden">
         <div id="chat-messages" class="flex-1 overflow-y-auto p-4 md:p-6 scrollbar-thin space-y-4 bg-latte-light">
             <p class="text-center text-mocha-highlight">Memuat pesan...</p>
@@ -270,7 +355,7 @@ const chatTemplate = () => `
 `;
 
 const eventsTemplate = () => `
-    <h2 class="text-3xl font-extrabold mb-8 text-text-light border-b border-caramel-accent pb-2">Event dan Manajemen Tugas</h2>
+    <h2 class="text-3xl font-extrabold mb-8 text-text-light border-b border-caramel-accent pb-2">Event dan Manajemen Tugas Tachibana</h2>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         
         <div class="lg:col-span-1 card p-6 rounded-xl shadow-lg">
@@ -295,7 +380,7 @@ const eventsTemplate = () => `
 `;
 
 const financeTemplate = () => `
-    <h2 class="text-3xl font-extrabold mb-8 text-text-light border-b border-caramel-accent pb-2">Keuangan, Sponsor, & Vendor</h2>
+    <h2 class="text-3xl font-extrabold mb-8 text-text-light border-b border-caramel-accent pb-2">Keuangan, Sponsor, & Vendor Tachibana</h2>
     
     <div class="card p-6 rounded-xl shadow-lg mb-6">
         <h3 class="text-2xl font-bold mb-4 text-text-dark flex justify-between items-center">
@@ -342,7 +427,7 @@ const financeTemplate = () => `
 `;
 
 const usersTemplate = () => `
-    <h2 class="text-3xl font-extrabold mb-8 text-text-light border-b border-caramel-accent pb-2">Manajemen Pengguna (Admin)</h2>
+    <h2 class="text-3xl font-extrabold mb-8 text-text-light border-b border-caramel-accent pb-2">Manajemen Pengguna Tachibana (Admin)</h2>
     
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
@@ -472,7 +557,7 @@ const canManageFinance = () => {
     return currentUserRole && (['root', 'owner', 'co-owner'].includes(currentUserRole));
 };
 const getDivisionFromRole = () => {
-    if (currentUserRole.includes('-')) {
+    if (currentUserRole && currentUserRole.includes('-')) {
         return currentUserRole.split('-')[1];
     }
     return null; // For high-level roles
