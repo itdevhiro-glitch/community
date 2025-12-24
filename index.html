@@ -3,177 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tachibana Scan Community - Digital Lounge</title>
+    <title>MAINTENANCE - TACHIBANA SCAN</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-dark: #0f172a; /* Warna gelap tachi */
+            --accent-primary: #38bdf8; /* Biru tachi */
+            --warning: #facc15; /* Kuning maintenance */
+            --text-main: #f8fafc;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background Stripes (Garis Perbaikan) */
+        .maintenance-stripe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: repeating-linear-gradient(
+                45deg,
+                var(--warning),
+                var(--warning) 20px,
+                #000 20px,
+                #000 40px
+            );
+            z-index: 10;
+        }
+
+        .bottom-stripe { top: auto; bottom: 0; }
+
+        /* Gear Animation */
+        .gear-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .gear {
+            font-size: 80px;
+            color: var(--accent-primary);
+            animation: spin 4s linear infinite;
+            filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.4));
+        }
+
+        .gear.small {
+            font-size: 40px;
+            position: absolute;
+            top: -10px;
+            right: -20px;
+            animation: spin-reverse 3s linear infinite;
+            color: var(--warning);
+        }
+
+        /* Content */
+        .container {
+            text-align: center;
+            padding: 20px;
+            z-index: 5;
+        }
+
+        .badge {
+            background: var(--warning);
+            color: #000;
+            padding: 5px 15px;
+            font-weight: 800;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            -webkit-text-stroke: 1px var(--accent-primary);
+            color: transparent;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--accent-primary);
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        p {
+            max-width: 500px;
+            margin: 0 auto 40px;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        /* Buttons */
+        .btn-box {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-main {
+            background: var(--accent-primary);
+            color: var(--bg-dark);
+        }
+
+        .btn-main:hover {
+            background: #fff;
+            transform: scale(1.05);
+        }
+
+        .btn-discord {
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        .btn-discord:hover {
+            background: #5865F2; /* Discord Color */
+            border-color: #5865F2;
+        }
+
+        /* Animations */
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+    </style>
 </head>
 <body>
-    
-    <div class="page-wrapper">
-        <nav class="navbar container">
-            <a href="#" class="navbar-logo">TACHIBANA SCAN</a>
-            <div class="navbar-links">
-                <a href="#activities">Aktivitas</a>
-                <a href="#details">Detail</a>
-                <a href="team.html">Team</a>
-                <a href="#" class="disabled-link" title="News (Segera Hadir)">News</a>
-                <a href="#join">Gabung</a>
-            </div>
-            <a href="https://discord.gg/Xnngdu3w8G" target="_blank" class="cta-button-nav">
-                <i class="fab fa-discord"></i> Join
-            </a>
-        </nav>
 
-        <header class="hero container fade-in">
-            <div class="text-3d-wrapper">
-                <h1 class="text-3d">WELCOME TO THE LOUNGE</h1>
-            </div>
-            <p>"Space santai buat para kreator yang pengen grow bareng dan dapet vibes positif."</p>
-            
-            <a href="https://discord.gg/Xnngdu3w8G" target="_blank" class="hero-discord-btn fade-in">
-                <i class="fab fa-discord"></i> JOIN NOW
-            </a>
+    <div class="maintenance-stripe"></div>
+    <div class="maintenance-stripe bottom-stripe"></div>
 
-            <a href="#activities" class="scroll-indicator fade-in">
-                <i class="fas fa-chevron-down"></i>
-            </a>
-        </header>
+    <div class="container">
+        <div class="gear-container">
+            <i class="fas fa-cog gear"></i>
+            <i class="fas fa-cog gear small"></i>
+        </div>
 
-        <section id="activities" class="container">
-            <div class="activities-grid">
-                
-                <div class="activity-card fade-in">
-                    <div class="icon"><i class="fas fa-microphone-alt"></i></div>
-                    <h3>Vocal Performance</h3>
-                    <p>Tempat ngulik suara, harmonisasi, dan bikin cover yang vibes-nya dapet banget.</p>
-                </div>
-                
-                <div class="activity-card fade-in">
-                    <div class="icon"><i class="fas fa-theater-masks"></i></div>
-                    <h3>Voice Acting</h3>
-                    <p>Buat kamu yang suka kasih nyawa ke karakter—dari dubbing, narasi, sampai audio drama.</p>
-                </div>
-
-                <div class="activity-card fade-in">
-                    <div class="icon"><i class="fas fa-palette"></i></div>
-                    <h3>Fan Art & Desain</h3>
-                    <p>Rumahnya para artist digital buat share karya, ilustrasi, dan desain kece.</p>
-                </div>
-
-            </div>
-        </section>
+        <div class="badge">System Offline</div>
+        <h1>UNDER<br>MAINTENANCE</h1>
+        <h2>WE ARE TUNING THE VIBES</h2>
         
-        <section id="details" class="container">
-            <h2 class="section-title fade-in">Kegiatan & Proyek</h2>
-            <div class="tab-container fade-in">
-                <div class="tab-header">
-                    <button class="tab-button active" data-tab="music">Musik & Vokal</button>
-                    <button class="tab-button" data-tab="va">Voice Acting</button>
-                    <button class="tab-button" data-tab="art">Visual Art</button>
-                </div>
-                <div class="tab-content-wrapper">
-                    
-                    <div id="music" class="tab-content active-tab">
-                        <div class="content-text">
-                            <h3>Project Cover Lagu</h3>
-                            <p>Kolaborasi vokal & instrumen untuk proyek cover lagu Jepang (J-Pop/Anime). Kesempatan unjuk gigi untuk komposer dan penyanyi.</p>
-                            <ul>
-                                <li>Latihan Vokal Intensif</li>
-                                <li>Workshop Mixing & Mastering</li>
-                                <li>Peluang Rilis di Channel Komunitas</li>
-                            </ul>
-                        </div>
-                        <div class="content-visual">
-                            <i class="fas fa-headphones-alt"></i>
-                        </div>
-                    </div>
+        <p>
+            Digital Lounge kami sedang diperbarui untuk memberikan performa vokal, desain, dan audio drama yang lebih baik. Mohon tunggu sebentar ya, Kreator!
+        </p>
 
-                    <div id="va" class="tab-content">
-                         <div class="content-text">
-                            <h3>Drama Suara Orisinal</h3>
-                            <p>Tim Voice Acting memproduksi konten audio drama dan dubbing dari naskah orisinal. Kembangkan karakter suara Anda secara profesional.</p>
-                            <ul>
-                                <li>Latihan Dialog & Improvisasi</li>
-                                <li>Audisi Rutin untuk Proyek Baru</li>
-                                <li>Materi Eksklusif dari VA Senior</li>
-                            </ul>
-                        </div>
-                        <div class="content-visual">
-                            <i class="fas fa-volume-up"></i>
-                        </div>
-                    </div>
-
-                    <div id="art" class="tab-content">
-                         <div class="content-text">
-                            <h3>Desain Grafis Komunitas</h3>
-                            <p>Divisi Art bertanggung jawab atas visual branding, ilustrasi, dan aset grafis proyek-proyek komunitas. Waktunya membangun portofolio!</p>
-                            <ul>
-                                <li>Challenge Desain Mingguan</li>
-                                <li>Review Portofolio dari Desainer Ahli</li>
-                                <li>Pembuatan Aset Promosi</li>
-                            </ul>
-                        </div>
-                        <div class="content-visual">
-                            <i class="fas fa-pencil-ruler"></i>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-        </section>
-
-
-        <section id="join" class="container">
-            <div class="cta-box fade-in">
-                <h2>Jadilah Bagian dari Kreator</h2>
-                <p>Gabung bareng kreator lain, ikutan project, dan grow bareng komunitas!</p>
-                <a href="https://discord.gg/Xnngdu3w8G" target="_blank" class="cta-button-main">
-                    Gabung Tachibana Scan Sekarang
-                </a>
-            </div>
-        </section>
-
-        <footer class="footer">
-            <div class="container footer-grid">
-                
-                <div class="footer-column brand">
-                    <a href="#" class="footer-logo">Tachibana Scan Community</a>
-                    <p>Discord Server Komunitas Indonesia yang aktif dan profesional untuk talenta Vokal, Suara, dan Seni.</p>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Navigasi</h3>
-                    <ul>
-                        <li><a href="#activities">Aktivitas</a></li>
-                        <li><a href="#details">Detail</a></li>
-                        <li><a href="team.html">Team</a></li>
-                        <li><a href="#join">Bergabung</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-column">
-                    <h3>Sosial Media</h3>
-                    <div class="social-links">
-                        <a href="https://www.instagram.com/tachibana_scan_community?igsh=MWthcDdqejFhYmdsYw==" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="disabled-link" title="Twitter / X (Segera Hadir)"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="disabled-link" title="TikTok (Segera Hadir)"><i class="fab fa-tiktok"></i></a>
-                        <a href="#" class="disabled-link" title="YouTube (Segera Hadir)"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="footer-copyright">
-                <p>&copy; 2025 Tachibana Scan Community. A Digital Lounge for Creators.</p>
-            </div>
-        </footer>
-
+        <div class="btn-box">
+            <a href="https://discord.gg/Xnngdu3w8G" target="_blank" class="btn btn-discord">
+                <i class="fab fa-discord"></i> Join Discord
+            </a>
+            <button class="btn btn-main" onclick="location.reload()">
+                <i class="fas fa-redo"></i> Cek Web
+            </button>
+        </div>
     </div>
 
-    <script src="script.js"></script>
 </body>
 </html>
