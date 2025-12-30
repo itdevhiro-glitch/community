@@ -2,19 +2,21 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAINTENANCE - TACHIBANA SCAN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>COUNTDOWN 2026 - TACHIBANA SCAN</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --bg-dark: #0f172a; /* Warna gelap tachi */
-            --accent-primary: #38bdf8; /* Biru tachi */
-            --warning: #facc15; /* Kuning maintenance */
+            --bg-dark: #020617;
+            --accent-primary: #38bdf8;
+            --accent-secondary: #6366f1;
+            --accent-glow: rgba(56, 189, 248, 0.6);
+            --gold: #fbbf24;
             --text-main: #f8fafc;
         }
 
@@ -24,175 +26,573 @@
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
-            min-height: 100vh;
+            height: 100vh; /* Ubah ke height fixed untuk mencegah scroll berlebih */
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow: hidden; /* Mencegah scrollbar */
             position: relative;
         }
 
-        /* Background Stripes (Garis Perbaikan) */
-        .maintenance-stripe {
+        /* Canvas */
+        #canvas-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 15px;
-            background: repeating-linear-gradient(
-                45deg,
-                var(--warning),
-                var(--warning) 20px,
-                #000 20px,
-                #000 40px
-            );
-            z-index: 10;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: auto;
         }
 
-        .bottom-stripe { top: auto; bottom: 0; }
+        .vignette-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, var(--bg-dark) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
 
-        /* Gear Animation */
-        .gear-container {
+        /* Container Utama */
+        .main-container {
             position: relative;
-            margin-bottom: 20px;
-        }
-
-        .gear {
-            font-size: 80px;
-            color: var(--accent-primary);
-            animation: spin 4s linear infinite;
-            filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.4));
-        }
-
-        .gear.small {
-            font-size: 40px;
-            position: absolute;
-            top: -10px;
-            right: -20px;
-            animation: spin-reverse 3s linear infinite;
-            color: var(--warning);
-        }
-
-        /* Content */
-        .container {
+            z-index: 10;
             text-align: center;
-            padding: 20px;
-            z-index: 5;
+            padding: 40px;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); /* Support Safari */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            width: 90%; /* Default width mobile */
+            max-width: 900px;
+            transition: all 0.5s ease;
         }
 
-        .badge {
-            background: var(--warning);
-            color: #000;
-            padding: 5px 15px;
-            font-weight: 800;
-            border-radius: 5px;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            display: inline-block;
-        }
-
-        h1 {
-            font-size: clamp(2.5rem, 8vw, 4rem);
-            font-weight: 900;
-            line-height: 1;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            -webkit-text-stroke: 1px var(--accent-primary);
-            color: transparent;
-        }
-
-        h2 {
-            font-size: 1.2rem;
-            font-weight: 400;
+        /* Badge */
+        .cyber-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(56, 189, 248, 0.1);
             color: var(--accent-primary);
-            margin-bottom: 30px;
-            letter-spacing: 1px;
+            border: 1px solid var(--accent-primary);
+            padding: 6px 12px;
+            font-weight: 700;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px var(--accent-glow);
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
         }
 
-        p {
-            max-width: 500px;
-            margin: 0 auto 40px;
+        /* Titles */
+        h1.cyber-title {
+            font-size: clamp(2rem, 6vw, 4.5rem); /* Responsive Font */
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #fff 30%, var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.4));
+        }
+
+        p.subtitle {
             color: #94a3b8;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            margin-bottom: 40px;
+            letter-spacing: 0.5px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
             line-height: 1.6;
         }
 
-        /* Buttons */
-        .btn-box {
+        /* COUNTDOWN WRAPPER */
+        .countdown-wrapper {
             display: flex;
-            gap: 15px;
             justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
             flex-wrap: wrap;
         }
 
+        .time-box {
+            background: rgba(2, 6, 23, 0.6);
+            border: 2px solid rgba(56, 189, 248, 0.2);
+            padding: 20px 15px;
+            border-radius: 16px;
+            min-width: 110px;
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s ease;
+            flex: 1; /* Agar fleksibel */
+            max-width: 150px;
+        }
+
+        .number {
+            display: block;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 0 15px var(--accent-glow);
+            line-height: 1;
+        }
+
+        .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-top: 8px;
+            display: block;
+        }
+
+        /* Buttons */
+        .btn-group { display: flex; gap: 15px; justify-content: center; width: 100%; }
+        
         .btn {
             text-decoration: none;
-            padding: 15px 30px;
+            padding: 14px 30px;
             border-radius: 8px;
             font-weight: 700;
             text-transform: uppercase;
             font-size: 0.9rem;
-            transition: 0.3s;
-            display: flex;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
-        }
-
-        .btn-main {
-            background: var(--accent-primary);
-            color: var(--bg-dark);
-        }
-
-        .btn-main:hover {
-            background: #fff;
-            transform: scale(1.05);
+            white-space: nowrap;
         }
 
         .btn-discord {
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(88, 101, 242, 0.1);
             color: #fff;
+            border: 2px solid #5865F2;
+            box-shadow: 0 0 15px rgba(88, 101, 242, 0.2);
+            width: auto;
         }
 
         .btn-discord:hover {
-            background: #5865F2; /* Discord Color */
-            border-color: #5865F2;
+            background: #5865F2;
+            box-shadow: 0 0 30px rgba(88, 101, 242, 0.6);
+            transform: translateY(-3px);
         }
 
-        /* Animations */
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+        /* Animasi Transisi */
+        #waiting-content, #finished-content { transition: opacity 0.8s ease; }
+        .hidden { opacity: 0; pointer-events: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; }
+        
+        #finished-content h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            background: linear-gradient(to bottom, #fff, var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.6));
+        }
 
+        /* =========================================
+           RESPONSIVE & MOBILE OPTIMIZATION
+           ========================================= */
+        
+        /* Tablet & Mobile Landscape */
+        @media (max-width: 768px) {
+            .main-container { padding: 30px 20px; }
+            .countdown-wrapper { gap: 10px; }
+            .time-box { padding: 15px 5px; min-width: 80px; }
+        }
+
+        /* Mobile Portrait (Layar Kecil) */
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 25px 15px;
+                width: 95%;
+                border-radius: 16px;
+            }
+
+            /* Ubah layout jadi Grid 2x2 agar rapi di HP */
+            .countdown-wrapper {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 30px;
+            }
+
+            .time-box {
+                min-width: unset;
+                width: 100%;
+                max-width: none;
+                padding: 15px 10px;
+            }
+
+            h1.cyber-title { margin-bottom: 10px; }
+            p.subtitle { font-size: 0.85rem; margin-bottom: 25px; }
+
+            .btn {
+                width: 100%; /* Tombol full width di HP */
+                padding: 12px 20px;
+                font-size: 0.85rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="maintenance-stripe"></div>
-    <div class="maintenance-stripe bottom-stripe"></div>
+    <canvas id="canvas-container"></canvas>
+    <div class="vignette-overlay"></div>
 
-    <div class="container">
-        <div class="gear-container">
-            <i class="fas fa-cog gear"></i>
-            <i class="fas fa-cog gear small"></i>
+    <div class="main-container">
+        <div class="cyber-badge">
+            <i class="fas fa-satellite-dish"></i>
+            Tachibana Network
         </div>
 
-        <div class="badge">System Offline</div>
-        <h1>UNDER<br>MAINTENANCE</h1>
-        <h2>WE ARE TUNING THE VIBES</h2>
-        
-        <p>
-            Digital Lounge kami sedang diperbarui untuk memberikan performa vokal, desain, dan audio drama yang lebih baik. Mohon tunggu sebentar ya, Kreator!
-        </p>
+        <div id="waiting-content">
+            <h1 class="cyber-title">Menuju Era Baru<br>2026</h1>
+            <p class="subtitle">Bersiaplah untuk lonjakan evolusi berikutnya di komunitas Tachibana Scan.</p>
+    
+            <div class="countdown-wrapper">
+                <div class="time-box">
+                    <span class="number" id="days">00</span>
+                    <span class="label">Hari</span>
+                </div>
+                <div class="time-box">
+                    <span class="number" id="hours">00</span>
+                    <span class="label">Jam</span>
+                </div>
+                <div class="time-box">
+                    <span class="number pulse" id="minutes">00</span>
+                    <span class="label">Menit</span>
+                </div>
+                <div class="time-box">
+                    <span class="number pulse" id="seconds">00</span>
+                    <span class="label">Detik</span>
+                </div>
+            </div>
+        </div>
 
-        <div class="btn-box">
+        <div id="finished-content" class="hidden">
+            <h1>HAPPY NEW YEAR<br>2026!</h1>
+            <p class="subtitle" style="color: var(--gold); font-weight: 600; margin-top: 10px;">Waktunya telah tiba, Kreator!</p>
+        </div>
+        
+        <div class="btn-group">
             <a href="https://discord.gg/Xnngdu3w8G" target="_blank" class="btn btn-discord">
                 <i class="fab fa-discord"></i> Join Discord
             </a>
-            <button class="btn btn-main" onclick="location.reload()">
-                <i class="fas fa-redo"></i> Cek Web
-            </button>
         </div>
     </div>
 
+
+<script>
+// ==========================================================
+// LOGIKA WAKTU
+// ==========================================================
+const targetDate = new Date("Jan 1, 2026 00:00:00").getTime();
+let isNewYear = false;
+
+const waitingEl = document.getElementById('waiting-content');
+const finishedEl = document.getElementById('finished-content');
+const daysEl = document.getElementById('days');
+const hoursEl = document.getElementById('hours');
+const minutesEl = document.getElementById('minutes');
+const secondsEl = document.getElementById('seconds');
+
+function formatNum(num) { return num < 10 ? '0' + num : num; }
+
+function updateCountdown() {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if (distance < 0) {
+        triggerNewYear();
+        return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    daysEl.innerHTML = formatNum(days);
+    hoursEl.innerHTML = formatNum(hours);
+    minutesEl.innerHTML = formatNum(minutes);
+    secondsEl.innerHTML = formatNum(seconds);
+}
+
+function triggerNewYear() {
+    if(isNewYear) return;
+    isNewYear = true;
+    clearInterval(timerInterval);
+
+    waitingEl.classList.add('hidden');
+    waitingEl.style.position = 'absolute'; // Hindari layout shift
+    
+    setTimeout(() => {
+        waitingEl.style.display = 'none';
+        finishedEl.classList.remove('hidden');
+        finishedEl.style.position = 'relative';
+        document.querySelector('.main-container').style.borderColor = 'var(--gold)';
+    }, 800);
+}
+
+const timerInterval = setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// ==========================================================
+// VISUAL CANVAS (OPTIMIZED FOR MOBILE)
+// ==========================================================
+const canvas = document.getElementById('canvas-container');
+const ctx = canvas.getContext('2d');
+let w, h;
+let mouse = { x: null, y: null, radius: 150 };
+
+// Deteksi Mobile untuk performa
+const isMobile = window.innerWidth < 768;
+
+function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Event Listener Mouse & Touch
+window.addEventListener('mousemove', (e) => {
+    mouse.x = e.x;
+    mouse.y = e.y;
+});
+
+// Tambahkan Support Sentuhan Jari
+window.addEventListener('touchmove', (e) => {
+    mouse.x = e.touches[0].clientX;
+    mouse.y = e.touches[0].clientY;
+}, {passive: true});
+
+window.addEventListener('touchstart', (e) => {
+    mouse.x = e.touches[0].clientX;
+    mouse.y = e.touches[0].clientY;
+}, {passive: true});
+
+window.addEventListener('touchend', () => {
+    mouse.x = undefined; mouse.y = undefined;
+});
+
+window.addEventListener('mouseout', () => { mouse.x = undefined; mouse.y = undefined; });
+
+// --- PARTIKEL ---
+let particlesArray = [];
+// Kurangi jumlah partikel di HP agar tidak lag
+const divider = isMobile ? 18000 : 9000; 
+const numberOfParticles = (window.innerWidth * window.innerHeight) / divider;
+
+class Particle {
+    constructor() {
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = (Math.random() * 1 - 0.5);
+        this.speedY = (Math.random() * 1 - 0.5);
+        this.color = 'rgba(56, 189, 248, 0.7)';
+    }
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        
+        if (this.x > w || this.x < 0) this.speedX = -this.speedX;
+        if (this.y > h || this.y < 0) this.speedY = -this.speedY;
+        
+        // Interaksi Mouse/Touch
+        if (mouse.x != undefined && mouse.y != undefined) {
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.sqrt(dx*dx + dy*dy);
+            if (distance < mouse.radius + this.size){
+                if(mouse.x < this.x && this.x < w - this.size * 10) this.x += 2;
+                if(mouse.x > this.x && this.x > this.size * 10) this.x -= 2;
+                if(mouse.y < this.y && this.y < h - this.size * 10) this.y += 2;
+                if(mouse.y > this.y && this.y > this.size * 10) this.y -= 2;
+            }
+        }
+        this.draw();
+    }
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    }
+}
+
+function initParticles() {
+    particlesArray = [];
+    for (let i = 0; i < numberOfParticles; i++) {
+        particlesArray.push(new Particle());
+    }
+}
+
+function connectParticles() {
+    let opacityValue = 1;
+    // Kurangi jarak koneksi di HP
+    const connectDistance = isMobile ? (w/9) * (h/9) : (w/7) * (h/7);
+    
+    for (let a = 0; a < particlesArray.length; a++) {
+        for (let b = a; b < particlesArray.length; b++) {
+            let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
+                         + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+            
+            if (distance < connectDistance) {
+                opacityValue = 1 - (distance/20000);
+                ctx.strokeStyle = 'rgba(56, 189, 248,' + opacityValue + ')';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+// --- KEMBANG API & ANIMASI ---
+let fireworks = [];
+let particlesFW = [];
+function random(min, max) { return Math.random() * (max - min) + min; }
+
+class FireworkShell {
+    constructor(sx, sy, tx, ty) {
+        this.x = sx; this.y = sy;
+        this.sx = sx; this.sy = sy;
+        this.tx = tx; this.ty = ty;
+        this.distanceToTarget = Math.sqrt(Math.pow(tx - sx, 2) + Math.pow(ty - sy, 2));
+        this.distanceTraveled = 0;
+        this.coordinates = [];
+        this.coordinateCount = 3;
+        while(this.coordinateCount--) { this.coordinates.push([this.x, this.y]); }
+        this.angle = Math.atan2(ty - sy, tx - sx);
+        this.speed = 2;
+        this.acceleration = 1.05;
+        this.brightness = random(50, 70);
+        this.targetRadius = 1;
+    }
+    update(index) {
+        this.coordinates.pop();
+        this.coordinates.unshift([this.x, this.y]);
+        if (this.targetRadius < 8) this.targetRadius += 0.3; else this.targetRadius = 1;
+        this.speed *= this.acceleration;
+        let vx = Math.cos(this.angle) * this.speed;
+        let vy = Math.sin(this.angle) * this.speed;
+        this.distanceTraveled = Math.sqrt(Math.pow(this.sx - this.x + vx, 2) + Math.pow(this.sy - this.y + vy, 2));
+        if (this.distanceTraveled >= this.distanceToTarget) {
+            createExplosion(this.tx, this.ty);
+            fireworks.splice(index, 1);
+        } else {
+            this.x += vx; this.y += vy;
+        }
+    }
+    draw() {
+        ctx.beginPath();
+        ctx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]);
+        ctx.lineTo(this.x, this.y);
+        ctx.strokeStyle = 'hsl(' + random(190, 220) + ', 100%, ' + this.brightness + '%)';
+        ctx.stroke();
+    }
+}
+
+class ParticleExplosion {
+    constructor(x, y) {
+        this.x = x; this.y = y;
+        this.coordinates = [];
+        this.coordinateCount = 5;
+        while(this.coordinateCount--) { this.coordinates.push([this.x, this.y]); }
+        this.angle = random(0, Math.PI * 2);
+        this.speed = random(1, 10);
+        this.friction = 0.95;
+        this.gravity = 1;
+        this.hue = random(0, 360);
+        this.brightness = random(50, 80);
+        this.alpha = 1;
+        this.decay = random(0.015, 0.03);
+    }
+    update(index) {
+        this.coordinates.pop();
+        this.coordinates.unshift([this.x, this.y]);
+        this.speed *= this.friction;
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed + this.gravity;
+        this.alpha -= this.decay;
+        if (this.alpha <= this.decay) { particlesFW.splice(index, 1); }
+    }
+    draw() {
+        ctx.beginPath();
+        ctx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]);
+        ctx.lineTo(this.x, this.y);
+        ctx.strokeStyle = 'hsla(' + this.hue + ', 100%, ' + this.brightness + '%, ' + this.alpha + ')';
+        ctx.stroke();
+    }
+}
+
+function createExplosion(x, y) {
+    let particleCount = isMobile ? 30 : 50; // Kurangi partikel ledakan di HP
+    while(particleCount--) {
+        particlesFW.push(new ParticleExplosion(x, y));
+    }
+}
+
+let timerTick = 0;
+let timerTotal = 50;
+
+function animate() {
+    requestAnimationFrame(animate);
+    
+    if (!isNewYear) {
+        ctx.clearRect(0, 0, w, h);
+        for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+        }
+        connectParticles();
+    } else {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(0, 0, w, h);
+        ctx.globalCompositeOperation = 'lighter';
+
+        let i = fireworks.length;
+        while(i--) {
+            fireworks[i].draw();
+            fireworks[i].update(i);
+        }
+        let j = particlesFW.length;
+        while(j--) {
+            particlesFW[j].draw();
+            particlesFW[j].update(j);
+        }
+        if (timerTick >= timerTotal) {
+            fireworks.push(new FireworkShell(w / 2, h, random(w/4, 3*w/4), random(0, h / 2)));
+            timerTick = 0;
+            timerTotal = random(30, 60);
+        } else {
+            timerTick++;
+        }
+    }
+}
+
+initParticles();
+animate();
+
+// Hapus komentar di bawah untuk test efek kembang api
+// setTimeout(triggerNewYear, 3000); 
+
+</script>
 </body>
 </html>
