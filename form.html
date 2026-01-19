@@ -7,56 +7,151 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="CSS/admin.css"> 
     <style>
-        /* Override body form agar center dan bersih */
         body { 
-            overflow-y: auto; 
-            background: #f0f2f5; 
-            display: flex; 
-            justify-content: center; 
-            min-height: 100vh; 
-            padding: 40px 20px; 
-            height: auto;
+            background: #F0EBF8;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 40px;
+            padding-bottom: 40px;
         }
+
         .form-container { 
             background: white; 
             width: 100%; 
-            max-width: 640px; 
-            padding: 0; 
+            max-width: 720px;
             border-radius: 12px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08); 
             overflow: hidden; 
+            margin: 0 15px;
+            position: relative;
         }
-        .form-header-banner { background: #2C2420; height: 12px; width: 100%; }
+
+        .form-header-banner { 
+            background: #2C2420; 
+            height: 14px; 
+            width: 100%; 
+        }
+
         .form-content { padding: 40px; }
-        .form-title h1 { font-family: 'Poppins', sans-serif; font-size: 2rem; color: #2C2420; margin-bottom: 10px; }
-        .form-desc { color: #666; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
         
-        /* Styling Radio & Checkbox */
-        .radio-item, .checkbox-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; cursor: pointer; }
-        .radio-item input, .checkbox-item input { width: 18px; height: 18px; accent-color: #2C2420; }
-        .field-label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        .form-title {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-title h1 { 
+            font-size: 2.2rem; 
+            color: #2C2420; 
+            margin-bottom: 10px; 
+            line-height: 1.2;
+        }
+
+        .form-desc { 
+            color: #666; 
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .field-wrapper {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: 0.2s;
+        }
+
+        .field-wrapper:focus-within {
+            border-color: #A68A64;
+            box-shadow: 0 4px 12px rgba(166, 138, 100, 0.1);
+            border-left: 5px solid #A68A64;
+        }
+
+        .field-label { 
+            display: block; 
+            font-size: 1.1rem; 
+            font-weight: 500; 
+            color: #222; 
+            margin-bottom: 15px; 
+        }
+
+        .input-clean {
+            background: #fcfcfc;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+        
+        .input-clean:focus {
+            background: #fff;
+            border-bottom: 2px solid #2C2420;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            cursor: pointer;
+        }
+        .option-item input {
+            width: 20px; 
+            height: 20px; 
+            accent-color: #2C2420;
+            cursor: pointer;
+        }
+        .option-item span {
+            color: #444;
+            font-size: 1rem;
+        }
+
+        #btn-submit {
+            background: #2C2420;
+            font-size: 1rem;
+            padding: 14px;
+            border-radius: 6px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: transform 0.1s;
+        }
+        #btn-submit:active { transform: scale(0.98); }
+
+        #loading { text-align: center; color: #666; font-weight: 500; }
     </style>
 </head>
 <body>
 
-    <div id="loading" style="margin-top: 50px;">Loading Form...</div>
+    <div id="loading">
+        <i class="fa-solid fa-spinner fa-spin"></i> Memuat Formulir...
+    </div>
 
     <div id="main-container" class="form-container hidden">
         <div class="form-header-banner"></div>
         <div class="form-content">
             <div class="form-title">
-                <h1 id="public-title"></h1>
+                <h1 id="public-title">Loading...</h1>
                 <p id="public-desc" class="form-desc"></p>
             </div>
             
             <form id="public-form">
                 <div id="fields-container"></div>
-                <button type="submit" id="btn-submit" class="btn-primary-full" style="margin-top:20px;">Kirim Jawaban</button>
+                
+                <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center;">
+                    <button type="submit" id="btn-submit" class="btn-primary-full" style="width: auto; min-width: 150px;">
+                        Kirim Jawaban
+                    </button>
+                    <small style="color:#aaa;">Powered by Tachibana</small>
+                </div>
             </form>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <script type="module" src="JS/form.js"></script>
 </body>
 </html>
