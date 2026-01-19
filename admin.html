@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Tachibana Scan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/admin.css">
+</head>
+<body>
+
+    <div id="login-overlay" class="login-wrapper">
+        <div class="login-box">
+            <div class="login-header">
+                <h2>Tachibana<span class="dot">.</span></h2>
+                <p>Secure Admin Access</p>
+            </div>
+            <form id="login-form">
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="admin-email" placeholder="Email Address" required>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-key"></i>
+                    <input type="password" id="admin-pass" placeholder="Password" required>
+                </div>
+                <button type="submit" id="btn-login" class="btn-primary-full">
+                    <span id="btn-text">Login System</span>
+                </button>
+            </form>
+            <p id="login-error" class="error-msg hidden">Invalid Email or Password</p>
+        </div>
+    </div>
+
+    <div id="dashboard-container" class="dashboard-layout hidden">
+        <aside class="sidebar">
+            <div class="brand">
+                <h3>Tachibana<span class="dot">.</span></h3>
+            </div>
+            <nav class="menu">
+                <button class="menu-item active" onclick="switchTab('overview')">
+                    <i class="fa-solid fa-chart-pie"></i> Overview
+                </button>
+                <button class="menu-item" onclick="switchTab('announcements')">
+                    <i class="fa-solid fa-bullhorn"></i> Announcements
+                </button>
+                <button class="menu-item" onclick="switchTab('youtube')">
+                    <i class="fa-brands fa-youtube"></i> YouTube Video
+                </button>
+                <div class="divider"></div>
+                <a href="#" class="menu-item logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </a>
+                <a href="index.html" class="menu-item">
+                    <i class="fa-solid fa-globe"></i> View Website
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h2 id="page-title">Dashboard Overview</h2>
+                <div class="user-profile">
+                    <span>Admin Mode</span>
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                </div>
+            </header>
+
+            <section id="tab-overview" class="content-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-newspaper"></i></div>
+                        <div class="stat-info">
+                            <h4>Total Posts</h4>
+                            <span id="stat-count-posts">0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-announcements" class="content-section hidden">
+                <div class="section-actions">
+                    <button class="btn-primary" onclick="openModal()">
+                        <i class="fa-solid fa-plus"></i> New Announcement
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="announcement-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="tab-youtube" class="content-section hidden">
+                <div class="form-card">
+                    <h3>Update Featured Video</h3>
+                    <p class="text-muted">Masukkan link YouTube baru untuk ditampilkan di halaman depan.</p>
+                    <div class="input-group-modern">
+                        <input type="text" id="yt-link-input" class="input-clean" placeholder="https://youtu.be/...">
+                    </div>
+                    <button id="btn-update-yt" class="btn-primary">Save Changes</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="add-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Create New Post</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="new-title" class="input-clean" placeholder="Judul Pengumuman">
+                <textarea id="new-desc" class="input-clean" rows="4" placeholder="Isi Pengumuman..."></textarea>
+                <div class="file-area">
+                    <input type="file" id="new-image" accept="image/*">
+                    <p>Click to upload banner image</p>
+                </div>
+                <button id="btn-publish" class="btn-primary-full">Publish Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden">Action Successful!</div>
+
+    <script type="module" src="JS/admin.js"></script>
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const btn = document.querySelector(`button[onclick="switchTab('${tabId}')"]`);
+            if(btn) btn.classList.add('active');
+            const titles = { 'overview': 'Dashboard Overview', 'announcements': 'Manage Announcements', 'youtube': 'YouTube Settings' };
+            document.getElementById('page-title').innerText = titles[tabId];
+        }
+        function openModal() { document.getElementById('add-modal').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('add-modal').classList.add('hidden'); }
+    </script>
+</body>
+</html>
