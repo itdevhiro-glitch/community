@@ -2,7 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebas
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, deleteDoc, doc, setDoc, query, orderBy, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-// KONFIGURASI FIREBASE ANDA
 const firebaseConfig = {
     apiKey: "AIzaSyCBkaF_sZMtq9ZqccMpFjVzyLmUb3CM_28",
     authDomain: "tachibanaweb-ccdea.firebaseapp.com",
@@ -17,18 +16,15 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Variabel Global untuk Form Builder
 let currentFormId = null;
 let unsubQuestions = null;
 let unsubResponses = null;
 
-// --- 1. AUTHENTICATION & INITIAL LOAD ---
 onAuthStateChanged(auth, (user) => {
     if (user) {
         document.getElementById('login-overlay').classList.add('hidden');
         document.getElementById('dashboard-container').classList.remove('hidden');
         document.querySelector('.user-profile span').innerText = user.email;
-        // Load data awal
         loadAnnouncements();
         loadFormList();
     } else {
@@ -64,7 +60,6 @@ document.querySelector('.logout').addEventListener('click', async (e) => {
     }
 });
 
-// --- 2. FITUR LAMA: ANNOUNCEMENTS ---
 function loadAnnouncements() {
     const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"));
     onSnapshot(q, (snapshot) => {
@@ -133,7 +128,6 @@ document.getElementById('btn-publish').addEventListener('click', async () => {
     }
 });
 
-// --- 3. FITUR LAMA: YOUTUBE ---
 document.getElementById('btn-update-yt').addEventListener('click', async () => {
     const link = document.getElementById('yt-link-input').value;
     if(!link) return;
@@ -144,9 +138,6 @@ document.getElementById('btn-update-yt').addEventListener('click', async () => {
     } catch (e) { alert("Gagal update video."); }
 });
 
-// --- 4. FITUR BARU: MULTI-FORM ---
-
-// A. List Form
 function loadFormList() {
     const q = query(collection(db, "forms"), orderBy("createdAt", "desc"));
     onSnapshot(q, (snapshot) => {
@@ -160,7 +151,7 @@ function loadFormList() {
             const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString() : '-';
             
             const card = document.createElement('div');
-            card.className = 'form-card-item'; // Menggunakan style baru nanti
+            card.className = 'form-card-item';
             card.innerHTML = `
                 <div style="font-size:2rem; color:#A68A64; margin-bottom:10px;"><i class="fa-solid fa-file-lines"></i></div>
                 <div>
@@ -172,7 +163,7 @@ function loadFormList() {
                     <button class="btn-del-form" data-id="${docSnap.id}" style="background:#ffe5e5; color:red; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `;
-            // Inline style agar tidak merusak CSS lama, tapi rapi
+            
             card.style.background = 'white';
             card.style.padding = '20px';
             card.style.borderRadius = '12px';
@@ -207,7 +198,6 @@ document.getElementById('btn-create-form').addEventListener('click', async () =>
     } catch (e) { alert("Error."); }
 });
 
-// B. Form Editor Logic
 window.openEditor = (id, title) => {
     currentFormId = id;
     document.getElementById('view-form-list').classList.add('hidden');
@@ -229,31 +219,77 @@ window.copyFormLink = () => {
 
 document.getElementById('field-type').addEventListener('change', (e) => {
     const val = e.target.value;
-    const opt = document.getElementById('options-container');
-    if(['select','radio','checkbox'].includes(val)) opt.classList.remove('hidden');
-    else opt.classList.add('hidden');
+    const optArea = document.getElementById('options-area');
+    const container = document.getElementById('dynamic-options-container');
+    
+    if(['select','radio','checkbox'].includes(val)) {
+        optArea.classList.remove('hidden');
+        if(container.children.length === 0) addOptionInput(); 
+    } else {
+        optArea.classList.add('hidden');
+        container.innerHTML = '';
+    }
+});
+
+function addOptionInput(value = '') {
+    const container = document.getElementById('dynamic-options-container');
+    const div = document.createElement('div');
+    div.className = 'option-row'; 
+    div.style.cssText = "display:flex; gap:10px; margin-bottom:8px; align-items:center;";
+    
+    div.innerHTML = `
+        <i class="fa-solid fa-circle-dot" style="color:#ccc; font-size:0.8rem;"></i>
+        <input type="text" class="input-clean option-input" value="${value}" placeholder="Tulis opsi..." style="margin-bottom:0; flex:1;">
+        <button onclick="this.parentElement.remove()" style="color:red; background:none; border:none; cursor:pointer;">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    `;
+    container.appendChild(div);
+}
+
+document.getElementById('btn-add-option-row')?.addEventListener('click', () => {
+    addOptionInput();
 });
 
 document.getElementById('btn-add-field').addEventListener('click', async () => {
     const label = document.getElementById('field-label').value;
     const type = document.getElementById('field-type').value;
-    const rawOpt = document.getElementById('field-options').value;
     
-    if(!label) return alert("Isi label!");
-    let opts = null;
+    if(!label) return alert("Label pertanyaan wajib diisi!");
+
+    let finalOptions = null;
+
     if(['select','radio','checkbox'].includes(type)) {
-        if(!rawOpt) return alert("Isi opsi!");
-        opts = rawOpt.split(',').map(s=>s.trim());
+        const inputs = document.querySelectorAll('.option-input');
+        finalOptions = Array.from(inputs)
+            .map(input => input.value.trim())
+            .filter(text => text !== "");
+
+        if(finalOptions.length === 0) return alert("Minimal isi satu opsi jawaban!");
     }
 
+    const btn = document.getElementById('btn-add-field');
+    btn.innerText = "Menyimpan...";
+    
     try {
         await addDoc(collection(db, `forms/${currentFormId}/questions`), {
-            label, type, options: opts, createdAt: new Date()
+            label, 
+            type, 
+            options: finalOptions,
+            createdAt: new Date()
         });
+        
         document.getElementById('field-label').value = '';
-        document.getElementById('field-options').value = '';
-        showToast("Pertanyaan ditambah!");
-    } catch(e) { console.error(e); }
+        document.getElementById('dynamic-options-container').innerHTML = '';
+        if(['select','radio','checkbox'].includes(type)) addOptionInput();
+        
+        showToast("Pertanyaan berhasil ditambahkan!");
+    } catch(e) { 
+        console.error(e); 
+        alert("Gagal menyimpan: " + e.message); 
+    } finally {
+        btn.innerHTML = '<i class="fa-solid fa-save"></i> Simpan Pertanyaan';
+    }
 });
 
 function loadQuestions(id) {
@@ -268,7 +304,7 @@ function loadQuestions(id) {
             tr.innerHTML = `
                 <td>${data.label}</td>
                 <td><span style="background:#eee; padding:2px 5px; border-radius:4px; font-size:0.8rem">${data.type}</span></td>
-                <td><small>${data.options ? data.options.join(', ') : '-'}</small></td>
+                <td><small>${data.options ? (Array.isArray(data.options) ? data.options.join(', ') : data.options) : '-'}</small></td>
                 <td><button class="btn-del-q" data-id="${docSnap.id}" style="color:red; border:none; background:none; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></td>
             `;
             tbody.appendChild(tr);
@@ -284,7 +320,6 @@ function loadQuestions(id) {
 async function loadResponses(id) {
     if(unsubResponses) unsubResponses();
     
-    // Header
     const qSnap = await getDocs(query(collection(db, `forms/${id}/questions`), orderBy("createdAt", "asc")));
     const headers = [];
     qSnap.forEach(d => headers.push(d.data().label));
@@ -295,7 +330,6 @@ async function loadResponses(id) {
     hHtml += '<th>Hapus</th></tr>';
     thead.innerHTML = hHtml;
 
-    // Data
     const subCol = collection(db, `forms/${id}/submissions`);
     unsubResponses = onSnapshot(query(subCol, orderBy("submittedAt", "desc")), (snap) => {
         document.getElementById('response-count').innerText = snap.size;
@@ -322,7 +356,6 @@ async function loadResponses(id) {
     });
 }
 
-// PDF Download
 document.getElementById('btn-download-pdf').addEventListener('click', () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('l', 'mm', 'a4');
