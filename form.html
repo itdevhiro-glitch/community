@@ -3,35 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Isi Form - Tachibana Scan</title>
+    <title>Form | Tachibana</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="CSS/admin.css">
     <style>
-        body { overflow-y: auto; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .form-container { background: white; width: 100%; max-width: 600px; padding: 40px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
-        .form-header { text-align: center; margin-bottom: 30px; }
-        .form-header h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: #2C2420; }
-        label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; }
-        button:disabled { opacity: 0.7; cursor: not-allowed; }
+        body { overflow-y: auto; background: #f0f2f5; display: flex; justify-content: center; min-height: 100vh; padding: 40px 20px; }
+        .form-container { background: white; width: 100%; max-width: 640px; padding: 0; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; }
+        .form-header-banner { background: #2C2420; height: 12px; width: 100%; }
+        .form-content { padding: 40px; }
+        .form-title h1 { font-family: 'Poppins', sans-serif; font-size: 2rem; color: #2C2420; margin-bottom: 10px; }
+        .form-desc { color: #666; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .input-group-modern { margin-bottom: 24px; }
+        .error-not-found { text-align: center; margin-top: 50px; color: #666; }
     </style>
 </head>
 <body>
 
-    <div class="form-container">
-        <div class="form-header">
-            <h2>Form Tachibana<span style="color:#A68A64">.</span></h2>
-            <p>Silakan lengkapi data di bawah ini.</p>
-        </div>
-        
-        <form id="public-form">
-            <div id="form-fields-container">
-                <p style="text-align:center; color:#888;">Memuat form...</p>
+    <div id="loading" style="margin-top: 50px;">Loading Form...</div>
+
+    <div id="main-container" class="form-container hidden">
+        <div class="form-header-banner"></div>
+        <div class="form-content">
+            <div class="form-title">
+                <h1 id="public-title">Untitled Form</h1>
+                <p id="public-desc" class="form-desc"></p>
             </div>
             
-            <button type="submit" id="btn-submit-form" class="btn-primary-full" style="margin-top: 20px;">
-                Kirim Data
-            </button>
-        </form>
+            <form id="public-form">
+                <div id="fields-container"></div>
+                <button type="submit" id="btn-submit" class="btn-primary-full">Kirim Jawaban</button>
+            </form>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
