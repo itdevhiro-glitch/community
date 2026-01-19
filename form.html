@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isi Form - Tachibana Scan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="CSS/admin.css">
+    <style>
+        body { overflow-y: auto; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .form-container { background: white; width: 100%; max-width: 600px; padding: 40px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .form-header { text-align: center; margin-bottom: 30px; }
+        .form-header h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: #2C2420; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; }
+        button:disabled { opacity: 0.7; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Form Tachibana<span style="color:#A68A64">.</span></h2>
+            <p>Silakan lengkapi data di bawah ini.</p>
+        </div>
+        
+        <form id="public-form">
+            <div id="form-fields-container">
+                <p style="text-align:center; color:#888;">Memuat form...</p>
+            </div>
+            
+            <button type="submit" id="btn-submit-form" class="btn-primary-full" style="margin-top: 20px;">
+                Kirim Data
+            </button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="JS/form.js"></script>
+</body>
+</html>
