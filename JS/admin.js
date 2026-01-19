@@ -180,6 +180,20 @@ document.getElementById('btn-update-yt').addEventListener('click', async () => {
     }
 });
 
+const fieldTypeSelect = document.getElementById('field-type');
+const optionsContainer = document.getElementById('options-container');
+
+if(fieldTypeSelect) {
+    fieldTypeSelect.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if(['select', 'radio', 'checkbox'].includes(val)) {
+            optionsContainer.classList.remove('hidden');
+        } else {
+            optionsContainer.classList.add('hidden');
+        }
+    });
+}
+
 function loadFormConfig() {
     const q = query(formConfigCol, orderBy("createdAt", "asc"));
     onSnapshot(q, (snapshot) => {
@@ -189,10 +203,12 @@ function loadFormConfig() {
 
         snapshot.forEach((docSnap) => {
             const data = docSnap.data();
+            const optionsDisplay = data.options ? data.options.join(', ') : '-';
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${data.label}</td>
-                <td><span style="background:#eee; padding:2px 6px; border-radius:4px; font-size:0.8rem">${data.type}</span></td>
+                <td><strong>${data.label}</strong></td>
+                <td><span class="badge-type">${data.type}</span></td>
+                <td><small>${optionsDisplay}</small></td>
                 <td>
                     <button class="btn-delete-field btn-delete" data-id="${docSnap.id}">
                         <i class="fa-solid fa-trash"></i>
@@ -218,16 +234,32 @@ if(btnAddField) {
     btnAddField.addEventListener('click', async () => {
         const label = document.getElementById('field-label').value;
         const type = document.getElementById('field-type').value;
+        const rawOptions = document.getElementById('field-options').value;
 
         if(!label) return alert("Masukkan label pertanyaan!");
+        
+        if(['select', 'radio', 'checkbox'].includes(type) && !rawOptions) {
+            return alert("Tipe ini membutuhkan opsi pilihan (pisahkan dengan koma)!");
+        }
+
+        let optionsArray = null;
+        if(rawOptions) {
+            optionsArray = rawOptions.split(',').map(s => s.trim());
+        }
 
         try {
             await addDoc(formConfigCol, {
                 label: label,
                 type: type,
+                options: optionsArray,
                 createdAt: new Date()
             });
+            
             document.getElementById('field-label').value = '';
+            document.getElementById('field-options').value = '';
+            document.getElementById('options-container').classList.add('hidden');
+            document.getElementById('field-type').value = 'text';
+            
             showToast("Pertanyaan ditambahkan!");
         } catch (error) {
             console.error(error);
