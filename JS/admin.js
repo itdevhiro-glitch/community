@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, setDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, setDoc, query, orderBy, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCBkaF_sZMtq9ZqccMpFjVzyLmUb3CM_28",
@@ -16,6 +16,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const announcementsCol = collection(db, "announcements");
+const formConfigCol = collection(db, "form_config");
+const submissionsCol = collection(db, "form_submissions");
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -23,6 +25,8 @@ onAuthStateChanged(auth, (user) => {
         document.getElementById('dashboard-container').classList.remove('hidden');
         document.querySelector('.user-profile span').innerText = user.email;
         loadData();
+        loadFormConfig();
+        loadSubmissions();
     } else {
         document.getElementById('login-overlay').classList.remove('hidden');
         document.getElementById('dashboard-container').classList.add('hidden');
@@ -175,6 +179,137 @@ document.getElementById('btn-update-yt').addEventListener('click', async () => {
         btn.innerText = "Save Changes";
     }
 });
+
+function loadFormConfig() {
+    const q = query(formConfigCol, orderBy("createdAt", "asc"));
+    onSnapshot(q, (snapshot) => {
+        const tbody = document.getElementById('form-config-body');
+        if(!tbody) return;
+        tbody.innerHTML = '';
+
+        snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${data.label}</td>
+                <td><span style="background:#eee; padding:2px 6px; border-radius:4px; font-size:0.8rem">${data.type}</span></td>
+                <td>
+                    <button class="btn-delete-field btn-delete" data-id="${docSnap.id}">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.querySelectorAll('.btn-delete-field').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const id = e.target.closest('button').getAttribute('data-id');
+                if(confirm("Hapus pertanyaan ini?")) {
+                    await deleteDoc(doc(db, "form_config", id));
+                }
+            });
+        });
+    });
+}
+
+const btnAddField = document.getElementById('btn-add-field');
+if(btnAddField) {
+    btnAddField.addEventListener('click', async () => {
+        const label = document.getElementById('field-label').value;
+        const type = document.getElementById('field-type').value;
+
+        if(!label) return alert("Masukkan label pertanyaan!");
+
+        try {
+            await addDoc(formConfigCol, {
+                label: label,
+                type: type,
+                createdAt: new Date()
+            });
+            document.getElementById('field-label').value = '';
+            showToast("Pertanyaan ditambahkan!");
+        } catch (error) {
+            console.error(error);
+            alert("Gagal menambah field.");
+        }
+    });
+}
+
+async function loadSubmissions() {
+    const configSnap = await getDocs(query(formConfigCol, orderBy("createdAt", "asc")));
+    const headers = [];
+    configSnap.forEach(doc => headers.push(doc.data().label));
+
+    const thead = document.getElementById('submission-head');
+    if(!thead) return;
+    
+    let headHtml = '<tr><th>Tanggal</th>';
+    headers.forEach(h => { headHtml += `<th>${h}</th>`; });
+    headHtml += '<th>Action</th></tr>';
+    thead.innerHTML = headHtml;
+
+    const q = query(submissionsCol, orderBy("submittedAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+        const tbody = document.getElementById('submission-body');
+        tbody.innerHTML = '';
+
+        if(snapshot.empty) {
+            tbody.innerHTML = `<tr><td colspan="${headers.length + 2}" style="text-align:center;">Belum ada data masuk.</td></tr>`;
+            return;
+        }
+
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const date = data.submittedAt ? data.submittedAt.toDate().toLocaleDateString('id-ID') + ' ' + data.submittedAt.toDate().toLocaleTimeString('id-ID') : '-';
+            
+            let rowHtml = `<td>${date}</td>`;
+            headers.forEach(h => {
+                rowHtml += `<td>${data[h] || '-'}</td>`;
+            });
+
+            rowHtml += `<td><button class="btn-delete-sub btn-delete" data-id="${docSnap.id}"><i class="fa-solid fa-trash"></i></button></td>`;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = rowHtml;
+            tbody.appendChild(tr);
+        });
+
+        document.querySelectorAll('.btn-delete-sub').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                if(confirm("Hapus data ini?")) {
+                    const id = e.target.closest('button').getAttribute('data-id');
+                    await deleteDoc(doc(db, "form_submissions", id));
+                }
+            });
+        });
+    });
+}
+
+const btnPdf = document.getElementById('btn-download-pdf');
+if(btnPdf) {
+    btnPdf.addEventListener('click', () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.text("Laporan Data Form Tachibana", 14, 20);
+        doc.setFontSize(10);
+        doc.text("Dicetak pada: " + new Date().toLocaleString('id-ID'), 14, 28);
+
+        doc.autoTable({
+            html: '#submission-table',
+            startY: 35,
+            theme: 'grid',
+            headStyles: { fillColor: [44, 36, 32] },
+            styles: { fontSize: 8 },
+            columns: [
+                { header: 'Tanggal', dataKey: 'date' },
+            ]
+        });
+
+        doc.save('form-data-tachibana.pdf');
+    });
+}
 
 function showToast(msg) {
     const toast = document.getElementById('toast');
