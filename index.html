@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tachibana Scan Community</title>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
@@ -23,7 +20,7 @@
                 <a href="#announcements">Updates</a>
                 <a href="#youtube-showcase">Showcase</a>
             </div>
-            <a href="https://discord.gg/your-invite-link" target="_blank" class="btn-nav">
+            <a href="https://discord.gg/QtS2yH62n7" target="_blank" class="btn-nav">
                 Join Discord <i class="fa-brands fa-discord"></i>
             </a>
         </div>
@@ -38,7 +35,9 @@
             
             <div class="hero-buttons">
                 <a href="#announcements" class="btn btn-primary">Explore Updates</a>
-                <a href="#members" class="btn btn-outline">Our Artists</a>
+                <a href="https://www.instagram.com/tachibana_scan_community" target="_blank" class="btn btn-outline">
+                    <i class="fa-brands fa-instagram"></i> Follow Instagram
+                </a>
             </div>
         </div>
     </header>
@@ -84,57 +83,25 @@
             <div class="footer-left">
                 <h3>Tachibana Scan.</h3>
                 <p>Tempat seni bertemu dengan harmoni.</p>
+                
+                <div style="margin-top: 20px; display: flex; gap: 15px;">
+                    <a href="https://www.instagram.com/tachibana_scan_community" target="_blank" style="font-size: 1.5rem; color: var(--coffee-dark);">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://discord.gg/QtS2yH62n7" target="_blank" style="font-size: 1.5rem; color: var(--coffee-dark);">
+                        <i class="fa-brands fa-discord"></i>
+                    </a>
+                </div>
             </div>
+
             <div class="footer-right">
-                <button id="admin-toggle-btn" class="admin-trigger"><i class="fa-solid fa-lock"></i> Admin Access</button>
+                <a href="admin.html" class="admin-trigger"><i class="fa-solid fa-lock"></i> Admin Access</a>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 Tachibana Scan Community. Built with Passion.</p>
+            <p>&copy; 2026 Tachibana Scan Community. Built with Passion.</p>
         </div>
     </footer>
-
-    <div id="admin-panel" class="modal hidden">
-        <div class="modal-backdrop"></div>
-        <div class="modal-card fade-in">
-            <div class="modal-header">
-                <h3>Control Panel</h3>
-                <button id="close-admin" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div id="login-section" class="modal-body">
-                <p class="modal-instruction">Verifikasi identitas Anda untuk melanjutkan.</p>
-                <div class="input-group">
-                    <i class="fa-solid fa-key"></i>
-                    <input type="password" id="admin-pass" placeholder="Password Admin">
-                </div>
-                <button id="login-btn" class="btn btn-full">Login System</button>
-            </div>
-
-            <div id="dashboard-section" class="modal-body hidden">
-                <div class="form-section">
-                    <h4><i class="fa-solid fa-bullhorn"></i> Post Update</h4>
-                    <input type="text" id="news-title" class="input-modern" placeholder="Judul Pengumuman">
-                    <textarea id="news-desc" class="input-modern" rows="3" placeholder="Deskripsi Singkat"></textarea>
-                    
-                    <label class="file-upload">
-                        <input type="file" id="news-image" accept="image/*">
-                        <span id="file-label"><i class="fa-solid fa-cloud-arrow-up"></i> Pilih Gambar Banner</span>
-                    </label>
-
-                    <button id="upload-news-btn" class="btn btn-full">Publish Now</button>
-                </div>
-                
-                <div class="divider"></div>
-
-                <div class="form-section">
-                    <h4><i class="fa-brands fa-youtube"></i> Update Video</h4>
-                    <input type="text" id="youtube-link" class="input-modern" placeholder="Link YouTube (ex: https://youtu.be/...)">
-                    <button id="update-yt-btn" class="btn btn-secondary-full">Update Showcase</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script type="module" src="JS/script.js"></script>
 </body>
