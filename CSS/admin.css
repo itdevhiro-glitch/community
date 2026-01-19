@@ -62,7 +62,7 @@ body { background-color: var(--bg-main); color: #333; height: 100vh; overflow: h
 .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
 .input-clean { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; outline: none; }
 .input-clean:focus { border-color: var(--accent); }
-.file-area { border: 2px dashed #ddd; padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 20px; cursor: pointer; color: #888; }
+.input-group-modern { margin-bottom: 15px; }
 
 .toast { position: fixed; bottom: 30px; right: 30px; background: var(--sidebar-bg); color: var(--white); padding: 15px 25px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideIn 0.3s; }
 @keyframes slideIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
