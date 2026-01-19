@@ -23,7 +23,6 @@ body { background-color: var(--bg-main); color: #333; height: 100vh; overflow: h
 .error-msg { color: var(--danger); font-size: 0.9rem; margin-top: 10px; }
 #login-form { width: 100%; margin-top: 20px; }
 
-/* LAYOUT */
 .dashboard-layout { display: flex; height: 100vh; position: relative; }
 .sidebar { width: 260px; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; padding: 20px; transition: 0.3s; z-index: 1000; }
 .brand { margin-bottom: 40px; text-align: center; position: relative; }
@@ -54,7 +53,7 @@ body { background-color: var(--bg-main); color: #333; height: 100vh; overflow: h
 .stat-info span { font-size: 1.5rem; font-weight: 700; color: var(--sidebar-bg); }
 
 .table-container { background: var(--white); border-radius: 12px; padding: 20px; box-shadow: var(--shadow); margin-top: 20px; overflow-x: auto; }
-.data-table { width: 100%; border-collapse: collapse; min-width: 500px; /* Ensure scrolling on small screens */ }
+.data-table { width: 100%; border-collapse: collapse; min-width: 500px; }
 .data-table th, .data-table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
 .data-table th { color: #888; font-weight: 500; font-size: 0.9rem; }
 .thumb-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
@@ -72,7 +71,14 @@ body { background-color: var(--bg-main); color: #333; height: 100vh; overflow: h
 .toast { position: fixed; bottom: 30px; right: 30px; background: var(--sidebar-bg); color: var(--white); padding: 15px 25px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideIn 0.3s; z-index: 2000; }
 @keyframes slideIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-/* --- ADMIN RESPONSIVE --- */
+.builder-box { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px dashed #ccc; margin-bottom: 20px; }
+.badge-type { background: #e0e0e0; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; color: #555; }
+.radio-group, .checkbox-group { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
+.radio-item, .checkbox-item { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.95rem; background: #fff; padding: 8px 12px; border: 1px solid #eee; border-radius: 6px; transition: 0.2s; }
+.radio-item:hover, .checkbox-item:hover { border-color: var(--accent); background: #fafafa; }
+.radio-item input, .checkbox-item input { accent-color: var(--sidebar-bg); width: 18px; height: 18px; cursor: pointer; }
+.field-label { font-weight: 600; color: #2C2420; margin-bottom: 8px; display: block; }
+
 @media (max-width: 768px) {
     .sidebar { position: fixed; left: -100%; top: 0; height: 100%; width: 80%; max-width: 300px; box-shadow: 5px 0 20px rgba(0,0,0,0.2); }
     .sidebar.active { left: 0; }
