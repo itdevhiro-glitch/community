@@ -1,8 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, setDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
-// --- CONFIG ---
 const firebaseConfig = {
     apiKey: "AIzaSyCBkaF_sZMtq9ZqccMpFjVzyLmUb3CM_28",
     authDomain: "tachibanaweb-ccdea.firebaseapp.com",
@@ -14,47 +14,76 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
-
-// --- STATE ---
 const announcementsCol = collection(db, "announcements");
 
-// --- 1. LOGIN SYSTEM (SIMPLE) ---
-document.getElementById('btn-login').addEventListener('click', () => {
-    const input = document.getElementById('admin-pass-input').value;
-    if(input === "admin123") { // Password Hardcoded
+onAuthStateChanged(auth, (user) => {
+    if (user) {
         document.getElementById('login-overlay').classList.add('hidden');
         document.getElementById('dashboard-container').classList.remove('hidden');
-        loadData(); // Load data only after login
+        document.querySelector('.user-profile span').innerText = user.email;
+        loadData();
     } else {
-        const err = document.getElementById('login-error');
-        err.classList.remove('hidden');
-        setTimeout(() => err.classList.add('hidden'), 3000);
+        document.getElementById('login-overlay').classList.remove('hidden');
+        document.getElementById('dashboard-container').classList.add('hidden');
     }
 });
 
-// --- 2. DATA LOADING & REALTIME LISTENER ---
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('admin-email').value;
+    const pass = document.getElementById('admin-pass').value;
+    const btnText = document.getElementById('btn-text');
+    const errMsg = document.getElementById('login-error');
+
+    btnText.innerText = "Authenticating...";
+    errMsg.classList.add('hidden');
+
+    try {
+        await signInWithEmailAndPassword(auth, email, pass);
+    } catch (error) {
+        let message = "Login Failed.";
+        if(error.code === 'auth/wrong-password') message = "Password salah.";
+        if(error.code === 'auth/user-not-found') message = "Email tidak terdaftar.";
+        if(error.code === 'auth/invalid-email') message = "Format email salah.";
+        errMsg.innerText = message;
+        errMsg.classList.remove('hidden');
+    } finally {
+        btnText.innerText = "Login System";
+    }
+});
+
+document.querySelector('.logout').addEventListener('click', async (e) => {
+    e.preventDefault();
+    if(confirm("Yakin ingin logout?")) {
+        try {
+            await signOut(auth);
+        } catch (error) {
+            console.error("Logout Error:", error);
+        }
+    }
+});
+
 function loadData() {
     const q = query(announcementsCol, orderBy("createdAt", "desc"));
-    
-    // Realtime Listener: Table updates automatically
     onSnapshot(q, (snapshot) => {
         const tbody = document.getElementById('announcement-table-body');
         const countSpan = document.getElementById('stat-count-posts');
-        
-        tbody.innerHTML = ''; // Clear table
-        countSpan.innerText = snapshot.size; // Update Stats
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+        countSpan.innerText = snapshot.size;
 
         if(snapshot.empty) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No announcements found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Belum ada pengumuman.</td></tr>';
             return;
         }
 
         snapshot.forEach((docSnap) => {
             const data = docSnap.data();
-            const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString() : '-';
-            
+            const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('id-ID') : '-';
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td><img src="${data.imageUrl}" class="thumb-img" alt="img"></td>
@@ -69,33 +98,25 @@ function loadData() {
             tbody.appendChild(tr);
         });
 
-        // Attach Delete Events
         document.querySelectorAll('.btn-delete').forEach(btn => {
             btn.addEventListener('click', handleDelete);
         });
     });
 }
 
-// --- 3. CRUD ACTIONS ---
-
-// DELETE
 async function handleDelete(e) {
-    // Cari tombol terdekat (karena mungkin klik icon)
     const btn = e.target.closest('.btn-delete');
     const id = btn.getAttribute('data-id');
-    
-    if(confirm("Are you sure you want to delete this post?")) {
+    if(confirm("Hapus postingan ini?")) {
         try {
             await deleteDoc(doc(db, "announcements", id));
-            showToast("Post deleted successfully!");
+            showToast("Postingan dihapus.");
         } catch (error) {
-            console.error(error);
-            alert("Error deleting post.");
+            alert("Gagal menghapus.");
         }
     }
 }
 
-// ADD NEW POST
 document.getElementById('btn-publish').addEventListener('click', async () => {
     const title = document.getElementById('new-title').value;
     const desc = document.getElementById('new-desc').value;
@@ -103,20 +124,18 @@ document.getElementById('btn-publish').addEventListener('click', async () => {
     const btn = document.getElementById('btn-publish');
 
     if(!title || !desc || !file) {
-        alert("Please fill all fields!");
+        alert("Mohon lengkapi semua data!");
         return;
     }
 
-    btn.innerText = "Uploading...";
+    btn.innerText = "Mengunggah...";
     btn.disabled = true;
 
     try {
-        // Upload Image
         const storageRef = ref(storage, 'announcements/' + Date.now() + '-' + file.name);
         await uploadBytes(storageRef, file);
         const url = await getDownloadURL(storageRef);
 
-        // Add to Firestore
         await addDoc(announcementsCol, {
             title: title,
             description: desc,
@@ -124,43 +143,35 @@ document.getElementById('btn-publish').addEventListener('click', async () => {
             createdAt: new Date()
         });
 
-        showToast("Announcement Published!");
+        showToast("Pengumuman diterbitkan!");
         document.getElementById('add-modal').classList.add('hidden');
-        
-        // Reset Form
         document.getElementById('new-title').value = '';
         document.getElementById('new-desc').value = '';
         document.getElementById('new-image').value = '';
-
     } catch (error) {
-        console.error(error);
-        alert("Upload Failed: " + error.message);
+        alert("Gagal upload: " + error.message);
     } finally {
         btn.innerText = "Publish Now";
         btn.disabled = false;
     }
 });
 
-// UPDATE YOUTUBE
 document.getElementById('btn-update-yt').addEventListener('click', async () => {
     const link = document.getElementById('yt-link-input').value;
     if(!link) return;
-
     const btn = document.getElementById('btn-update-yt');
-    btn.innerText = "Saving...";
-
+    btn.innerText = "Menyimpan...";
     try {
         await setDoc(doc(db, "youtube", "main"), { videoUrl: link });
-        showToast("Video Updated Successfully!");
+        showToast("Video berhasil diupdate!");
         document.getElementById('yt-link-input').value = '';
     } catch (error) {
-        alert("Failed to update video.");
+        alert("Gagal update video.");
     } finally {
         btn.innerText = "Save Changes";
     }
 });
 
-// --- HELPER: TOAST ---
 function showToast(msg) {
     const toast = document.getElementById('toast');
     toast.innerText = msg;
