@@ -17,11 +17,39 @@ const db = getFirestore(app);
 const gridContainer = document.getElementById('announcement-grid');
 const youtubeContainer = document.getElementById('youtube-container');
 
+const detailModal = document.getElementById('detail-modal');
+const closeDetailBtn = document.getElementById('close-detail');
+const detailBackdrop = document.getElementById('detail-backdrop');
+
 function formatDate(timestamp) {
     if (!timestamp) return '';
     const date = timestamp.toDate();
     return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 }
+
+function openDetailModal(data, imagePath, dateStr) {
+    document.getElementById('popup-img').src = imagePath;
+    document.getElementById('popup-title').innerText = data.title;
+    document.getElementById('popup-date').innerText = dateStr;
+    document.getElementById('popup-desc').innerText = data.description;
+    
+    detailModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+    detailModal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+if(closeDetailBtn) closeDetailBtn.addEventListener('click', closeDetail);
+if(detailBackdrop) detailBackdrop.addEventListener('click', closeDetail);
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape" && !detailModal.classList.contains('hidden')) {
+        closeDetail();
+    }
+});
 
 async function loadAnnouncements() {
     try {
@@ -42,6 +70,8 @@ async function loadAnnouncements() {
             
             const card = document.createElement('div');
             card.className = 'card fade-in';
+            card.style.cursor = 'pointer';
+
             card.innerHTML = `
                 <div class="card-img-wrapper">
                     <img src="${imagePath}" alt="${data.title}" class="card-img" onerror="this.style.display='none'">
@@ -52,6 +82,11 @@ async function loadAnnouncements() {
                     <p class="card-desc">${data.description}</p>
                 </div>
             `;
+            
+            card.addEventListener('click', () => {
+                openDetailModal(data, imagePath, dateStr);
+            });
+
             gridContainer.appendChild(card);
         });
     } catch (error) {
