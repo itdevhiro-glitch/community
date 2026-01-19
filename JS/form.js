@@ -17,7 +17,6 @@ const formConfigCol = collection(db, "form_config");
 const submissionsCol = collection(db, "form_submissions");
 
 const container = document.getElementById('form-fields-container');
-let formFields = [];
 
 async function renderForm() {
     try {
@@ -34,22 +33,57 @@ async function renderForm() {
         
         snapshot.forEach(doc => {
             const data = doc.data();
-            formFields.push(data.label);
-            
             const wrapper = document.createElement('div');
             wrapper.className = 'input-group-modern';
             
+            const labelHtml = `<label class="field-label">${data.label}</label>`;
             let inputHtml = '';
-            if(data.type === 'textarea') {
-                inputHtml = `<textarea name="${data.label}" class="input-clean" rows="4" placeholder="${data.label}..." required></textarea>`;
-            } else {
-                inputHtml = `<input type="${data.type}" name="${data.label}" class="input-clean" placeholder="${data.label}" required>`;
+
+            if(['text', 'number', 'email', 'date', 'time'].includes(data.type)) {
+                inputHtml = `<input type="${data.type}" name="${data.label}" class="input-clean" placeholder="Isi ${data.label}..." required>`;
+            }
+            else if(data.type === 'textarea') {
+                inputHtml = `<textarea name="${data.label}" class="input-clean" rows="4" placeholder="Isi detail..." required></textarea>`;
+            }
+            else if(data.type === 'select') {
+                let opts = `<option value="" disabled selected>-- Pilih Salah Satu --</option>`;
+                if(data.options) {
+                    data.options.forEach(opt => {
+                        opts += `<option value="${opt}">${opt}</option>`;
+                    });
+                }
+                inputHtml = `<select name="${data.label}" class="input-clean" required>${opts}</select>`;
+            }
+            else if(data.type === 'radio') {
+                inputHtml = `<div class="radio-group">`;
+                if(data.options) {
+                    data.options.forEach(opt => {
+                        inputHtml += `
+                            <label class="radio-item">
+                                <input type="radio" name="${data.label}" value="${opt}" required>
+                                <span>${opt}</span>
+                            </label>
+                        `;
+                    });
+                }
+                inputHtml += `</div>`;
+            }
+            else if(data.type === 'checkbox') {
+                inputHtml = `<div class="checkbox-group">`;
+                if(data.options) {
+                    data.options.forEach(opt => {
+                        inputHtml += `
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="${data.label}" value="${opt}">
+                                <span>${opt}</span>
+                            </label>
+                        `;
+                    });
+                }
+                inputHtml += `</div>`;
             }
 
-            wrapper.innerHTML = `
-                <label>${data.label}</label>
-                ${inputHtml}
-            `;
+            wrapper.innerHTML = labelHtml + inputHtml;
             container.appendChild(wrapper);
         });
 
@@ -61,13 +95,21 @@ async function renderForm() {
 
 document.getElementById('public-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
     const btn = document.getElementById('btn-submit-form');
+    
     const formData = new FormData(e.target);
     const dataToSave = {};
 
-    formData.forEach((value, key) => {
-        dataToSave[key] = value;
+    const keys = Array.from(formData.keys());
+    const uniqueKeys = [...new Set(keys)];
+
+    uniqueKeys.forEach(key => {
+        const values = formData.getAll(key);
+        if(values.length > 1) {
+            dataToSave[key] = values.join(', '); 
+        } else {
+            dataToSave[key] = values[0];
+        }
     });
 
     dataToSave.submittedAt = new Date();
