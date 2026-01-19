@@ -1,9 +1,6 @@
-// --- IMPORT FIREBASE ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, setDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-// --- CONFIG ---
 const firebaseConfig = {
     apiKey: "AIzaSyCBkaF_sZMtq9ZqccMpFjVzyLmUb3CM_28",
     authDomain: "tachibanaweb-ccdea.firebaseapp.com",
@@ -16,31 +13,17 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app);
 
-// --- DOM ELEMENTS ---
 const gridContainer = document.getElementById('announcement-grid');
 const youtubeContainer = document.getElementById('youtube-container');
-const adminModal = document.getElementById('admin-panel');
 
-// --- HELPER: FORMAT DATE ---
 function formatDate(timestamp) {
     if (!timestamp) return '';
     const date = timestamp.toDate();
     return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-// --- MAIN FUNCTIONS ---
-
-// 1. Load Announcements with Animation
 async function loadAnnouncements() {
-    gridContainer.innerHTML = `
-        <div class="loading-state">
-            <div class="spinner"></div>
-            <p>Memuat kabar terbaru...</p>
-        </div>
-    `;
-    
     try {
         const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(q);
@@ -76,7 +59,6 @@ async function loadAnnouncements() {
     }
 }
 
-// 2. Load YouTube
 async function loadYoutube() {
     try {
         const querySnapshot = await getDocs(collection(db, "youtube"));
@@ -108,112 +90,6 @@ function getYoutubeID(url) {
     return (match && match[2].length === 11) ? match[2] : null;
 }
 
-// --- ADMIN UI LOGIC ---
-
-// File Input Visual Feedback
-const fileInput = document.getElementById('news-image');
-const fileLabel = document.getElementById('file-label');
-
-fileInput.addEventListener('change', function() {
-    if (this.files && this.files[0]) {
-        fileLabel.innerHTML = `<i class="fa-solid fa-check"></i> ${this.files[0].name}`;
-        fileLabel.style.color = 'var(--coffee-dark)';
-    }
-});
-
-// Modal Logic
-document.getElementById('admin-toggle-btn').addEventListener('click', () => {
-    adminModal.classList.remove('hidden');
-});
-
-document.getElementById('close-admin').addEventListener('click', () => {
-    adminModal.classList.add('hidden');
-});
-
-// Close modal on outside click
-adminModal.addEventListener('click', (e) => {
-    if (e.target === document.querySelector('.modal-backdrop')) {
-        adminModal.classList.add('hidden');
-    }
-});
-
-// Login
-document.getElementById('login-btn').addEventListener('click', () => {
-    const pass = document.getElementById('admin-pass').value;
-    if (pass === "admin123") {
-        document.getElementById('login-section').classList.add('hidden');
-        document.getElementById('dashboard-section').classList.remove('hidden');
-    } else {
-        alert("Akses Ditolak: Password salah.");
-    }
-});
-
-// Upload Logic
-document.getElementById('upload-news-btn').addEventListener('click', async () => {
-    const title = document.getElementById('news-title').value;
-    const desc = document.getElementById('news-desc').value;
-    const file = document.getElementById('news-image').files[0];
-    const btn = document.getElementById('upload-news-btn');
-
-    if (!title || !desc || !file) {
-        alert("Mohon lengkapi semua data dan gambar.");
-        return;
-    }
-
-    const originalText = btn.innerText;
-    btn.innerText = "Mengunggah...";
-    btn.disabled = true;
-    btn.style.opacity = "0.7";
-
-    try {
-        const storageRef = ref(storage, 'announcements/' + Date.now() + '-' + file.name);
-        await uploadBytes(storageRef, file);
-        const imageUrl = await getDownloadURL(storageRef);
-
-        await addDoc(collection(db, "announcements"), {
-            title: title,
-            description: desc,
-            imageUrl: imageUrl,
-            createdAt: new Date()
-        });
-
-        alert("Berhasil! Pengumuman telah diterbitkan.");
-        // Reset
-        document.getElementById('news-title').value = '';
-        document.getElementById('news-desc').value = '';
-        fileInput.value = '';
-        fileLabel.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Pilih Gambar Banner';
-        loadAnnouncements();
-
-    } catch (error) {
-        console.error(error);
-        alert("Gagal upload: " + error.message);
-    } finally {
-        btn.innerText = originalText;
-        btn.disabled = false;
-        btn.style.opacity = "1";
-    }
-});
-
-document.getElementById('update-yt-btn').addEventListener('click', async () => {
-    const link = document.getElementById('youtube-link').value;
-    if (!link) return;
-
-    const btn = document.getElementById('update-yt-btn');
-    btn.innerText = "Updating...";
-    
-    try {
-        await setDoc(doc(db, "youtube", "main"), { videoUrl: link });
-        alert("Video Showcase diperbarui!");
-        loadYoutube();
-    } catch (error) {
-        alert("Gagal update.");
-    } finally {
-        btn.innerText = "Update Showcase";
-    }
-});
-
-// Init
 window.addEventListener('DOMContentLoaded', () => {
     loadAnnouncements();
     loadYoutube();
