@@ -2,156 +2,206 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Form | Tachibana</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="CSS/admin.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { 
-            background: #F0EBF8;
+        /* RESET & BASE */
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        body {
+            margin: 0; padding: 0;
             font-family: 'Poppins', sans-serif;
+            background-color: #F0EBF8;
+            color: #333;
+            line-height: 1.6;
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            padding-top: 40px;
-            padding-bottom: 40px;
         }
 
-        .form-container { 
-            background: white; 
-            width: 100%; 
-            max-width: 720px;
-            border-radius: 12px; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08); 
-            overflow: hidden; 
-            margin: 0 15px;
+        /* CONTAINER UTAMA */
+        .form-container {
+            width: 100%;
+            max-width: 680px; /* Lebar ideal desktop */
+            background: #fff;
+            margin: 40px 20px; /* Jarak luar desktop */
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
             position: relative;
         }
 
-        .form-header-banner { 
-            background: #2C2420; 
-            height: 14px; 
-            width: 100%; 
-        }
+        /* HEADER & BANNER */
+        .form-header-banner { height: 12px; background: #2C2420; width: 100%; }
+        .form-header { padding: 40px 40px 20px 40px; border-bottom: 1px solid #f0f0f0; }
+        .form-header h1 { margin: 0 0 10px 0; font-size: 28px; color: #2C2420; line-height: 1.2; }
+        .form-header p { margin: 0; color: #666; font-size: 15px; white-space: pre-line; }
 
-        .form-content { padding: 40px; }
-        
-        .form-title {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 25px;
-            margin-bottom: 30px;
-        }
+        /* CONTENT AREA */
+        .form-content { padding: 30px 40px 40px 40px; }
 
-        .form-title h1 { 
-            font-size: 2.2rem; 
-            color: #2C2420; 
-            margin-bottom: 10px; 
-            line-height: 1.2;
-        }
-
-        .form-desc { 
-            color: #666; 
-            line-height: 1.6;
-            white-space: pre-line;
-        }
-
+        /* FORM FIELDS (Card Style per Pertanyaan) */
         .field-wrapper {
             background: #fff;
             border: 1px solid #e0e0e0;
-            padding: 25px;
             border-radius: 8px;
-            margin-bottom: 20px;
-            transition: 0.2s;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.2s ease;
         }
 
         .field-wrapper:focus-within {
             border-color: #A68A64;
-            box-shadow: 0 4px 12px rgba(166, 138, 100, 0.1);
-            border-left: 5px solid #A68A64;
+            box-shadow: 0 4px 12px rgba(166, 138, 100, 0.15);
+            transform: translateY(-2px);
+            border-left: 6px solid #A68A64; /* Indikator Fokus Kuat */
         }
 
-        .field-label { 
-            display: block; 
-            font-size: 1.1rem; 
-            font-weight: 500; 
-            color: #222; 
-            margin-bottom: 15px; 
+        .field-label {
+            display: block;
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #1a1a1a;
         }
 
+        /* INPUT STYLES */
         .input-clean {
-            background: #fcfcfc;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-        }
-        
-        .input-clean:focus {
-            background: #fff;
-            border-bottom: 2px solid #2C2420;
-            border-radius: 4px 4px 0 0;
+            width: 100%;
+            padding: 12px 0;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            font-size: 16px; /* Mencegah zoom di iOS */
+            font-family: inherit;
+            background: transparent;
+            border-radius: 0;
+            transition: 0.3s;
+            color: #333;
         }
 
+        .input-clean:focus { border-bottom-color: #2C2420; }
+        textarea.input-clean { resize: vertical; min-height: 60px; border: 1px solid #ddd; padding: 12px; border-radius: 6px; }
+        textarea.input-clean:focus { border-color: #2C2420; }
+
+        /* PILIHAN GANDA & CHECKBOX (Besar & Mudah Diklik) */
+        .option-group { display: flex; flex-direction: column; gap: 10px; }
         .option-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px 0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #eee;
             cursor: pointer;
+            transition: 0.2s;
         }
-        .option-item input {
-            width: 20px; 
-            height: 20px; 
-            accent-color: #2C2420;
-            cursor: pointer;
-        }
-        .option-item span {
-            color: #444;
-            font-size: 1rem;
-        }
+        .option-item:hover { background: #fafafa; border-color: #ccc; }
+        .option-item input { width: 20px; height: 20px; accent-color: #2C2420; margin-right: 15px; }
+        .option-item span { font-size: 15px; color: #444; }
 
-        #btn-submit {
+        /* TOMBOL SUBMIT */
+        .form-footer { margin-top: 20px; text-align: right; }
+        .btn-submit {
             background: #2C2420;
-            font-size: 1rem;
-            padding: 14px;
-            border-radius: 6px;
+            color: #fff;
+            border: none;
+            padding: 14px 32px;
+            font-size: 16px;
             font-weight: 500;
-            letter-spacing: 0.5px;
-            transition: transform 0.1s;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
-        #btn-submit:active { transform: scale(0.98); }
+        .btn-submit:active { transform: scale(0.96); }
+        .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
 
-        #loading { text-align: center; color: #666; font-weight: 500; }
+        /* LOADING & ERROR */
+        #loading {
+            position: fixed; inset: 0; background: #F0EBF8; z-index: 99;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #2C2420; font-weight: 500;
+        }
+
+        /* --- MOBILE OPTIMIZATION (KUNCI PERUBAHAN) --- */
+        @media (max-width: 600px) {
+            body { background: #fff; align-items: flex-start; }
+            
+            .form-container {
+                margin: 0;
+                max-width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                min-height: 100vh; /* Full screen experience */
+            }
+
+            .form-header-banner { display: none; /* Hemat tempat di HP */ }
+            
+            .form-header {
+                padding: 30px 24px 20px;
+                background: #FDFDFD;
+            }
+            .form-header h1 { font-size: 24px; }
+
+            .form-content { padding: 24px; }
+
+            .field-wrapper {
+                padding: 0;
+                border: none;
+                margin-bottom: 30px;
+                border-radius: 0;
+                background: transparent;
+            }
+            
+            .field-wrapper:focus-within {
+                border: none;
+                box-shadow: none;
+                transform: none;
+            }
+
+            /* Garis pemisah antar pertanyaan di HP */
+            .field-wrapper::after {
+                content: ''; display: block; width: 100%; height: 1px; background: #eee; margin-top: 25px;
+            }
+            .field-wrapper:last-child::after { display: none; }
+
+            .btn-submit { width: 100%; justify-content: center; margin-bottom: 40px; }
+        }
     </style>
 </head>
 <body>
 
     <div id="loading">
-        <i class="fa-solid fa-spinner fa-spin"></i> Memuat Formulir...
+        <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 15px;"></i>
+        <span>Memuat Formulir...</span>
     </div>
 
     <div id="main-container" class="form-container hidden">
         <div class="form-header-banner"></div>
+        
+        <div class="form-header">
+            <h1 id="public-title">...</h1>
+            <p id="public-desc">...</p>
+        </div>
+
         <div class="form-content">
-            <div class="form-title">
-                <h1 id="public-title">Loading...</h1>
-                <p id="public-desc" class="form-desc"></p>
-            </div>
-            
             <form id="public-form">
                 <div id="fields-container"></div>
                 
-                <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center;">
-                    <button type="submit" id="btn-submit" class="btn-primary-full" style="width: auto; min-width: 150px;">
-                        Kirim Jawaban
+                <div class="form-footer">
+                    <button type="submit" id="btn-submit" class="btn-submit">
+                        <span>Kirim Jawaban</span> <i class="fa-solid fa-paper-plane"></i>
                     </button>
-                    <small style="color:#aaa;">Powered by Tachibana</small>
                 </div>
             </form>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <script type="module" src="JS/form.js"></script>
 </body>
 </html>
