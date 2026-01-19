@@ -34,9 +34,10 @@
     </div>
 
     <div id="dashboard-container" class="dashboard-layout hidden">
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="brand">
                 <h3>Tachibana<span class="dot">.</span></h3>
+                <button class="close-sidebar-btn" id="close-sidebar">&times;</button>
             </div>
             <nav class="menu">
                 <button class="menu-item active" onclick="switchTab('overview')">
@@ -60,9 +61,12 @@
 
         <main class="main-content">
             <header class="top-bar">
-                <h2 id="page-title">Dashboard Overview</h2>
+                <div class="top-bar-left">
+                    <button id="sidebar-toggle" class="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
+                    <h2 id="page-title">Dashboard Overview</h2>
+                </div>
                 <div class="user-profile">
-                    <span>Admin Mode</span>
+                    <span class="hide-mobile">Admin Mode</span>
                     <div class="avatar"><i class="fa-solid fa-user"></i></div>
                 </div>
             </header>
@@ -91,7 +95,7 @@
                             <tr>
                                 <th>Image</th>
                                 <th>Title</th>
-                                <th>Date</th>
+                                <th class="hide-mobile">Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -146,9 +150,22 @@
             if(btn) btn.classList.add('active');
             const titles = { 'overview': 'Dashboard Overview', 'announcements': 'Manage Announcements', 'youtube': 'YouTube Settings' };
             document.getElementById('page-title').innerText = titles[tabId];
+            
+            // Auto close sidebar on mobile
+            if(window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
         }
         function openModal() { document.getElementById('add-modal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('add-modal').classList.add('hidden'); }
+        
+        // Sidebar Toggle Logic
+        document.getElementById('sidebar-toggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.add('active');
+        });
+        document.getElementById('close-sidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('active');
+        });
     </script>
 </body>
 </html>
