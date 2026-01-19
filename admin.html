@@ -127,17 +127,29 @@
             <section id="tab-form-builder" class="content-section hidden">
                 <div class="form-card">
                     <h3>Atur Kolom Form</h3>
-                    <p class="text-muted">Tambahkan pertanyaan yang ingin ditampilkan di form.html</p>
+                    <p class="text-muted">Tambahkan pertanyaan dinamis. Untuk pilihan ganda, pisahkan opsi dengan koma.</p>
                     
-                    <div class="input-group-modern" style="display: flex; gap: 10px;">
-                        <input type="text" id="field-label" class="input-clean" placeholder="Label Pertanyaan">
-                        <select id="field-type" class="input-clean" style="width: 150px;">
-                            <option value="text">Text Singkat</option>
-                            <option value="number">Angka / No.HP</option>
-                            <option value="email">Email</option>
-                            <option value="textarea">Text Panjang</option>
-                        </select>
-                        <button id="btn-add-field" class="btn-primary">Add</button>
+                    <div class="builder-box">
+                        <div class="input-row" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <input type="text" id="field-label" class="input-clean" style="flex: 1;" placeholder="Label Pertanyaan">
+                            <select id="field-type" class="input-clean" style="width: 200px;">
+                                <option value="text">Text Singkat</option>
+                                <option value="textarea">Text Panjang</option>
+                                <option value="number">Angka / No.HP</option>
+                                <option value="email">Email</option>
+                                <option value="date">Tanggal</option>
+                                <option value="time">Waktu</option>
+                                <option value="select">Dropdown (Pilihan)</option>
+                                <option value="radio">Radio (Satu Jawaban)</option>
+                                <option value="checkbox">Checkbox (Banyak Jawaban)</option>
+                            </select>
+                        </div>
+                        
+                        <div id="options-container" class="input-row hidden" style="margin-top: 10px;">
+                            <input type="text" id="field-options" class="input-clean" placeholder="Masukkan Pilihan (Pisahkan dengan koma, cth: Pria,Wanita)">
+                        </div>
+            
+                        <button id="btn-add-field" class="btn-primary-full" style="margin-top: 10px;">Tambahkan Kolom</button>
                     </div>
             
                     <div class="table-container">
@@ -145,7 +157,8 @@
                             <thead>
                                 <tr>
                                     <th>Label</th>
-                                    <th>Tipe Input</th>
+                                    <th>Tipe</th>
+                                    <th>Opsi</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
