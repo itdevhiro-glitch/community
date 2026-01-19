@@ -45,6 +45,12 @@
                 <button class="menu-item active" onclick="switchTab('overview')">
                     <i class="fa-solid fa-chart-pie"></i> Overview
                 </button>
+                <button class="menu-item" onclick="switchTab('announcements')">
+                    <i class="fa-solid fa-bullhorn"></i> Announcements
+                </button>
+                <button class="menu-item" onclick="switchTab('youtube')">
+                    <i class="fa-brands fa-youtube"></i> YouTube Video
+                </button>
                 <button class="menu-item" onclick="switchTab('forms')">
                     <i class="fa-solid fa-list-check"></i> My Forms
                 </button>
@@ -70,6 +76,13 @@
             <section id="tab-overview" class="content-section">
                 <div class="stats-grid">
                     <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-newspaper"></i></div>
+                        <div class="stat-info">
+                            <h4>Total Posts</h4>
+                            <span id="stat-count-posts">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
                         <div class="stat-icon"><i class="fa-solid fa-file-signature"></i></div>
                         <div class="stat-info">
                             <h4>Total Forms</h4>
@@ -79,16 +92,49 @@
                 </div>
             </section>
 
+            <section id="tab-announcements" class="content-section hidden">
+                <div class="section-actions">
+                    <button class="btn-primary" onclick="openModal('add-post-modal')">
+                        <i class="fa-solid fa-plus"></i> New Announcement
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Title</th>
+                                <th class="hide-mobile">Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="announcement-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="tab-youtube" class="content-section hidden">
+                <div class="form-card">
+                    <h3>Update Featured Video</h3>
+                    <p class="text-muted">Masukkan link YouTube baru untuk ditampilkan di halaman depan.</p>
+                    <div class="input-group-modern">
+                        <input type="text" id="yt-link-input" class="input-clean" placeholder="https://youtu.be/...">
+                    </div>
+                    <button id="btn-update-yt" class="btn-primary">Save Changes</button>
+                </div>
+            </section>
+
             <section id="tab-forms" class="content-section hidden">
                 <div id="view-form-list">
                     <div class="section-actions">
                         <h3>Daftar Formulir</h3>
-                        <button class="btn-primary" onclick="openCreateFormModal()">
+                        <button class="btn-primary" onclick="openModal('create-form-modal')">
                             <i class="fa-solid fa-plus"></i> Buat Form Baru
                         </button>
                     </div>
                     <div class="form-grid-container" id="form-list-container">
-                    </div>
+                        </div>
                 </div>
 
                 <div id="view-form-editor" class="hidden">
@@ -156,14 +202,34 @@
         </main>
     </div>
 
+    <div id="add-post-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Buat Pengumuman</h3>
+                <button onclick="closeModal('add-post-modal')" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="new-title" class="input-clean" placeholder="Judul Pengumuman">
+                <textarea id="new-desc" class="input-clean" rows="4" placeholder="Isi Pengumuman..."></textarea>
+                <div class="input-group-modern" style="margin-bottom: 20px;">
+                    <label style="font-size: 0.85rem; color: #888; display: block; margin-bottom: 5px;">
+                        Nama File Gambar (Wajib ada di folder asset/Content/thumbnail/)
+                    </label>
+                    <input type="text" id="new-image-name" class="input-clean" placeholder="Contoh: event.jpg">
+                </div>
+                <button id="btn-publish" class="btn-primary-full">Publish Now</button>
+            </div>
+        </div>
+    </div>
+
     <div id="create-form-modal" class="modal-overlay hidden">
         <div class="modal-box">
             <div class="modal-header">
                 <h3>Formulir Baru</h3>
-                <button onclick="closeCreateFormModal()" class="close-btn">&times;</button>
+                <button onclick="closeModal('create-form-modal')" class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
-                <input type="text" id="new-form-title" class="input-clean" placeholder="Judul Form (Cth: Pendaftaran Anggota)">
+                <input type="text" id="new-form-title" class="input-clean" placeholder="Judul Form (Cth: Pendaftaran)">
                 <textarea id="new-form-desc" class="input-clean" rows="3" placeholder="Deskripsi Singkat..."></textarea>
                 <button id="btn-create-form" class="btn-primary-full">Buat Sekarang</button>
             </div>
@@ -174,6 +240,7 @@
 
     <script type="module" src="JS/admin.js"></script>
     <script>
+        // UI HELPERS
         function switchTab(tabId) {
             document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
@@ -183,10 +250,18 @@
             if(btn) btn.classList.add('active');
 
             if(tabId === 'forms') backToFormList();
+            
+            const titles = { 
+                'overview': 'Dashboard Overview', 
+                'announcements': 'Manage Announcements', 
+                'youtube': 'YouTube Settings', 
+                'forms': 'Form Builder' 
+            };
+            document.getElementById('page-title').innerText = titles[tabId];
         }
 
-        function openCreateFormModal() { document.getElementById('create-form-modal').classList.remove('hidden'); }
-        function closeCreateFormModal() { document.getElementById('create-form-modal').classList.add('hidden'); }
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
         
         function backToFormList() {
             document.getElementById('view-form-editor').classList.add('hidden');
