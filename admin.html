@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/admin.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
@@ -48,6 +50,12 @@
                 </button>
                 <button class="menu-item" onclick="switchTab('youtube')">
                     <i class="fa-brands fa-youtube"></i> YouTube Video
+                </button>
+                <button class="menu-item" onclick="switchTab('form-builder')">
+                    <i class="fa-solid fa-list-check"></i> Form Builder
+                </button>
+                <button class="menu-item" onclick="switchTab('submissions')">
+                    <i class="fa-solid fa-file-invoice"></i> Form Data
                 </button>
                 <div class="divider"></div>
                 <a href="#" class="menu-item logout">
@@ -115,6 +123,55 @@
                     <button id="btn-update-yt" class="btn-primary">Save Changes</button>
                 </div>
             </section>
+
+            <section id="tab-form-builder" class="content-section hidden">
+                <div class="form-card">
+                    <h3>Atur Kolom Form</h3>
+                    <p class="text-muted">Tambahkan pertanyaan yang ingin ditampilkan di form.html</p>
+                    
+                    <div class="input-group-modern" style="display: flex; gap: 10px;">
+                        <input type="text" id="field-label" class="input-clean" placeholder="Label Pertanyaan">
+                        <select id="field-type" class="input-clean" style="width: 150px;">
+                            <option value="text">Text Singkat</option>
+                            <option value="number">Angka / No.HP</option>
+                            <option value="email">Email</option>
+                            <option value="textarea">Text Panjang</option>
+                        </select>
+                        <button id="btn-add-field" class="btn-primary">Add</button>
+                    </div>
+            
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Label</th>
+                                    <th>Tipe Input</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="form-config-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="tab-submissions" class="content-section hidden">
+                <div class="section-actions">
+                    <h3>Data Masuk</h3>
+                    <button id="btn-download-pdf" class="btn-primary" style="background-color: #e74c3c;">
+                        <i class="fa-solid fa-file-pdf"></i> Download PDF
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="submission-table">
+                        <thead id="submission-head">
+                        </thead>
+                        <tbody id="submission-body">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -148,10 +205,16 @@
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             const btn = document.querySelector(`button[onclick="switchTab('${tabId}')"]`);
             if(btn) btn.classList.add('active');
-            const titles = { 'overview': 'Dashboard Overview', 'announcements': 'Manage Announcements', 'youtube': 'YouTube Settings' };
+            
+            const titles = { 
+                'overview': 'Dashboard Overview', 
+                'announcements': 'Manage Announcements', 
+                'youtube': 'YouTube Settings',
+                'form-builder': 'Form Configuration',
+                'submissions': 'User Submissions'
+            };
             document.getElementById('page-title').innerText = titles[tabId];
             
-            // Auto close sidebar on mobile
             if(window.innerWidth <= 768) {
                 document.getElementById('sidebar').classList.remove('active');
             }
@@ -159,7 +222,6 @@
         function openModal() { document.getElementById('add-modal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('add-modal').classList.add('hidden'); }
         
-        // Sidebar Toggle Logic
         document.getElementById('sidebar-toggle').addEventListener('click', () => {
             document.getElementById('sidebar').classList.add('active');
         });
