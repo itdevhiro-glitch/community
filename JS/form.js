@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, collection, getDocs, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCBkaF_sZMtq9ZqccMpFjVzyLmUb3CM_28",
@@ -13,132 +13,117 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const formConfigCol = collection(db, "form_config");
-const submissionsCol = collection(db, "form_submissions");
 
-const container = document.getElementById('form-fields-container');
+const urlParams = new URLSearchParams(window.location.search);
+const formId = urlParams.get('id');
 
-async function renderForm() {
+const container = document.getElementById('main-container');
+const loading = document.getElementById('loading');
+const fieldsContainer = document.getElementById('fields-container');
+
+async function init() {
+    if (!formId) {
+        loading.innerHTML = "URL Tidak Valid. Form ID hilang.";
+        return;
+    }
+
     try {
-        const q = query(formConfigCol, orderBy("createdAt", "asc"));
-        const snapshot = await getDocs(q);
-        
-        if(snapshot.empty) {
-            container.innerHTML = '<p style="text-align:center;">Form belum dikonfigurasi oleh Admin.</p>';
-            document.getElementById('btn-submit-form').style.display = 'none';
+        const formSnap = await getDoc(doc(db, "forms", formId));
+        if (!formSnap.exists()) {
+            loading.innerHTML = "Formulir tidak ditemukan atau telah dihapus.";
             return;
         }
-
-        container.innerHTML = '';
         
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            const wrapper = document.createElement('div');
-            wrapper.className = 'input-group-modern';
-            
-            const labelHtml = `<label class="field-label">${data.label}</label>`;
-            let inputHtml = '';
+        const info = formSnap.data();
+        document.getElementById('public-title').innerText = info.title;
+        document.getElementById('public-desc').innerText = info.description || '';
 
-            if(['text', 'number', 'email', 'date', 'time'].includes(data.type)) {
-                inputHtml = `<input type="${data.type}" name="${data.label}" class="input-clean" placeholder="Isi ${data.label}..." required>`;
-            }
-            else if(data.type === 'textarea') {
-                inputHtml = `<textarea name="${data.label}" class="input-clean" rows="4" placeholder="Isi detail..." required></textarea>`;
-            }
-            else if(data.type === 'select') {
-                let opts = `<option value="" disabled selected>-- Pilih Salah Satu --</option>`;
-                if(data.options) {
-                    data.options.forEach(opt => {
-                        opts += `<option value="${opt}">${opt}</option>`;
-                    });
-                }
-                inputHtml = `<select name="${data.label}" class="input-clean" required>${opts}</select>`;
-            }
-            else if(data.type === 'radio') {
-                inputHtml = `<div class="radio-group">`;
-                if(data.options) {
-                    data.options.forEach(opt => {
-                        inputHtml += `
-                            <label class="radio-item">
-                                <input type="radio" name="${data.label}" value="${opt}" required>
-                                <span>${opt}</span>
-                            </label>
-                        `;
-                    });
-                }
-                inputHtml += `</div>`;
-            }
-            else if(data.type === 'checkbox') {
-                inputHtml = `<div class="checkbox-group">`;
-                if(data.options) {
-                    data.options.forEach(opt => {
-                        inputHtml += `
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="${data.label}" value="${opt}">
-                                <span>${opt}</span>
-                            </label>
-                        `;
-                    });
-                }
-                inputHtml += `</div>`;
-            }
+        const qCol = collection(db, `forms/${formId}/questions`);
+        const qSnap = await getDocs(query(qCol, orderBy("createdAt", "asc")));
 
-            wrapper.innerHTML = labelHtml + inputHtml;
-            container.appendChild(wrapper);
-        });
+        if (qSnap.empty) {
+            fieldsContainer.innerHTML = '<p>Belum ada pertanyaan di form ini.</p>';
+        } else {
+            renderQuestions(qSnap);
+        }
+
+        loading.classList.add('hidden');
+        container.classList.remove('hidden');
 
     } catch (error) {
-        console.error("Error loading form:", error);
-        container.innerHTML = '<p style="text-align:center; color:red;">Gagal memuat form.</p>';
+        console.error(error);
+        loading.innerHTML = "Terjadi kesalahan memuat form.";
     }
+}
+
+function renderQuestions(snapshot) {
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        const wrapper = document.createElement('div');
+        wrapper.className = 'input-group-modern';
+        
+        let html = `<label class="field-label">${data.label}</label>`;
+
+        if(['text','email','number','date'].includes(data.type)) {
+            html += `<input type="${data.type}" name="${data.label}" class="input-clean" required>`;
+        } 
+        else if (data.type === 'textarea') {
+            html += `<textarea name="${data.label}" class="input-clean" rows="3" required></textarea>`;
+        }
+        else if (data.type === 'select') {
+            let opts = `<option value="" disabled selected>Pilih...</option>`;
+            data.options?.forEach(o => opts += `<option value="${o}">${o}</option>`);
+            html += `<select name="${data.label}" class="input-clean" required>${opts}</select>`;
+        }
+        else if (data.type === 'radio') {
+            data.options?.forEach(o => {
+                html += `<label class="radio-item"><input type="radio" name="${data.label}" value="${o}" required> <span>${o}</span></label>`;
+            });
+        }
+        else if (data.type === 'checkbox') {
+            data.options?.forEach(o => {
+                html += `<label class="checkbox-item"><input type="checkbox" name="${data.label}" value="${o}"> <span>${o}</span></label>`;
+            });
+        }
+
+        wrapper.innerHTML = html;
+        fieldsContainer.appendChild(wrapper);
+    });
 }
 
 document.getElementById('public-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const btn = document.getElementById('btn-submit-form');
-    
-    const formData = new FormData(e.target);
-    const dataToSave = {};
-
-    const keys = Array.from(formData.keys());
-    const uniqueKeys = [...new Set(keys)];
-
-    uniqueKeys.forEach(key => {
-        const values = formData.getAll(key);
-        if(values.length > 1) {
-            dataToSave[key] = values.join(', '); 
-        } else {
-            dataToSave[key] = values[0];
-        }
-    });
-
-    dataToSave.submittedAt = new Date();
-
+    const btn = document.getElementById('btn-submit');
     btn.innerText = "Mengirim...";
     btn.disabled = true;
 
+    const formData = new FormData(e.target);
+    const data = {};
+
+    const keys = [...new Set(formData.keys())];
+    keys.forEach(key => {
+        const vals = formData.getAll(key);
+        data[key] = vals.length > 1 ? vals.join(', ') : vals[0];
+    });
+    
+    data.submittedAt = new Date();
+
     try {
-        await addDoc(submissionsCol, dataToSave);
+        await addDoc(collection(db, `forms/${formId}/submissions`), data);
         
         Swal.fire({
             icon: 'success',
-            title: 'Berhasil!',
-            text: 'Data Anda telah terkirim.',
+            title: 'Terkirim!',
+            text: 'Jawaban Anda telah direkam.',
             confirmButtonColor: '#2C2420'
         }).then(() => {
             window.location.reload();
         });
-
     } catch (error) {
-        console.error("Submit error:", error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Gagal mengirim data. Coba lagi nanti.'
-        });
-        btn.innerText = "Kirim Data";
+        alert("Gagal mengirim.");
+        btn.innerText = "Kirim Jawaban";
         btn.disabled = false;
     }
 });
 
-renderForm();
+init();
