@@ -14,6 +14,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Ambil ID dari URL (?id=...)
 const urlParams = new URLSearchParams(window.location.search);
 const formId = urlParams.get('id');
 
@@ -22,25 +23,19 @@ const loading = document.getElementById('loading');
 const fieldsContainer = document.getElementById('fields-container');
 
 async function init() {
-    if (!formId) {
-        loading.innerHTML = "URL Tidak Valid. Form ID hilang.";
-        return;
-    }
+    if (!formId) return loading.innerHTML = "URL Tidak Valid.";
 
     try {
+        // Ambil Data Form (Judul)
         const formSnap = await getDoc(doc(db, "forms", formId));
-        if (!formSnap.exists()) {
-            loading.innerHTML = "Formulir tidak ditemukan atau telah dihapus.";
-            return;
-        }
+        if (!formSnap.exists()) return loading.innerHTML = "Formulir tidak ditemukan atau telah dihapus.";
         
         const info = formSnap.data();
         document.getElementById('public-title').innerText = info.title;
         document.getElementById('public-desc').innerText = info.description || '';
 
-        const qCol = collection(db, `forms/${formId}/questions`);
-        const qSnap = await getDocs(query(qCol, orderBy("createdAt", "asc")));
-
+        // Ambil Pertanyaan
+        const qSnap = await getDocs(query(collection(db, `forms/${formId}/questions`), orderBy("createdAt", "asc")));
         if (qSnap.empty) {
             fieldsContainer.innerHTML = '<p>Belum ada pertanyaan di form ini.</p>';
         } else {
@@ -100,6 +95,7 @@ document.getElementById('public-form').addEventListener('submit', async (e) => {
     const formData = new FormData(e.target);
     const data = {};
 
+    // Handle Checkbox array
     const keys = [...new Set(formData.keys())];
     keys.forEach(key => {
         const vals = formData.getAll(key);
@@ -110,15 +106,12 @@ document.getElementById('public-form').addEventListener('submit', async (e) => {
 
     try {
         await addDoc(collection(db, `forms/${formId}/submissions`), data);
-        
         Swal.fire({
             icon: 'success',
             title: 'Terkirim!',
             text: 'Jawaban Anda telah direkam.',
             confirmButtonColor: '#2C2420'
-        }).then(() => {
-            window.location.reload();
-        });
+        }).then(() => window.location.reload());
     } catch (error) {
         alert("Gagal mengirim.");
         btn.innerText = "Kirim Jawaban";
