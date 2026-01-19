@@ -14,7 +14,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Ambil ID dari URL (?id=...)
 const urlParams = new URLSearchParams(window.location.search);
 const formId = urlParams.get('id');
 
@@ -26,7 +25,6 @@ async function init() {
     if (!formId) return loading.innerHTML = "URL Tidak Valid.";
 
     try {
-        // Ambil Data Form (Judul)
         const formSnap = await getDoc(doc(db, "forms", formId));
         if (!formSnap.exists()) return loading.innerHTML = "Formulir tidak ditemukan atau telah dihapus.";
         
@@ -34,7 +32,6 @@ async function init() {
         document.getElementById('public-title').innerText = info.title;
         document.getElementById('public-desc').innerText = info.description || '';
 
-        // Ambil Pertanyaan
         const qSnap = await getDocs(query(collection(db, `forms/${formId}/questions`), orderBy("createdAt", "asc")));
         if (qSnap.empty) {
             fieldsContainer.innerHTML = '<p>Belum ada pertanyaan di form ini.</p>';
@@ -52,33 +49,51 @@ async function init() {
 }
 
 function renderQuestions(snapshot) {
-    snapshot.forEach(doc => {
-        const data = doc.data();
+    snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        
         const wrapper = document.createElement('div');
-        wrapper.className = 'input-group-modern';
+        wrapper.className = 'field-wrapper';
         
         let html = `<label class="field-label">${data.label}</label>`;
 
-        if(['text','email','number','date'].includes(data.type)) {
-            html += `<input type="${data.type}" name="${data.label}" class="input-clean" required>`;
+        if(data.type === 'text' || data.type === 'email' || data.type === 'number') {
+            html += `<input type="${data.type}" name="${data.label}" class="input-clean" placeholder="Jawaban Anda..." required>`;
         } 
+        else if (data.type === 'date') {
+            html += `<input type="date" name="${data.label}" class="input-clean" required>`;
+        }
         else if (data.type === 'textarea') {
-            html += `<textarea name="${data.label}" class="input-clean" rows="3" required></textarea>`;
+            html += `<textarea name="${data.label}" class="input-clean" rows="4" placeholder="Jawaban Anda..." required></textarea>`;
         }
         else if (data.type === 'select') {
-            let opts = `<option value="" disabled selected>Pilih...</option>`;
-            data.options?.forEach(o => opts += `<option value="${o}">${o}</option>`);
+            let opts = `<option value="" disabled selected>Pilih salah satu...</option>`;
+            if(Array.isArray(data.options)) {
+                data.options.forEach(o => opts += `<option value="${o}">${o}</option>`);
+            }
             html += `<select name="${data.label}" class="input-clean" required>${opts}</select>`;
         }
         else if (data.type === 'radio') {
-            data.options?.forEach(o => {
-                html += `<label class="radio-item"><input type="radio" name="${data.label}" value="${o}" required> <span>${o}</span></label>`;
-            });
+            if(Array.isArray(data.options)) {
+                data.options.forEach(o => {
+                    html += `
+                    <label class="option-item">
+                        <input type="radio" name="${data.label}" value="${o}" required> 
+                        <span>${o}</span>
+                    </label>`;
+                });
+            }
         }
         else if (data.type === 'checkbox') {
-            data.options?.forEach(o => {
-                html += `<label class="checkbox-item"><input type="checkbox" name="${data.label}" value="${o}"> <span>${o}</span></label>`;
-            });
+            if(Array.isArray(data.options)) {
+                data.options.forEach(o => {
+                    html += `
+                    <label class="option-item">
+                        <input type="checkbox" name="${data.label}" value="${o}"> 
+                        <span>${o}</span>
+                    </label>`;
+                });
+            }
         }
 
         wrapper.innerHTML = html;
@@ -95,7 +110,6 @@ document.getElementById('public-form').addEventListener('submit', async (e) => {
     const formData = new FormData(e.target);
     const data = {};
 
-    // Handle Checkbox array
     const keys = [...new Set(formData.keys())];
     keys.forEach(key => {
         const vals = formData.getAll(key);
