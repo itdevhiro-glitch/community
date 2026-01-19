@@ -45,24 +45,12 @@
                 <button class="menu-item active" onclick="switchTab('overview')">
                     <i class="fa-solid fa-chart-pie"></i> Overview
                 </button>
-                <button class="menu-item" onclick="switchTab('announcements')">
-                    <i class="fa-solid fa-bullhorn"></i> Announcements
-                </button>
-                <button class="menu-item" onclick="switchTab('youtube')">
-                    <i class="fa-brands fa-youtube"></i> YouTube Video
-                </button>
-                <button class="menu-item" onclick="switchTab('form-builder')">
-                    <i class="fa-solid fa-list-check"></i> Form Builder
-                </button>
-                <button class="menu-item" onclick="switchTab('submissions')">
-                    <i class="fa-solid fa-file-invoice"></i> Form Data
+                <button class="menu-item" onclick="switchTab('forms')">
+                    <i class="fa-solid fa-list-check"></i> My Forms
                 </button>
                 <div class="divider"></div>
                 <a href="#" class="menu-item logout">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
-                </a>
-                <a href="index.html" class="menu-item">
-                    <i class="fa-solid fa-globe"></i> View Website
                 </a>
             </nav>
         </aside>
@@ -82,128 +70,102 @@
             <section id="tab-overview" class="content-section">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon"><i class="fa-solid fa-newspaper"></i></div>
+                        <div class="stat-icon"><i class="fa-solid fa-file-signature"></i></div>
                         <div class="stat-info">
-                            <h4>Total Posts</h4>
-                            <span id="stat-count-posts">0</span>
+                            <h4>Total Forms</h4>
+                            <span id="stat-total-forms">0</span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="tab-announcements" class="content-section hidden">
-                <div class="section-actions">
-                    <button class="btn-primary" onclick="openModal()">
-                        <i class="fa-solid fa-plus"></i> New Announcement
-                    </button>
+            <section id="tab-forms" class="content-section hidden">
+                <div id="view-form-list">
+                    <div class="section-actions">
+                        <h3>Daftar Formulir</h3>
+                        <button class="btn-primary" onclick="openCreateFormModal()">
+                            <i class="fa-solid fa-plus"></i> Buat Form Baru
+                        </button>
+                    </div>
+                    <div class="form-grid-container" id="form-list-container">
+                    </div>
                 </div>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Title</th>
-                                <th class="hide-mobile">Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="announcement-table-body">
-                        </tbody>
-                    </table>
-                </div>
-            </section>
 
-            <section id="tab-youtube" class="content-section hidden">
-                <div class="form-card">
-                    <h3>Update Featured Video</h3>
-                    <p class="text-muted">Masukkan link YouTube baru untuk ditampilkan di halaman depan.</p>
-                    <div class="input-group-modern">
-                        <input type="text" id="yt-link-input" class="input-clean" placeholder="https://youtu.be/...">
+                <div id="view-form-editor" class="hidden">
+                    <div class="editor-header">
+                        <button class="btn-back" onclick="backToFormList()"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+                        <div class="editor-title">
+                            <h3 id="editor-form-title">Loading...</h3>
+                            <div class="link-box">
+                                <span id="share-link-text">...</span>
+                                <button onclick="copyFormLink()"><i class="fa-solid fa-copy"></i></button>
+                            </div>
+                        </div>
+                        <div class="editor-tabs">
+                            <button class="tab-btn active" onclick="switchEditorTab('questions')">Pertanyaan</button>
+                            <button class="tab-btn" onclick="switchEditorTab('responses')">Respon (<span id="response-count">0</span>)</button>
+                        </div>
                     </div>
-                    <button id="btn-update-yt" class="btn-primary">Save Changes</button>
-                </div>
-            </section>
 
-            <section id="tab-form-builder" class="content-section hidden">
-                <div class="form-card">
-                    <h3>Atur Kolom Form</h3>
-                    <p class="text-muted">Tambahkan pertanyaan dinamis. Untuk pilihan ganda, pisahkan opsi dengan koma.</p>
-                    
-                    <div class="builder-box">
-                        <div class="input-row" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <input type="text" id="field-label" class="input-clean" style="flex: 1;" placeholder="Label Pertanyaan">
-                            <select id="field-type" class="input-clean" style="width: 200px;">
-                                <option value="text">Text Singkat</option>
-                                <option value="textarea">Text Panjang</option>
-                                <option value="number">Angka / No.HP</option>
-                                <option value="email">Email</option>
-                                <option value="date">Tanggal</option>
-                                <option value="time">Waktu</option>
-                                <option value="select">Dropdown (Pilihan)</option>
-                                <option value="radio">Radio (Satu Jawaban)</option>
-                                <option value="checkbox">Checkbox (Banyak Jawaban)</option>
-                            </select>
+                    <div id="editor-tab-questions">
+                        <div class="form-card">
+                            <div class="builder-box">
+                                <div class="input-row" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                    <input type="text" id="field-label" class="input-clean" style="flex: 1;" placeholder="Pertanyaan (Contoh: Nama Lengkap)">
+                                    <select id="field-type" class="input-clean" style="width: 200px;">
+                                        <option value="text">Text Singkat</option>
+                                        <option value="textarea">Text Panjang</option>
+                                        <option value="number">Angka / No.HP</option>
+                                        <option value="date">Tanggal</option>
+                                        <option value="select">Dropdown</option>
+                                        <option value="radio">Pilihan Ganda</option>
+                                        <option value="checkbox">Kotak Centang</option>
+                                    </select>
+                                </div>
+                                <div id="options-container" class="input-row hidden" style="margin-top: 10px;">
+                                    <input type="text" id="field-options" class="input-clean" placeholder="Opsi Jawaban (Pisahkan dengan koma, cth: Ya,Tidak)">
+                                </div>
+                                <button id="btn-add-field" class="btn-primary-full" style="margin-top: 10px;">Tambah Pertanyaan</button>
+                            </div>
+
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead><tr><th>Label</th><th>Tipe</th><th>Opsi</th><th>Hapus</th></tr></thead>
+                                    <tbody id="questions-list-body"></tbody>
+                                </table>
+                            </div>
                         </div>
-                        
-                        <div id="options-container" class="input-row hidden" style="margin-top: 10px;">
-                            <input type="text" id="field-options" class="input-clean" placeholder="Masukkan Pilihan (Pisahkan dengan koma, cth: Pria,Wanita)">
+                    </div>
+
+                    <div id="editor-tab-responses" class="hidden">
+                        <div class="section-actions">
+                            <h4>Data Masuk</h4>
+                            <button id="btn-download-pdf" class="btn-primary" style="background-color: #e74c3c;">
+                                <i class="fa-solid fa-file-pdf"></i> Download PDF
+                            </button>
                         </div>
-            
-                        <button id="btn-add-field" class="btn-primary-full" style="margin-top: 10px;">Tambahkan Kolom</button>
+                        <div class="table-container">
+                            <table class="data-table" id="responses-table">
+                                <thead id="responses-head"></thead>
+                                <tbody id="responses-body"></tbody>
+                            </table>
+                        </div>
                     </div>
-            
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Label</th>
-                                    <th>Tipe</th>
-                                    <th>Opsi</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="form-config-body">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-            
-            <section id="tab-submissions" class="content-section hidden">
-                <div class="section-actions">
-                    <h3>Data Masuk</h3>
-                    <button id="btn-download-pdf" class="btn-primary" style="background-color: #e74c3c;">
-                        <i class="fa-solid fa-file-pdf"></i> Download PDF
-                    </button>
-                </div>
-                <div class="table-container">
-                    <table class="data-table" id="submission-table">
-                        <thead id="submission-head">
-                        </thead>
-                        <tbody id="submission-body">
-                        </tbody>
-                    </table>
                 </div>
             </section>
         </main>
     </div>
 
-    <div id="add-modal" class="modal-overlay hidden">
+    <div id="create-form-modal" class="modal-overlay hidden">
         <div class="modal-box">
             <div class="modal-header">
-                <h3>Create New Post</h3>
-                <button onclick="closeModal()" class="close-btn">&times;</button>
+                <h3>Formulir Baru</h3>
+                <button onclick="closeCreateFormModal()" class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
-                <input type="text" id="new-title" class="input-clean" placeholder="Judul Pengumuman">
-                <textarea id="new-desc" class="input-clean" rows="4" placeholder="Isi Pengumuman..."></textarea>
-                <div class="input-group-modern" style="margin-bottom: 20px;">
-                    <label style="font-size: 0.85rem; color: #888; display: block; margin-bottom: 5px;">
-                        Nama File Gambar (Wajib ada di folder asset/Content/thumbnail/)
-                    </label>
-                    <input type="text" id="new-image-name" class="input-clean" placeholder="Contoh: event.jpg">
-                </div>
-                <button id="btn-publish" class="btn-primary-full">Publish Now</button>
+                <input type="text" id="new-form-title" class="input-clean" placeholder="Judul Form (Cth: Pendaftaran Anggota)">
+                <textarea id="new-form-desc" class="input-clean" rows="3" placeholder="Deskripsi Singkat..."></textarea>
+                <button id="btn-create-form" class="btn-primary-full">Buat Sekarang</button>
             </div>
         </div>
     </div>
@@ -216,31 +178,32 @@
             document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.remove('hidden');
+            
             const btn = document.querySelector(`button[onclick="switchTab('${tabId}')"]`);
             if(btn) btn.classList.add('active');
-            
-            const titles = { 
-                'overview': 'Dashboard Overview', 
-                'announcements': 'Manage Announcements', 
-                'youtube': 'YouTube Settings',
-                'form-builder': 'Form Configuration',
-                'submissions': 'User Submissions'
-            };
-            document.getElementById('page-title').innerText = titles[tabId];
-            
-            if(window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.remove('active');
-            }
+
+            if(tabId === 'forms') backToFormList();
         }
-        function openModal() { document.getElementById('add-modal').classList.remove('hidden'); }
-        function closeModal() { document.getElementById('add-modal').classList.add('hidden'); }
+
+        function openCreateFormModal() { document.getElementById('create-form-modal').classList.remove('hidden'); }
+        function closeCreateFormModal() { document.getElementById('create-form-modal').classList.add('hidden'); }
         
-        document.getElementById('sidebar-toggle').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.add('active');
-        });
-        document.getElementById('close-sidebar').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.remove('active');
-        });
+        function backToFormList() {
+            document.getElementById('view-form-editor').classList.add('hidden');
+            document.getElementById('view-form-list').classList.remove('hidden');
+        }
+
+        function switchEditorTab(tab) {
+            document.getElementById('editor-tab-questions').classList.add('hidden');
+            document.getElementById('editor-tab-responses').classList.add('hidden');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('editor-tab-' + tab).classList.remove('hidden');
+            document.querySelector(`button[onclick="switchEditorTab('${tab}')"]`).classList.add('active');
+        }
+
+        document.getElementById('sidebar-toggle').addEventListener('click', () => document.getElementById('sidebar').classList.add('active'));
+        document.getElementById('close-sidebar').addEventListener('click', () => document.getElementById('sidebar').classList.remove('active'));
     </script>
 </body>
 </html>
