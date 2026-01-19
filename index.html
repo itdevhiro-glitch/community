@@ -94,9 +94,25 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 Tachibana Scan Community. Built with Passion.</p>
+            <p>&copy; 2024 Tachibana Scan Community. Built with Passion.</p>
         </div>
     </footer>
+
+    <div id="detail-modal" class="modal hidden">
+        <div class="modal-backdrop" id="detail-backdrop"></div>
+        <div class="detail-card fade-in-scale">
+            <button id="close-detail" class="close-btn-abs"><i class="fa-solid fa-xmark"></i></button>
+            <div class="detail-img-container">
+                <img id="popup-img" src="" alt="Detail Image">
+            </div>
+            <div class="detail-content">
+                <span id="popup-date" class="detail-date"></span>
+                <h3 id="popup-title" class="detail-title"></h3>
+                <div class="divider-small"></div>
+                <p id="popup-desc" class="detail-desc"></p>
+            </div>
+        </div>
+    </div>
 
     <script type="module" src="JS/script.js"></script>
 </body>
