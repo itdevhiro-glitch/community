@@ -38,12 +38,13 @@ async function loadAnnouncements() {
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             const dateStr = formatDate(data.createdAt);
+            const imagePath = `asset/Content/thumbnail/${data.imageName}`;
             
             const card = document.createElement('div');
             card.className = 'card fade-in';
             card.innerHTML = `
                 <div class="card-img-wrapper">
-                    <img src="${data.imageUrl}" alt="${data.title}" class="card-img">
+                    <img src="${imagePath}" alt="${data.title}" class="card-img" onerror="this.style.display='none'">
                 </div>
                 <div class="card-content">
                     <span class="card-date">${dateStr}</span>
@@ -55,7 +56,7 @@ async function loadAnnouncements() {
         });
     } catch (error) {
         console.error("Error:", error);
-        gridContainer.innerHTML = '<p class="text-center">Gagal memuat data. Periksa koneksi.</p>';
+        gridContainer.innerHTML = '<p class="text-center">Gagal memuat data.</p>';
     }
 }
 
