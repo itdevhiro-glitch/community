@@ -123,9 +123,11 @@
             <div class="modal-body">
                 <input type="text" id="new-title" class="input-clean" placeholder="Judul Pengumuman">
                 <textarea id="new-desc" class="input-clean" rows="4" placeholder="Isi Pengumuman..."></textarea>
-                <div class="file-area">
-                    <input type="file" id="new-image" accept="image/*">
-                    <p>Click to upload banner image</p>
+                <div class="input-group-modern" style="margin-bottom: 20px;">
+                    <label style="font-size: 0.85rem; color: #888; display: block; margin-bottom: 5px;">
+                        Nama File Gambar (Wajib ada di folder asset/Content/thumbnail/)
+                    </label>
+                    <input type="text" id="new-image-name" class="input-clean" placeholder="Contoh: event.jpg">
                 </div>
                 <button id="btn-publish" class="btn-primary-full">Publish Now</button>
             </div>
