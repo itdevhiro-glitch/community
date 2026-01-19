@@ -14,12 +14,39 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// DOM Elements
 const gridContainer = document.getElementById('announcement-grid');
 const youtubeContainer = document.getElementById('youtube-container');
-
 const detailModal = document.getElementById('detail-modal');
 const closeDetailBtn = document.getElementById('close-detail');
 const detailBackdrop = document.getElementById('detail-backdrop');
+const mobileBtn = document.getElementById('mobile-menu-toggle');
+const navLinks = document.getElementById('nav-links');
+
+// Mobile Menu Logic
+if(mobileBtn && navLinks) {
+    mobileBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        // Ubah icon dari bars ke xmark
+        const icon = mobileBtn.querySelector('i');
+        if(navLinks.classList.contains('active')){
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-xmark');
+        } else {
+            icon.classList.remove('fa-xmark');
+            icon.classList.add('fa-bars');
+        }
+    });
+
+    // Tutup menu saat link diklik
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            mobileBtn.querySelector('i').classList.remove('fa-xmark');
+            mobileBtn.querySelector('i').classList.add('fa-bars');
+        });
+    });
+}
 
 function formatDate(timestamp) {
     if (!timestamp) return '';
