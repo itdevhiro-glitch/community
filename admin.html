@@ -156,27 +156,45 @@
 
                     <div id="editor-tab-questions">
                         <div class="form-card">
-                            <div class="builder-box" style="background:#fafafa; padding:15px; border-radius:8px; border:1px dashed #ccc; margin-bottom:20px;">
-                                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
-                                    <input type="text" id="field-label" class="input-clean" style="flex:1;" placeholder="Label Pertanyaan">
-                                    <select id="field-type" class="input-clean" style="width:200px;">
-                                        <option value="text">Text Singkat</option>
-                                        <option value="textarea">Text Panjang</option>
-                                        <option value="number">Angka / No.HP</option>
-                                        <option value="date">Tanggal</option>
-                                        <option value="select">Dropdown</option>
-                                        <option value="radio">Radio Button</option>
-                                        <option value="checkbox">Checkbox</option>
-                                    </select>
+                            <div class="builder-box" style="background:#fff; padding:25px; border-radius:12px; border:1px solid #eee; margin-bottom:30px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                                <h4 style="margin-bottom:15px; color:#2C2420;">Tambah Pertanyaan Baru</h4>
+                                
+                                <div style="display:grid; grid-template-columns: 3fr 1fr; gap:15px; margin-bottom:15px;">
+                                    <div class="input-wrapper">
+                                        <label style="font-size:0.85rem; font-weight:600; color:#555;">Pertanyaan</label>
+                                        <input type="text" id="field-label" class="input-clean" placeholder="Contoh: Siapa nama lengkap anda?">
+                                    </div>
+                                    <div class="input-wrapper">
+                                        <label style="font-size:0.85rem; font-weight:600; color:#555;">Tipe Jawaban</label>
+                                        <select id="field-type" class="input-clean">
+                                            <option value="text">Text Singkat</option>
+                                            <option value="textarea">Text Panjang</option>
+                                            <option value="number">Angka / No.HP</option>
+                                            <option value="date">Tanggal</option>
+                                            <option value="select">Dropdown Menu</option>
+                                            <option value="radio">Pilihan Ganda (Radio)</option>
+                                            <option value="checkbox">Kotak Centang (Checkbox)</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div id="options-container" class="hidden" style="margin-bottom:10px;">
-                                    <input type="text" id="field-options" class="input-clean" placeholder="Opsi (pisahkan koma): Pria,Wanita">
+                    
+                                <div id="options-area" class="hidden" style="background:#f9f9f9; padding:15px; border-radius:8px; margin-bottom:15px;">
+                                    <label style="font-size:0.85rem; font-weight:600; color:#555; display:block; margin-bottom:10px;">Daftar Opsi Jawaban:</label>
+                                    <div id="dynamic-options-container"></div>
+                                    <button id="btn-add-option-row" class="btn-secondary-small" style="margin-top:10px; font-size:0.8rem; cursor:pointer; background:#eee; border:none; padding:5px 10px; border-radius:4px;">
+                                        <i class="fa-solid fa-plus"></i> Tambah Opsi Lain
+                                    </button>
                                 </div>
-                                <button id="btn-add-field" class="btn-primary-full">Tambah</button>
+                    
+                                <button id="btn-add-field" class="btn-primary-full" style="height:45px; font-weight:600;">
+                                    <i class="fa-solid fa-save"></i> Simpan Pertanyaan
+                                </button>
                             </div>
+                    
                             <div class="table-container">
+                                <h4 style="margin-bottom:15px; color:#2C2420;">Daftar Pertanyaan Aktif</h4>
                                 <table class="data-table">
-                                    <thead><tr><th>Label</th><th>Tipe</th><th>Opsi</th><th>Aksi</th></tr></thead>
+                                    <thead><tr><th>Label Pertanyaan</th><th>Tipe</th><th>Detail Opsi</th><th>Aksi</th></tr></thead>
                                     <tbody id="questions-list-body"></tbody>
                                 </table>
                             </div>
@@ -237,14 +255,11 @@
 
     <script type="module" src="JS/admin.js"></script>
     <script>
-        // SCRIPT UI (Digabungkan agar semua tab jalan)
         function switchTab(tabId) {
             document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             
-            // Highlight menu yang aktif
-            // Perbaikan selector agar presisi
             const menus = document.querySelectorAll('.menu-item');
             menus.forEach(btn => {
                 if(btn.getAttribute('onclick') === `switchTab('${tabId}')`) {
@@ -252,13 +267,11 @@
                 }
             });
 
-            // Logic khusus Form
             if(tabId === 'forms') {
                 document.getElementById('view-form-list').classList.remove('hidden');
                 document.getElementById('view-form-editor').classList.add('hidden');
             }
 
-            // Ganti Title Halaman
             const titles = { 
                 'overview': 'Dashboard Overview', 
                 'announcements': 'Manage Announcements', 
@@ -273,11 +286,9 @@
             }
         }
 
-        // Helper Modal
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
         
-        // Helper Form Editor UI
         function backToFormList() {
             document.getElementById('view-form-editor').classList.add('hidden');
             document.getElementById('view-form-list').classList.remove('hidden');
@@ -292,7 +303,6 @@
             });
             
             document.getElementById('editor-tab-' + tab).classList.remove('hidden');
-            // Highlight tab active manual style karena inline
             const activeBtn = document.querySelector(`button[onclick="switchEditorTab('${tab}')"]`);
             if(activeBtn) {
                 activeBtn.style.borderBottom = '2px solid #A68A64';
@@ -300,7 +310,6 @@
             }
         }
 
-        // Sidebar Mobile Toggle
         document.getElementById('sidebar-toggle').addEventListener('click', () => {
             document.getElementById('sidebar').classList.add('active');
         });
