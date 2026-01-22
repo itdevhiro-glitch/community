@@ -24,7 +24,7 @@ const fieldsContainer = document.getElementById('fields-container');
 
 async function init() {
     if (!formId) {
-        loadingText.innerHTML = "Error: ID Form tidak ditemukan di URL.";
+        showFatalError("Link Error", "ID Formulir tidak ditemukan di URL.");
         return;
     }
 
@@ -33,67 +33,111 @@ async function init() {
         const formSnap = await getDoc(formRef);
 
         if (!formSnap.exists()) {
-            loadingText.innerHTML = "Formulir tidak ditemukan.";
+            showFatalError("Tidak Ditemukan", "Formulir yang Anda cari tidak tersedia atau telah dihapus.");
             return;
         }
         
         const info = formSnap.data();
         document.getElementById('public-title').innerText = info.title;
         document.getElementById('public-desc').innerText = info.description || '';
-        document.title = info.title;
+        document.title = `${info.title} | Tachibana`;
 
+        // Render Questions
         const qRef = collection(db, `forms/${formId}/questions`);
         const qSnap = await getDocs(query(qRef, orderBy("createdAt", "asc")));
         
         if (qSnap.empty) {
-            fieldsContainer.innerHTML = '<div style="text-align:center; color:#888;">Belum ada pertanyaan.</div>';
+            fieldsContainer.innerHTML = `
+                <div style="text-align:center; padding: 40px; background: #f9f9f9; border-radius: 12px; color: #666;">
+                    <i class="fa-regular fa-clipboard" style="font-size: 2rem; margin-bottom: 10px; display:block;"></i>
+                    Belum ada pertanyaan.
+                </div>`;
         } else {
             renderQuestions(qSnap);
         }
 
-        loading.classList.add('hidden');
-        container.classList.remove('hidden');
+        // Smooth Transition
+        loading.style.opacity = '0';
+        setTimeout(() => {
+            loading.classList.add('hidden');
+            container.classList.remove('hidden');
+            setTimeout(() => {
+                container.classList.add('visible');
+            }, 50);
+        }, 300);
 
     } catch (error) {
         console.error(error);
-        loadingText.innerHTML = "Gagal memuat data. Coba refresh halaman.";
+        showFatalError("Koneksi Gagal", "Gagal memuat data. Silakan periksa internet Anda dan refresh halaman.");
     }
+}
+
+function showFatalError(title, msg) {
+    loadingText.innerHTML = `<span style="color:#d33">${msg}</span>`;
+    Swal.fire({
+        icon: 'error',
+        title: title,
+        text: msg,
+        confirmButtonColor: '#2C2420'
+    });
 }
 
 function renderQuestions(snapshot) {
     fieldsContainer.innerHTML = ''; 
+    let delay = 0;
 
     snapshot.forEach(docSnap => {
         const data = docSnap.data();
         const wrapper = document.createElement('div');
-        wrapper.className = 'field-wrapper';
+        wrapper.className = 'field-group';
+        wrapper.style.animationDelay = `${delay}ms`; // Stagger animation
+        delay += 100;
         
-        let html = `<label class="field-label">${data.label}</label>`;
+        const isRequired = data.required ? '<span style="color:#ef4444; margin-left:4px">*</span>' : '';
+        const uniqueId = docSnap.id;
 
-        if(data.type === 'text' || data.type === 'email' || data.type === 'number') {
-            html += `<input type="${data.type}" name="${data.label}" class="input-clean" placeholder="Jawaban Anda..." required>`;
+        // Header Label for the Question
+        let html = `<label class="field-label-block">${data.label} ${isRequired}</label>`;
+
+        // INPUT: TEXT, EMAIL, NUMBER, DATE
+        if(['text', 'email', 'number', 'date'].includes(data.type)) {
+            html += `
+            <div class="input-wrapper">
+                <input type="${data.type}" name="${data.label}" class="form-control" placeholder="Ketik jawaban Anda..." ${data.required ? 'required' : ''}>
+            </div>`;
         } 
-        else if (data.type === 'date') {
-            html += `<input type="date" name="${data.label}" class="input-clean" required>`;
-        }
+        // INPUT: TEXTAREA
         else if (data.type === 'textarea') {
-            html += `<textarea name="${data.label}" class="input-clean" rows="3" placeholder="Jawaban Anda..." required></textarea>`;
+            html += `
+            <div class="input-wrapper">
+                <textarea name="${data.label}" class="form-control" rows="4" placeholder="Ketik jawaban panjang di sini..." ${data.required ? 'required' : ''}></textarea>
+            </div>`;
         }
+        // INPUT: SELECT
         else if (data.type === 'select') {
-            let opts = `<option value="" disabled selected>Pilih Salah Satu</option>`;
+            let opts = `<option value="" disabled selected>-- Pilih Salah Satu --</option>`;
             if(Array.isArray(data.options)) {
                 data.options.forEach(o => opts += `<option value="${o}">${o}</option>`);
             }
-            html += `<select name="${data.label}" class="input-clean" required>${opts}</select>`;
+            html += `
+            <div class="input-wrapper" style="position:relative">
+                <select name="${data.label}" class="form-control" style="cursor:pointer" ${data.required ? 'required' : ''}>${opts}</select>
+                <i class="fa-solid fa-chevron-down" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); color:#999; pointer-events:none;"></i>
+            </div>`;
         }
+        // INPUT: RADIO / CHECKBOX
         else if (data.type === 'radio' || data.type === 'checkbox') {
-            html += `<div class="option-group">`;
+            html += `<div class="options-grid">`;
             if(Array.isArray(data.options)) {
-                data.options.forEach(o => {
+                data.options.forEach((o, index) => {
+                    const optId = `${uniqueId}_${index}`;
                     html += `
-                    <label class="option-item">
-                        <input type="${data.type}" name="${data.label}" value="${o}" ${data.type === 'radio' ? 'required' : ''}>
-                        <span>${o}</span>
+                    <label class="option-card" for="${optId}">
+                        <input type="${data.type}" id="${optId}" name="${data.label}" value="${o}" ${data.type === 'radio' && data.required ? 'required' : ''}>
+                        <div class="option-content">
+                            <div class="option-marker"></div>
+                            <span>${o}</span>
+                        </div>
                     </label>`;
                 });
             }
@@ -110,8 +154,10 @@ document.getElementById('public-form').addEventListener('submit', async (e) => {
     const btn = document.getElementById('btn-submit');
     const originalContent = btn.innerHTML;
     
-    btn.innerHTML = `Mengirim...`;
+    // Loading State Button
+    btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> &nbsp; Mengirim...`;
     btn.disabled = true;
+    btn.style.opacity = '0.7';
 
     try {
         const formData = new FormData(e.target);
@@ -129,9 +175,11 @@ document.getElementById('public-form').addEventListener('submit', async (e) => {
 
         Swal.fire({
             icon: 'success',
-            title: 'Berhasil!',
-            text: 'Jawaban Anda telah direkam.',
-            confirmButtonColor: '#2C2420'
+            title: 'Terima Kasih!',
+            text: 'Jawaban Anda telah berhasil kami rekam.',
+            confirmButtonColor: '#2C2420',
+            confirmButtonText: 'Tutup',
+            backdrop: `rgba(44, 36, 32, 0.4)`
         }).then(() => {
             window.location.reload();
         });
@@ -140,12 +188,15 @@ document.getElementById('public-form').addEventListener('submit', async (e) => {
         console.error(error);
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Gagal mengirim jawaban.',
+            title: 'Oops...',
+            text: 'Terjadi kesalahan saat mengirim data. Silakan coba lagi.',
             confirmButtonColor: '#d33'
         });
+        
+        // Reset Button
         btn.innerHTML = originalContent;
         btn.disabled = false;
+        btn.style.opacity = '1';
     }
 });
 
