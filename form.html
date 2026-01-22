@@ -4,149 +4,263 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Form | Tachibana</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #2C2420;
+            --accent: #A68A64;
+            --accent-light: #F5F1EB;
+            --bg: #F8F9FB;
+            --white: #ffffff;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+            --shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
+            --radius: 16px;
+        }
+
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        
         body {
             margin: 0; padding: 0;
-            font-family: 'Poppins', sans-serif;
-            background-color: #F0EBF8;
-            color: #333;
-            line-height: 1.6;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,0) 0, transparent 50%);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             justify-content: center;
+            align-items: flex-start;
+            padding-top: 40px;
+            padding-bottom: 40px;
         }
-        .form-container {
+
+        .main-wrapper {
             width: 100%;
-            max-width: 680px;
-            background: #fff;
-            margin: 40px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            max-width: 640px;
+            margin: 0 20px;
             position: relative;
         }
-        .form-header-banner { height: 12px; background: #2C2420; width: 100%; }
-        .form-header { padding: 40px 40px 20px 40px; border-bottom: 1px solid #f0f0f0; }
-        .form-header h1 { margin: 0 0 10px 0; font-size: 28px; color: #2C2420; line-height: 1.2; }
-        .form-header p { margin: 0; color: #666; font-size: 15px; white-space: pre-line; }
-        .form-content { padding: 30px 40px 40px 40px; }
-        .field-wrapper {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
-            transition: all 0.2s ease;
+
+        /* Loading State */
+        #loading {
+            position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 999;
+            backdrop-filter: blur(5px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--primary); transition: opacity 0.3s;
         }
-        .field-wrapper:focus-within {
-            border-color: #A68A64;
-            box-shadow: 0 4px 12px rgba(166, 138, 100, 0.15);
-            transform: translateY(-2px);
-            border-left: 6px solid #A68A64;
+        
+        /* Container Card */
+        .form-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .field-label {
+        
+        .form-card.visible { opacity: 1; transform: translateY(0); }
+
+        /* Header */
+        .form-header {
+            background: var(--white);
+            padding: 40px;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-header::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .form-header h1 {
+            margin: 0 0 12px 0; font-size: 28px; color: var(--primary);
+            font-weight: 700; letter-spacing: -0.5px;
+        }
+        
+        .form-header p {
+            margin: 0; color: var(--text-muted); font-size: 15px;
+            line-height: 1.6; white-space: pre-line;
+        }
+
+        .form-content { padding: 40px; }
+
+        /* Form Fields */
+        .field-group {
+            margin-bottom: 32px;
+            position: relative;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .field-label-block {
             display: block;
-            font-weight: 500;
-            font-size: 16px;
-            margin-bottom: 16px;
-            color: #1a1a1a;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 12px;
+            color: var(--primary);
         }
-        .input-clean {
+
+        /* Modern Input (Floating Label Style) */
+        .input-wrapper { position: relative; }
+        
+        .form-control {
             width: 100%;
-            padding: 12px 0;
-            border: none;
-            border-bottom: 2px solid #ddd;
+            padding: 14px 16px;
             font-size: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--white);
+            transition: all 0.2s ease;
+            color: var(--text-main);
             font-family: inherit;
-            background: transparent;
-            border-radius: 0;
-            transition: 0.3s;
-            color: #333;
         }
-        .input-clean:focus { border-bottom-color: #2C2420; }
-        textarea.input-clean { resize: vertical; min-height: 60px; border: 1px solid #ddd; padding: 12px; border-radius: 6px; }
-        textarea.input-clean:focus { border-color: #2C2420; }
-        .option-group { display: flex; flex-direction: column; gap: 10px; }
-        .option-item {
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(44, 36, 32, 0.1);
+        }
+
+        textarea.form-control { min-height: 120px; resize: vertical; line-height: 1.6; }
+
+        /* Custom Radio & Checkbox (Card Style) */
+        .options-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-card {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .option-card input { position: absolute; opacity: 0; }
+
+        .option-content {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: 1px solid #eee;
-            cursor: pointer;
-            transition: 0.2s;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            background: var(--white);
         }
-        .option-item:hover { background: #fafafa; border-color: #ccc; }
-        .option-item input { width: 20px; height: 20px; accent-color: #2C2420; margin-right: 15px; }
-        .option-item span { font-size: 15px; color: #444; }
-        .form-footer { margin-top: 20px; text-align: right; }
+
+        .option-content:hover { background: var(--bg); }
+
+        .option-marker {
+            width: 20px; height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 50%; /* Radio style default */
+            margin-right: 14px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        
+        /* Checkbox specific marker */
+        input[type="checkbox"] + .option-content .option-marker { border-radius: 6px; }
+
+        /* Checked State */
+        .option-card input:checked + .option-content {
+            border-color: var(--primary);
+            background: var(--accent-light);
+        }
+
+        .option-card input:checked + .option-content .option-marker {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .option-marker::after {
+            content: ''; width: 8px; height: 8px; background: white;
+            border-radius: 50%; opacity: 0; transform: scale(0); transition: all 0.2s;
+        }
+        
+        input[type="checkbox"] + .option-content .option-marker::after {
+            width: 5px; height: 9px; border-radius: 0;
+            border: solid white; border-width: 0 2px 2px 0; background: transparent;
+            transform: rotate(45deg) scale(0);
+        }
+
+        .option-card input:checked + .option-content .option-marker::after {
+            opacity: 1; transform: scale(1);
+        }
+        
+        input[type="checkbox"]:checked + .option-content .option-marker::after {
+             transform: rotate(45deg) scale(1);
+        }
+
+        /* Footer & Button */
+        .form-footer { margin-top: 40px; padding-top: 20px; border-top: 1px dashed var(--border); }
+
         .btn-submit {
-            background: #2C2420;
-            color: #fff;
+            width: 100%;
+            background: var(--primary);
+            color: var(--white);
             border: none;
-            padding: 14px 32px;
+            padding: 16px;
             font-size: 16px;
-            font-weight: 500;
-            border-radius: 8px;
+            font-weight: 600;
+            border-radius: 12px;
             cursor: pointer;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+            transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            box-shadow: 0 4px 14px rgba(44, 36, 32, 0.3);
         }
-        .btn-submit:active { transform: scale(0.96); }
-        .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
-        #loading {
-            position: fixed; inset: 0; background: #F0EBF8; z-index: 999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #2C2420; font-weight: 500;
-        }
+
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(44, 36, 32, 0.4); background: #1a1513; }
+        .btn-submit:active { transform: translateY(0); }
+        .btn-submit:disabled { background: #9ca3af; transform: none; box-shadow: none; cursor: not-allowed; }
+
+        /* Utilities */
         .hidden { display: none !important; }
+        .error-msg { color: #ef4444; font-size: 13px; margin-top: 6px; display: none; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile */
         @media (max-width: 600px) {
-            body { background: #fff; align-items: flex-start; }
-            .form-container { margin: 0; max-width: 100%; border-radius: 0; box-shadow: none; min-height: 100vh; }
-            .form-header-banner { display: none; }
-            .form-header { padding: 30px 24px 20px; background: #FDFDFD; }
-            .form-header h1 { font-size: 24px; }
+            body { padding: 0; background: var(--white); }
+            .main-wrapper { margin: 0; max-width: 100%; }
+            .form-card { border-radius: 0; box-shadow: none; min-height: 100vh; }
+            .form-header { padding: 30px 24px; }
             .form-content { padding: 24px; }
-            .field-wrapper { padding: 0; border: none; margin-bottom: 30px; border-radius: 0; background: transparent; }
-            .field-wrapper:focus-within { border: none; box-shadow: none; transform: none; }
-            .field-wrapper::after { content: ''; display: block; width: 100%; height: 1px; background: #eee; margin-top: 25px; }
-            .field-wrapper:last-child::after { display: none; }
-            .btn-submit { width: 100%; justify-content: center; margin-bottom: 40px; }
+            .form-control { background: #FAFAFA; }
         }
     </style>
 </head>
 <body>
 
     <div id="loading">
-        <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 15px;"></i>
-        <span id="loading-text">Memuat Formulir...</span>
+        <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2.5rem; margin-bottom: 20px; color: #2C2420;"></i>
+        <span id="loading-text" style="font-weight: 500;">Memuat Formulir...</span>
     </div>
 
-    <div id="main-container" class="form-container hidden">
-        <div class="form-header-banner"></div>
-        
-        <div class="form-header">
-            <h1 id="public-title"></h1>
-            <p id="public-desc"></p>
-        </div>
+    <div class="main-wrapper">
+        <div id="main-container" class="form-card hidden">
+            <div class="form-header">
+                <h1 id="public-title">...</h1>
+                <p id="public-desc">...</p>
+            </div>
 
-        <div class="form-content">
-            <form id="public-form">
-                <div id="fields-container"></div>
-                
-                <div class="form-footer">
-                    <button type="submit" id="btn-submit" class="btn-submit">
-                        <span>Kirim Jawaban</span> <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-                </div>
-            </form>
+            <div class="form-content">
+                <form id="public-form" autocomplete="off">
+                    <div id="fields-container">
+                        </div>
+                    
+                    <div class="form-footer">
+                        <button type="submit" id="btn-submit" class="btn-submit">
+                            <span>Kirim Jawaban</span> 
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
