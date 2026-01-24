@@ -54,6 +54,9 @@
                 <button class="menu-item" onclick="switchTab('forms')">
                     <i class="fa-solid fa-list-check"></i> Form Builder
                 </button>
+                <button class="menu-item" onclick="switchTab('members')">
+                    <i class="fa-solid fa-users"></i> Member Data
+                </button>
                 <div class="divider"></div>
                 <a href="#" class="menu-item logout">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
@@ -214,6 +217,28 @@
                     </div>
                 </div>
             </section>
+
+            <section id="tab-members" class="content-section hidden">
+                <div class="section-actions">
+                    <button class="btn-primary" onclick="openModal('member-modal')">
+                        <i class="fa-solid fa-user-plus"></i> Tambah Member
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Foto</th>
+                                <th>Username</th>
+                                <th>Divisi</th>
+                                <th>Gen</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="member-table-body"></tbody>
+                    </table>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -251,6 +276,36 @@
         </div>
     </div>
 
+    <div id="member-modal" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Input Data Member</h3>
+                <button onclick="closeModal('member-modal')" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <input type="text" id="mem-username" class="input-clean" placeholder="Username / Nama Panggilan">
+                    <input type="text" id="mem-gen" class="input-clean" placeholder="Generasi (Contoh: Gen 1)">
+                </div>
+                
+                <input type="text" id="mem-division" class="input-clean" placeholder="Divisi (Contoh: Illustrator, Vocal, Mod)">
+                <textarea id="mem-motto" class="input-clean" rows="2" placeholder="Motto / Quote Member..."></textarea>
+                
+                <label style="font-size: 0.8rem; color: #888; display:block; margin-bottom:5px;">Social Media (Kosongkan jika tidak ada)</label>
+                <div class="input-group-modern">
+                    <input type="text" id="mem-ig" class="input-clean" placeholder="Link Instagram">
+                    <input type="text" id="mem-discord" class="input-clean" placeholder="Username Discord (Contoh: Hiro#1234)">
+                    <input type="text" id="mem-reality" class="input-clean" placeholder="Link Reality Profile">
+                </div>
+    
+                <label style="font-size: 0.8rem; color: #888; display:block; margin-bottom:5px;">Nama File Foto (Wajib ada di asset/member/)</label>
+                <input type="text" id="mem-image" class="input-clean" placeholder="Contoh: hiro.jpg">
+    
+                <button id="btn-save-member" class="btn-primary-full">Simpan Data Member</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" class="toast hidden">Action Successful!</div>
 
     <script type="module" src="JS/admin.js"></script>
@@ -276,7 +331,8 @@
                 'overview': 'Dashboard Overview', 
                 'announcements': 'Manage Announcements', 
                 'youtube': 'YouTube Settings',
-                'forms': 'Form Builder Manager'
+                'forms': 'Form Builder Manager',
+                'members': 'Member Management'
             };
             const pageTitle = document.getElementById('page-title');
             if(pageTitle) pageTitle.innerText = titles[tabId] || 'Dashboard';
