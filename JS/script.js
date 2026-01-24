@@ -14,7 +14,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// DOM Elements
 const gridContainer = document.getElementById('announcement-grid');
 const youtubeContainer = document.getElementById('youtube-container');
 const detailModal = document.getElementById('detail-modal');
@@ -23,11 +22,9 @@ const detailBackdrop = document.getElementById('detail-backdrop');
 const mobileBtn = document.getElementById('mobile-menu-toggle');
 const navLinks = document.getElementById('nav-links');
 
-// Mobile Menu Logic
 if(mobileBtn && navLinks) {
     mobileBtn.addEventListener('click', () => {
         navLinks.classList.toggle('active');
-        // Ubah icon dari bars ke xmark
         const icon = mobileBtn.querySelector('i');
         if(navLinks.classList.contains('active')){
             icon.classList.remove('fa-bars');
@@ -38,7 +35,6 @@ if(mobileBtn && navLinks) {
         }
     });
 
-    // Tutup menu saat link diklik
     navLinks.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
             navLinks.classList.remove('active');
@@ -153,7 +149,60 @@ function getYoutubeID(url) {
     return (match && match[2].length === 11) ? match[2] : null;
 }
 
+async function loadMemberHighlight() {
+    const container = document.getElementById('member-highlight-container');
+    if(!container) return;
+
+    try {
+        const snap = await getDocs(collection(db, "members"));
+        let members = [];
+        snap.forEach(doc => members.push(doc.data()));
+
+        if(members.length === 0) {
+            container.innerHTML = '<p class="text-center">Belum ada member.</p>';
+            return;
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderRandomMembers() {
+            const randomMembers = shuffle([...members]).slice(0, 3);
+            
+            container.innerHTML = '';
+            randomMembers.forEach(m => {
+                const imgPath = `asset/member/${m.imageName}`;
+                
+                const card = `
+                    <div class="card fade-in" style="text-align:center; padding:30px 20px; align-items:center;">
+                        <div style="width:100px; height:100px; border-radius:50%; overflow:hidden; margin:0 auto 15px; border:3px solid #A68A64;">
+                            <img src="${imgPath}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='asset/Content/thumbnail/default.jpg'">
+                        </div>
+                        <h3 style="font-size:1.2rem; margin-bottom:5px;">${m.username}</h3>
+                        <span style="font-size:0.8rem; color:#A68A64; font-weight:600; text-transform:uppercase;">${m.division}</span>
+                        <p style="font-size:0.9rem; color:#666; margin-top:10px; font-style:italic;">"${m.motto}"</p>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        renderRandomMembers();
+
+        setInterval(renderRandomMembers, 7000);
+
+    } catch (e) {
+        console.error("Highlight Error:", e);
+    }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     loadAnnouncements();
     loadYoutube();
+    loadMemberHighlight();
 });
