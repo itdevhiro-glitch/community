@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Members - Tachibana Scan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/member.css">
 </head>
 <body>
+
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
 
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
@@ -32,17 +37,17 @@
 
     <header class="member-header">
         <div class="container">
-            <h1 class="fade-in-up">Meet The Family</h1>
-            <p>Orang-orang kreatif di balik Tachibana Scan Community.</p>
+            <h1 class="fade-in-up">The Creators</h1>
+            <p class="fade-in-up" style="animation-delay: 0.2s;">Meet the artists, voices, and minds behind the magic.</p>
         </div>
     </header>
 
-    <section class="section" style="padding-top: 0;">
+    <section class="section" style="padding-top: 0; position: relative; z-index: 2;">
         <div class="container">
-            <div id="member-container" class="member-grid">
+            <div id="main-member-wrapper">
                 <div class="loading-state">
                     <div class="spinner"></div>
-                    <p>Memanggil seluruh member...</p>
+                    <p>Summoning members...</p>
                 </div>
             </div>
         </div>
