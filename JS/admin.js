@@ -27,6 +27,7 @@ onAuthStateChanged(auth, (user) => {
         document.querySelector('.user-profile span').innerText = user.email;
         loadAnnouncements();
         loadFormList();
+        loadMembers();
     } else {
         document.getElementById('login-overlay').classList.remove('hidden');
         document.getElementById('dashboard-container').classList.add('hidden');
@@ -369,4 +370,87 @@ function showToast(msg) {
     t.innerText = msg;
     t.classList.remove('hidden');
     setTimeout(() => t.classList.add('hidden'), 3000);
+}
+
+function loadMembers() {
+    const q = query(collection(db, "members"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+        const tbody = document.getElementById('member-table-body');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        if(snapshot.empty) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Belum ada member.</td></tr>';
+            return;
+        }
+
+        snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const localPath = `asset/member/${data.imageName}`;
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><img src="${localPath}" class="thumb-img" style="border-radius:50%; object-fit:cover;" onerror="this.src='asset/Content/thumbnail/default.jpg'"></td>
+                <td><strong>${data.username}</strong></td>
+                <td>${data.division}</td>
+                <td><span style="background:#eee; padding:2px 8px; border-radius:10px; font-size:0.8rem;">${data.gen}</span></td>
+                <td>
+                    <button class="btn-delete-mem" data-id="${docSnap.id}" style="color:red; background:none; border:none; cursor:pointer;">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.querySelectorAll('.btn-delete-mem').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                if(confirm("Hapus data member ini?")) {
+                    await deleteDoc(doc(db, "members", e.target.closest('button').dataset.id));
+                    showToast("Member dihapus!");
+                }
+            });
+        });
+    });
+}
+
+const btnSaveMem = document.getElementById('btn-save-member');
+if(btnSaveMem){
+    btnSaveMem.addEventListener('click', async () => {
+        const username = document.getElementById('mem-username').value;
+        const gen = document.getElementById('mem-gen').value;
+        const division = document.getElementById('mem-division').value;
+        const motto = document.getElementById('mem-motto').value;
+        const ig = document.getElementById('mem-ig').value;
+        const discord = document.getElementById('mem-discord').value;
+        const reality = document.getElementById('mem-reality').value;
+        const image = document.getElementById('mem-image').value;
+
+        if(!username || !division || !image) return alert("Username, Divisi, dan Foto wajib diisi!");
+
+        btnSaveMem.innerText = "Menyimpan...";
+        try {
+            await addDoc(collection(db, "members"), {
+                username, gen, division, motto, 
+                social: { instagram: ig, discord: discord, reality: reality },
+                imageName: image,
+                createdAt: new Date()
+            });
+            showToast("Member berhasil ditambahkan!");
+            document.getElementById('member-modal').classList.add('hidden');
+            
+            document.getElementById('mem-username').value = '';
+            document.getElementById('mem-gen').value = '';
+            document.getElementById('mem-division').value = '';
+            document.getElementById('mem-motto').value = '';
+            document.getElementById('mem-ig').value = '';
+            document.getElementById('mem-discord').value = '';
+            document.getElementById('mem-reality').value = '';
+            document.getElementById('mem-image').value = '';
+        } catch (e) {
+            alert("Error: " + e.message);
+        } finally {
+            btnSaveMem.innerText = "Simpan Data Member";
+        }
+    });
 }
