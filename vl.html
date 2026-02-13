@@ -27,336 +27,215 @@ body {
     overflow-x: hidden;
 }
 
-/* --- OVERLAY LOCK SCREEN --- */
-#lock-screen {
+#envelope-container {
     position: fixed;
     inset: 0;
-    background: var(--cream);
-    z-index: 20000;
+    background: radial-gradient(circle at center, #fff5f6 0%, #ffd1dc 100%);
+    z-index: 100000;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
+    perspective: 1500px;
 }
 
-#countdown-wrapper {
-    background: white;
-    padding: 30px;
-    border-radius: 30px;
-    box-shadow: 0 10px 30px rgba(251, 111, 146, 0.1);
-    border: 2px solid var(--soft-pink);
-}
-
-.time-val {
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: var(--deep-pink);
-    display: block;
-}
-
-/* --- KODINGAN ASLI LU DI BAWAH --- */
-.cursor-dot {
-    width: 8px;
-    height: 8px;
-    background: var(--deep-pink);
-    position: fixed;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-}
-
-#flower-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-}
-
-.heart-float {
-    position: fixed;
-    font-size: 16px;
-    animation: floatUp 4s linear forwards;
-    pointer-events: none;
-    z-index: 5;
-}
-
-@keyframes floatUp {
-    from { transform: translateY(0) scale(1); opacity: 1; }
-    to { transform: translateY(-150px) scale(1.8); opacity: 0; }
-}
-
-.sparkle {
-    position: fixed;
-    width: 6px;
-    height: 6px;
-    background: white;
-    border-radius: 50%;
-    opacity: 0.8;
-    animation: sparkle 2s forwards;
-}
-
-@keyframes sparkle {
-    0% { transform: scale(0); opacity: 1; }
-    100% { transform: scale(2); opacity: 0; }
-}
-
-.hero {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.envelope-wrapper {
     position: relative;
-    z-index: 10;
-    visibility: hidden; /* Sembunyi sampai kebuka */
-}
-
-.title-container { text-align: center; }
-
-h1 {
-    font-family: 'Dancing Script', cursive;
-    font-size: clamp(4rem, 15vw, 8rem);
-    line-height: 1;
-    margin-bottom: 10px;
-    background: linear-gradient(to right, var(--deep-pink), var(--primary-pink));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    opacity: 0;
-    transform: translateY(30px);
-    animation: softPulse 3s ease-in-out infinite;
-}
-
-@keyframes softPulse {
-    0%,100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-.subtitle {
-    font-weight: 200;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    opacity: 0;
-}
-
-.garden {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 40px;
-}
-
-.flower-stem {
-    width: 4px;
-    height: 0;
-    background: linear-gradient(to top, var(--soft-pink), var(--primary-pink));
-    border-radius: 10px;
-    position: relative;
-    transform-origin: bottom;
-    animation: sway 3s ease-in-out infinite alternate;
-}
-
-@keyframes sway {
-    from { transform: rotate(-2deg); }
-    to { transform: rotate(2deg); }
-}
-
-.flower-center {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%) scale(0);
-    width: 30px;
-    height: 30px;
-    background: var(--white);
-    border-radius: 50%;
-    box-shadow: 0 0 20px var(--primary-pink);
-    z-index: 2;
-}
-
-.petal {
-    position: absolute;
-    background: var(--deep-pink);
-    width: 25px;
-    height: 25px;
-    border-radius: 50% 0 50% 0;
-    top: -12px;
-    left: 2px;
-    transform-origin: bottom left;
-    opacity: 0.8;
-}
-
-.content-section {
-    padding: 100px 20px;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 30px;
-    z-index: 10;
-    position: relative;
-    visibility: hidden;
-}
-
-.card {
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 175, 204, 0.3);
-    padding: 40px;
     width: 350px;
-    border-radius: 30px;
-    box-shadow: 0 15px 35px rgba(251, 111, 146, 0.1);
-    transition: 0.3s;
-    transform-style: preserve-3d;
+    height: 230px;
+    background: var(--soft-pink);
+    border-radius: 0 0 15px 15px;
+    box-shadow: 0 30px 60px rgba(251, 111, 146, 0.3);
+    cursor: pointer;
+    transition: transform 0.3s ease;
 }
 
-.card:hover {
-    transform: translateY(-10px);
+.envelope-wrapper:hover {
+    transform: translateY(-5px) rotateX(5deg);
+}
+
+.flap {
+    position: absolute;
+    top: 0; left: 0; width: 0; height: 0;
+    border-left: 175px solid transparent;
+    border-right: 175px solid transparent;
+    border-top: 130px solid var(--deep-pink);
+    border-radius: 10px 10px 0 0;
+    transform-origin: top;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.4s;
+    z-index: 4;
+}
+
+.pocket {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--soft-pink);
+    border-radius: 0 0 15px 15px;
+    z-index: 3;
+    overflow: hidden;
+}
+
+.pocket::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--primary-pink) 0%, var(--soft-pink) 100%);
+    clip-path: polygon(0 0, 50% 50%, 100% 0, 100% 100%, 0 100%);
+}
+
+.letter-paper {
+    position: absolute;
+    top: 10%; left: 50%;
+    transform: translateX(-50%) translateY(0);
+    width: 85%;
+    height: 80%;
     background: var(--white);
-    border-color: var(--deep-pink);
+    padding: 25px 15px;
+    border-radius: 5px;
+    z-index: 2;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
-.card h3 {
-    font-family: 'Dancing Script', cursive;
-    font-size: 2rem;
-    margin-bottom: 15px;
+.envelope-wrapper.open .flap { 
+    transform: rotateX(180deg); 
+    z-index: 1; 
 }
 
-.progress-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 5px;
-    background: var(--deep-pink);
-    z-index: 1000;
-    width: 0%;
+.envelope-wrapper.open .letter-paper { 
+    transform: translateX(-50%) translateY(-160px); 
+    height: auto; 
+    z-index: 5;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
+
+.tap-hint {
+    position: absolute;
+    bottom: -60px;
+    width: 100%;
+    text-align: center;
+    color: var(--deep-pink);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+#btn-open-main {
+    display: none;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: linear-gradient(45deg, #fb6f92, #ffafcc);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#actual-content { visibility: hidden; opacity: 0; transition: opacity 1s; }
+.cursor-dot { width: 8px; height: 8px; background: var(--deep-pink); position: fixed; border-radius: 50%; pointer-events: none; z-index: 9999; }
+#flower-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.heart-float { position: fixed; font-size: 16px; animation: floatUp 4s linear forwards; pointer-events: none; z-index: 5; }
+@keyframes floatUp { from { transform: translateY(0) scale(1); opacity: 1; } to { transform: translateY(-150px) scale(1.8); opacity: 0; } }
+.sparkle { position: fixed; width: 6px; height: 6px; background: white; border-radius: 50%; opacity: 0.8; animation: sparkle 2s forwards; }
+@keyframes sparkle { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+.hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 10; }
+h1 { font-family: 'Dancing Script', cursive; font-size: clamp(4rem, 15vw, 8rem); line-height: 1; margin-bottom: 10px; background: linear-gradient(to right, var(--deep-pink), var(--primary-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; opacity: 0; transform: translateY(30px); }
+.subtitle { font-weight: 200; letter-spacing: 5px; text-transform: uppercase; font-size: 0.9rem; opacity: 0; }
+.garden { position: absolute; bottom: 0; width: 100%; height: 300px; display: flex; justify-content: center; align-items: flex-end; gap: 40px; }
+.flower-stem { width: 4px; height: 0; background: linear-gradient(to top, var(--soft-pink), var(--primary-pink)); border-radius: 10px; position: relative; transform-origin: bottom; animation: sway 3s ease-in-out infinite alternate; }
+@keyframes sway { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
+.flower-center { position: absolute; top: -15px; left: 50%; transform: translateX(-50%) scale(0); width: 30px; height: 30px; background: var(--white); border-radius: 50%; box-shadow: 0 0 20px var(--primary-pink); z-index: 2; }
+.petal { position: absolute; background: var(--deep-pink); width: 25px; height: 25px; border-radius: 50% 0 50% 0; top: -12px; left: 2px; transform-origin: bottom left; opacity: 0.8; }
+.content-section { padding: 100px 20px; display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; z-index: 10; position: relative; }
+.card { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 175, 204, 0.3); padding: 40px; width: 350px; border-radius: 30px; box-shadow: 0 15px 35px rgba(251, 111, 146, 0.1); transition: 0.3s; transform-style: preserve-3d; }
+.progress-bar { position: fixed; top: 0; left: 0; height: 5px; background: var(--deep-pink); z-index: 1000; width: 0%; }
 </style>
 </head>
 <body>
 
-<div id="lock-screen">
-    <div id="countdown-wrapper">
-        <h2 style="font-family: 'Dancing Script', cursive; font-size: 2.5rem; margin-bottom: 15px;">Sabar ya Natalia... 🌸</h2>
-        <p style="font-size: 0.8rem; margin-bottom: 20px; opacity: 0.7;">Kejutan Valentine akan mekar dalam:</p>
-        <div style="display: flex; gap: 15px; justify-content: center;">
-            <div><span class="time-val" id="d">0</span><small>HARI</small></div>
-            <div><span class="time-val" id="h">0</span><small>JAM</small></div>
-            <div><span class="time-val" id="m">0</span><small>MENIT</small></div>
-            <div><span class="time-val" id="s">0</span><small>DETIK</small></div>
+<div id="envelope-container">
+    <div class="envelope-wrapper" onclick="this.classList.add('open'); startCountdown();">
+        <div class="flap"></div>
+        <div class="letter-paper">
+            <h2 style="font-family: 'Dancing Script'; font-size: 1.6rem; margin-bottom: 10px; color: #fb6f92;">Untuk Natalia...</h2>
+            <div id="cd-timer" style="display: flex; gap: 10px; justify-content: center; color: #555;">
+                <div><span id="d_val" style="display:block; font-size: 1.2rem; font-weight:600;">0</span><small>Hari</small></div>
+                <div><span id="h_val" style="display:block; font-size: 1.2rem; font-weight:600;">0</span><small>Jam</small></div>
+                <div><span id="m_val" style="display:block; font-size: 1.2rem; font-weight:600;">0</span><small>Menit</small></div>
+                <div><span id="s_val" style="display:block; font-size: 1.2rem; font-weight:600;">0</span><small>Detik</small></div>
+            </div>
+            <button id="btn-open-main" onclick="revealActualContent(event)">Buka Pesan Natalia 🌸</button>
         </div>
+        <div class="pocket"></div>
+        <div class="tap-hint">Klik amplop untuk membuka ✨</div>
     </div>
 </div>
 
-<div class="progress-bar" id="bar"></div>
-<div class="cursor-dot" id="dot"></div>
-<canvas id="flower-bg"></canvas>
-
-<section class="hero" id="main-hero">
-    <div class="title-container">
-        <p class="subtitle" id="typing"></p>
-        <h1 id="name">Natalia</h1>
-        <p style="font-weight: 300; opacity: 0.7;">Scroll untuk melihat cinta yang mekar 💗</p>
-    </div>
-
-    <div class="garden">
-        <div class="flower-stem" style="height: 200px;">
-            <div class="flower-center"></div>
-            <div class="petal" style="transform: rotate(0deg);"></div>
-            <div class="petal" style="transform: rotate(72deg);"></div>
-            <div class="petal" style="transform: rotate(144deg);"></div>
-            <div class="petal" style="transform: rotate(216deg);"></div>
-            <div class="petal" style="transform: rotate(288deg);"></div>
+<div id="actual-content">
+    <div class="progress-bar" id="bar"></div>
+    <div class="cursor-dot" id="dot"></div>
+    <canvas id="flower-bg"></canvas>
+    <section class="hero">
+        <div class="title-container">
+            <p class="subtitle" id="typing"></p>
+            <h1 id="name">Natalia</h1>
+            <p style="font-weight: 300; opacity: 0.7; text-align:center;">Scroll perlahan ke bawah ya... 💗</p>
         </div>
-        <div class="flower-stem" style="height: 250px;">
-            <div class="flower-center"></div>
-            <div class="petal" style="transform: rotate(0deg);"></div>
-            <div class="petal" style="transform: rotate(72deg);"></div>
-            <div class="petal" style="transform: rotate(144deg);"></div>
-            <div class="petal" style="transform: rotate(216deg);"></div>
-            <div class="petal" style="transform: rotate(288deg);"></div>
+        <div class="garden">
+            <div class="flower-stem" style="height: 200px;"><div class="flower-center"></div><div class="petal" style="transform: rotate(0deg);"></div><div class="petal" style="transform: rotate(72deg);"></div><div class="petal" style="transform: rotate(144deg);"></div><div class="petal" style="transform: rotate(216deg);"></div><div class="petal" style="transform: rotate(288deg);"></div></div>
+            <div class="flower-stem" style="height: 250px;"><div class="flower-center"></div><div class="petal" style="transform: rotate(0deg);"></div><div class="petal" style="transform: rotate(72deg);"></div><div class="petal" style="transform: rotate(144deg);"></div><div class="petal" style="transform: rotate(216deg);"></div><div class="petal" style="transform: rotate(288deg);"></div></div>
+            <div class="flower-stem" style="height: 180px;"><div class="flower-center"></div><div class="petal" style="transform: rotate(0deg);"></div><div class="petal" style="transform: rotate(72deg);"></div><div class="petal" style="transform: rotate(144deg);"></div><div class="petal" style="transform: rotate(216deg);"></div><div class="petal" style="transform: rotate(288deg);"></div></div>
         </div>
-        <div class="flower-stem" style="height: 180px;">
-            <div class="flower-center"></div>
-            <div class="petal" style="transform: rotate(0deg);"></div>
-            <div class="petal" style="transform: rotate(72deg);"></div>
-            <div class="petal" style="transform: rotate(144deg);"></div>
-            <div class="petal" style="transform: rotate(216deg);"></div>
-            <div class="petal" style="transform: rotate(288deg);"></div>
-        </div>
-    </div>
-</section>
-
-<section class="content-section" id="main-content">
-    <div class="card">
-        <h3>Pure Happiness</h3>
-        <p>Melihatmu bahagia adalah alasan utamaku tersenyum setiap pagi.</p>
-    </div>
-    <div class="card">
-        <h3>Eternal Bloom</h3>
-        <p>Seperti bunga-bunga ini, rasa sayangku padamu akan selalu mekar.</p>
-    </div>
-    <div class="card">
-        <h3>My Valentine</h3>
-        <p>Terima kasih telah menjadi bagian paling indah dalam hidupku.</p>
-    </div>
-</section>
-
-<footer id="main-footer" style="text-align:center; padding:50px; opacity:0.6; font-size:0.8rem; visibility: hidden;">
-    Dibuat dengan ❤️ untuk Natalia
-</footer>
+    </section>
+    <section class="content-section">
+        <div class="card"><h3>Pure Happiness</h3><p>Melihatmu bahagia adalah alasan utamaku tersenyum setiap pagi.</p></div>
+        <div class="card"><h3>Eternal Bloom</h3><p>Seperti bunga-bunga ini, rasa sayangku padamu akan selalu mekar.</p></div>
+        <div class="card"><h3>My Valentine</h3><p>Terima kasih telah menjadi bagian paling indah dalam hidupku.</p></div>
+    </section>
+    <footer style="text-align:center; padding:50px; opacity:0.6; font-size:0.8rem; position:relative; z-index:10;">Dibuat dengan ❤️ untuk Natalia</footer>
+</div>
 
 <script>
-// --- LOGIKA TANGGAL ---
-const valentineDate = new Date("February 14, 2026 00:00:00").getTime();
-
-function updateCountdown() {
-    const now = new Date().getTime();
-    const diff = valentineDate - now;
-
-    if (diff <= 0) {
-        document.getElementById('lock-screen').style.display = 'none';
-        document.getElementById('main-hero').style.visibility = 'visible';
-        document.getElementById('main-content').style.visibility = 'visible';
-        document.getElementById('main-footer').style.visibility = 'visible';
-        initProgram(); // Jalankan kodingan asli lu
-        return;
-    }
-
-    document.getElementById('d').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
-    document.getElementById('h').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    document.getElementById('m').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    document.getElementById('s').innerText = Math.floor((diff % (1000 * 60)) / 1000);
+const targetDate = new Date("February 14, 2020 00:00:00").getTime();
+function startCountdown() {
+    const timer = setInterval(() => {
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+        if (diff <= 0) {
+            clearInterval(timer);
+            document.getElementById('cd-timer').style.display = 'none';
+            document.getElementById('btn-open-main').style.display = 'inline-block';
+            return;
+        }
+        document.getElementById('d_val').innerText = Math.floor(diff / 86400000);
+        document.getElementById('h_val').innerText = Math.floor((diff % 86400000) / 3600000);
+        document.getElementById('m_val').innerText = Math.floor((diff % 3600000) / 60000);
+        document.getElementById('s_val').innerText = Math.floor((diff % 60000) / 1000);
+    }, 1000);
 }
-
-setInterval(updateCountdown, 1000);
-updateCountdown();
-
-// --- SEMUA KODINGAN ASLI LU DI SINI ---
-function initProgram() {
+function revealActualContent(e) {
+    e.stopPropagation();
+    const env = document.getElementById('envelope-container');
+    env.style.opacity = '0';
+    setTimeout(() => {
+        env.style.display = 'none';
+        const content = document.getElementById('actual-content');
+        content.style.visibility = 'visible';
+        content.style.opacity = '1';
+        initOriginalCode();
+    }, 800);
+}
+function initOriginalCode() {
     gsap.registerPlugin(ScrollTrigger);
     const tl = gsap.timeline();
     tl.to("h1", { opacity: 1, y: 0, duration: 1.5, ease: "power4.out" })
       .to(".subtitle", { opacity: 0.8, duration: 1 }, "-=1")
       .to(".flower-stem", { height: (i, t) => t.offsetHeight, duration: 2, ease: "elastic.out(1, 0.3)" }, "-=1")
       .to(".flower-center", { scale: 1, duration: 0.8, stagger: 0.2 }, "-=1");
-
     gsap.to("#bar", { width: "100%", scrollTrigger: { scrub: 0.3 } });
-
-    gsap.utils.toArray(".card").forEach(card => {
-        gsap.from(card, {
-            scrollTrigger: { trigger: card, start: "top 90%" },
-            y: 50, opacity: 0, duration: 1
-        });
-    });
-
     const text = "Special For You";
     let i = 0;
     function typing() {
@@ -367,23 +246,48 @@ function initProgram() {
         }
     }
     typing();
+    setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart-float";
+        heart.innerHTML = "💗";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.bottom = "0px";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 4000);
+    }, 900);
+    setInterval(() => {
+        const s = document.createElement("div");
+        s.className = "sparkle";
+        s.style.left = Math.random() * 100 + "vw";
+        s.style.top = Math.random() * 100 + "vh";
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 2000);
+    }, 700);
+    document.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("mousemove", e => {
+            const rect = card.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            gsap.to(card, { rotateY: x * 15, rotateX: -y * 15, duration: 0.5 });
+        });
+        card.addEventListener("mouseleave", () => {
+            gsap.to(card, { rotateY: 0, rotateX: 0, duration: 0.5 });
+        });
+    });
 }
-
-// Efek Background & Kursor (Tetap jalan di lock screen biar estetik)
 const canvas = document.getElementById('flower-bg');
 const ctx = canvas.getContext('2d');
 function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 resize();
 window.addEventListener('resize', resize);
-
 let petals = [];
 class Petal {
-    constructor() {
+    constructor() { this.init(); }
+    init() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
         this.size = Math.random() * 5 + 2;
         this.speed = Math.random() * 1 + 0.5;
-        this.angle = Math.random() * 360;
     }
     draw() {
         ctx.beginPath();
@@ -393,7 +297,6 @@ class Petal {
     }
     update() {
         this.y += this.speed;
-        this.x += Math.sin(this.angle) * 0.5;
         if (this.y > canvas.height) this.y = -10;
     }
 }
@@ -404,44 +307,9 @@ function animate() {
     requestAnimationFrame(animate);
 }
 animate();
-
 window.addEventListener('mousemove', (e) => {
     gsap.to("#dot", { x: e.clientX, y: e.clientY, duration: 0.2 });
 });
-
-setInterval(() => {
-    const heart = document.createElement("div");
-    heart.className = "heart-float";
-    heart.innerHTML = "💗";
-    heart.style.left = Math.random() * window.innerWidth + "px";
-    heart.style.bottom = "0px";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 4000);
-}, 900);
-
-setInterval(() => {
-  const s = document.createElement("div");
-  s.className = "sparkle";
-  s.style.left = Math.random() * window.innerWidth + "px";
-  s.style.top = Math.random() * window.innerHeight + "px";
-  document.body.appendChild(s);
-  setTimeout(() => s.remove(), 2000);
-}, 700);
-
-document.querySelectorAll(".card").forEach(card => {
-  card.addEventListener("mousemove", e => {
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const rotateX = (y / rect.height - 0.5) * 10;
-    const rotateY = (x / rect.width - 0.5) * -10;
-    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
-  });
-  card.addEventListener("mouseleave", () => {
-    card.style.transform = "rotateX(0) rotateY(0)";
-  });
-});
 </script>
-
 </body>
 </html>
